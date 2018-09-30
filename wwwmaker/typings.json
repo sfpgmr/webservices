@@ -1,0 +1,8 @@
+{
+  "name": "wwwmaker",
+  "dependencies": {},
+  "globalDependencies": {
+    "highlight.js": "registry:dt/highlight.js#9.1.0+20161227120821",
+    "node": "registry:dt/node#7.0.0+20170322231424"
+  }
+}

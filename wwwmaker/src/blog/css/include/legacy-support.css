@@ -1,0 +1,24 @@
+
+@media screen {
+
+div.if4by33,sf {
+position: relative;
+width: 100%;
+padding-top: 75%;
+}
+
+div.if16by9,sfif16by9 {
+position: relative;
+width: 100%;
+padding-top: 56.25%;
+}
+
+div.if iframe {
+position: absolute;
+top: 0;
+left: 0;
+width: 100%;
+height: 100%;
+}
+
+}

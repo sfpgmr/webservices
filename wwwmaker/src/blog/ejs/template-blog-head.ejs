@@ -1,0 +1,52 @@
+<% 
+const {config,blogPosting,blogConfig,URL,nextURL,prevURL,blogPosts} = params;
+const blog = config['sf:blogConfig'].Blog;
+const extention = '.html';
+%>
+<meta charset="UTF-8" />
+<title><%=blog.headline + ':' + blogPosting.headline %></title>
+<link rel="amphtml" href="<%-blogPosting.url%>.amp.html" />
+<link rel="alternate" type="application/atom+xml" title="<%-blog.headline%>" href="/blog/feed.xml" />
+<%if(/*nextURL*/false) { %>
+<link rel="prefetch" href="<%-nextURL%>" as="html" />
+<%}%>
+
+<meta name="description" content="<%-blogPosting.description %>" />
+<meta name="keywords" content="<%-blogPosting.keywords %>" /> 	
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta itemprop="image" content="https://www.sfpgmr.net/img/sfblog.png" />
+<meta itemprop="name" content="<%=blogPosting.headline%>" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@sfpgmr" />
+<meta name="twitter:url" content="<%-blogPosting.url + extention %>" />
+<meta name="twitter:title" content="<%-blogPosting.headline%>" />
+<meta name="twitter:description" content="<%-blogPosting.description.substring(0,30) + '...'%>" />
+<meta name="twitter:image" content="<%-blogPosting.image.url%>" />
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="<%-blogPosting.url + extention %>" />
+<meta property="og:title" content="<%=blogPosting.headline%>" />
+<meta property="og:site_name" content="<%-blog.headline%>" />
+<meta property="og:description" content="<%-blogPosting.description%>">
+<meta property="og:image" content="<%-blogPosting.image.url%>">
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.4.1/d3.min.js"></script>
+<script src="/blog/js/d3.layout.cloud.js"></script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<link rel="stylesheet" type="text/css" media="all" href="/blog/css/sfblogstyle.css" />
+<link rel="icon" href="/img/sfblog-icon.png" />
+<link rel="apple-touch-icon" sizes="64x64" href="/img/sfblog-icon.png">
+<%- include('./template-blog-ga.ejs') %>
+<%
+  let blogJsonLd = Object.assign({'@context':config['@context']},blog);
+  let blogPostingJsonLd = Object.assign({'@context':config['@context']},blogPosting);
+  blogPostingJsonLd['@id'] = blogPostingJsonLd.url = blogPostingJsonLd.url + extention;
+%>
+<script type="application/ld+json">
+<%- JSON.stringify(blogPostingJsonLd,null,1); %>
+</script>
+<script type="application/ld+json">
+<%- JSON.stringify(blogJsonLd,null,1); %>
+</script>

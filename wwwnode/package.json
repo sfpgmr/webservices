@@ -1,0 +1,48 @@
+{
+  "name": "wwwnode",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "coffee": "^4.1.0",
+    "d3": "^3.4.13",
+    "ect": "^0.5.9",
+    "feedparser": "^0.19.2",
+    "github": "^0.2.2",
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
+    "hatena-blog-api": "^0.2.0",
+    "jsdom": "^1.2.1",
+    "node-auth": "^0.0.1",
+    "node-fs": "^0.1.7",
+    "node-phantom": "^0.2.5",
+    "node-twitter": "^0.5.2",
+    "q": "^1.0.1",
+    "socket.io": "^1.2.0",
+    "tumblr": "^0.4.1",
+    "twitter": "^0.2.13",
+    "youtube-api": "^0.3.1"
+  },
+  "devDependencies": {
+    "coffee-script": "^1.8.0",
+    "grunt-contrib-compress": "^0.12.0",
+    "grunt-contrib-uglify": "^0.12.0",
+    "grunt-contrib-watch": "^0.6.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:sfpgmr/www.git"
+  },
+  "keywords": [
+    "http://www.enoie.net/"
+  ],
+  "author": "sfpgmr",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sfpgmr/www/issues"
+  },
+  "homepage": "https://github.com/sfpgmr/www"
+}

@@ -1,0 +1,1 @@
+set path=%path%;.\bin;.\commands;.\build;

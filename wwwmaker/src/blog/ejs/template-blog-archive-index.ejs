@@ -1,0 +1,41 @@
+<% 
+const {config,blogPosting,blogConfig,URL,nextURL,prevURL,blogPosts} = params;
+let blog = config['sf:blogConfig'].Blog;
+const extention = '.html';
+-%>
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<head>
+<%- include('template-blog-head.ejs',{params:params}); %>
+</head>
+<body dir="ltr" style="text-align:left;">
+<%- include('template-blog-nav-header.ejs',{params:params}); %>
+<header class="header">
+<h1><%-blogPosting.headline%></h1>
+</header>
+<main>
+ <%
+    for(const b of blogPosts) {
+      let url = b.url;
+      const u = new URL(url);
+      if(u.origin.match(new RegExp(config.siteDomain))){
+        url = url.replace(u.origin,'');
+      }
+  %>
+ <article class="item">
+<section>
+<h2><a href="<%-url + extention%>"><%-b.headline%></a></h2>
+</section>
+</article>
+<% } %>
+<aside>
+<%- include('./template-blog-ad.ejs') %>
+</aside>
+</main>
+<footer style="text-align:center;">
+<small>Copylight &copy; 2017 Satoshi Fujiwara. </small>
+</footer>
+<%- include('template-blog-nav-footer.ejs',{params:params}); %>
+<script src="/blog/js/sfblogstyle.js" ></script>
+</body>
+</html>

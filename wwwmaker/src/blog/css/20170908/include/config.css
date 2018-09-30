@@ -1,0 +1,15 @@
+:root {
+	--button-bg-color: blue;
+	--button-color: white;
+	--button-hover-color: blue;
+	--button-hover-bg-color: white;
+  --default-font: -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Yu Gothic", YuGothic, "ヒラギノ角ゴ ProN W3", Hiragino Kaku Gothic ProN, Arial, "メイリオ", Meiryo, sans-serif;
+	--font-size-base:18px;
+	--default-font-size: 1rem;
+	--max-width:1024px;
+	--adjust-margin:calc((100vw - var(--max-width))/2);
+}
+
+@custom-media --smart-phone screen and (max-width:480px);
+@custom-media --tablet screen and (min-width:481px) and (max-width:960px);
+@custom-media --desktop screen and (min-width:961px) ;

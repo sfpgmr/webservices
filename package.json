@@ -1,0 +1,31 @@
+{
+  "name": "webservices",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sfpgmr/webservices.git"
+  },
+  "keywords": [
+    "WWW"
+  ],
+  "author": "S.F.",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/sfpgmr/webservices/issues"
+  },
+  "homepage": "https://github.com/sfpgmr/webservices#readme",
+  "dependencies": {
+    "config": "^1.30.0",
+    "express-x-hub": "^1.0.4",
+    "github-webhook-handler": "^0.7.1"
+  },
+  "devDependencies": {
+    "rollup": "^0.62.0",
+    "rollup-plugin-commonjs": "^9.1.3"
+  }
+}

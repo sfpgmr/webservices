@@ -1,0 +1,69 @@
+<% 
+const {config,blogPosting,blogConfig,URL,nextURL,prevURL,blogPosts} = params;
+let blog = config['sf:blogConfig'].Blog;
+const extention = '.amp.html';
+%>
+<!DOCTYPE html>
+<html AMP lang="ja" itemscope itemtype="http://schema.org/Article" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<head>
+<%- include('template-blog-amp-head.ejs',{params:params}); %>
+</head>
+<body dir="ltr">
+<%- include('template-blog-amp-nav-header.ejs',{params:params}); %>
+<header class="header">
+<h1><%-blogPosting.headline%></h1>
+<% if(params.toppage){ %>
+<p><%-blogPosting.description%></p>
+<% } %>
+</header>
+<% if(blogPosts.length > 10) { %>
+<aside>
+<%- include('./template-blog-amp-ad.ejs') %>
+</aside>
+<% } %>
+<main>
+ <%
+    for(const b of blogPosts) {
+      let url = b.url;
+      const u = new URL(url);
+      if(u.origin.match(new RegExp(config['sf:blogConfig'].siteDomain))){
+        url = url.replace(u.origin,'');
+      }
+  %>
+ <article class="item">
+<section>
+<h2><a href="<%-url + extention%>"><%-b.headline%></a></h2>
+<div>
+  <span class="sf-date"><%
+  function formatDate(dt){
+    return `<a href="/${blogConfig.siteBlogRoot}${blogConfig.archiveDir}${dt.getFullYear()}${extention}">${dt.getFullYear()}</a>-${('0'+(dt.getMonth()+1)).slice(-2)}-${('0'+dt.getDate()).slice(-2)} ${('0' + dt.getHours()).slice(-2)}:${('0' + dt.getMinutes()).slice(-2)}`;
+  }
+  %>
+  <%-`公開:${formatDate(new Date(b.datePublished))}`%>
+  </span>
+
+  <%
+    let keywords = b.keywords.split(',').filter(d=>d.length);
+    let keywordLinks = '';
+    for(keyword of keywords){
+      keywordLinks +=`<a href="/${blogConfig.siteBlogRoot + blogConfig.archiveCategoryDir}${encodeURIComponent(keyword)}${extention}">${keyword}</a>,`;
+    }
+    keywordLinks = keywordLinks.substr(0,keywordLinks.length - 1);
+  %>
+  カテゴリ:<%-keywordLinks%>
+</div>
+<%#-desc%>
+</section>
+</article>
+<% } %>
+<aside>
+<%- include('./template-blog-amp-ad.ejs') %>
+</aside>
+</main>
+<footer>
+<small>Copylight &copy; 2017 Satoshi Fujiwara. </small>
+</footer>
+<%- include('template-blog-amp-nav-footer.ejs',{params:params}); %>
+<%- include('./template-blog-amp-ga.ejs') %>
+</body>
+</html>

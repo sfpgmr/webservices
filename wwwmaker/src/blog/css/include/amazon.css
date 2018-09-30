@@ -1,0 +1,40 @@
+@import "./config.css";
+/* デバイス共通属性 */
+
+@media screen {
+  .amazon {
+    font-size: 0.75rem;
+    line-height: 1.25rem;
+    margin:5px;
+    padding:5px;
+    background:#fffff0;
+    display:flex;
+    * {
+      font-size:inherit;
+      line-height:inherit;
+    }
+    .amazon-detail-image {
+      padding:5px;
+    }
+    .amazon-detail-svglogo{
+      display: block;
+      width:64px;
+      padding:5px;
+      fill:#000;
+    }
+  }
+}
+
+/* スマートフォン向け */
+@media (--smart-phone) {
+}
+
+/* タブレット向け */
+@media (--tablet){
+
+}
+
+/* デスクトップ向け */
+@media (--desktop) {
+
+}

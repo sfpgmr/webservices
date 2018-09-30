@@ -1,0 +1,44 @@
+<% 
+const {config,blogPosting,blogConfig,URL,nextURL,prevURL,keywords} = params;
+let blog = config['sf:blogConfig'].Blog;
+const extention = '.amp.html';
+-%>
+<!DOCTYPE html>
+<html AMP lang="ja" itemscope itemtype="http://schema.org/Article" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<head>
+<%
+  let customCss = '';
+  for(const k of keywords){
+    customCss += `.keyword-${encodeURIComponent(k.text.trim())} {font-size:${Math.sqrt(k.size) + 10}px;padding:10px;}\n`;
+  }
+  params.customCss = customCss;
+%>
+<%- include('template-blog-amp-head.ejs',{params:params}); %>
+</head>
+<body dir="ltr">
+<%- include('template-blog-amp-nav-header.ejs',{blogPosting:blogPosting,blog:blog,blogConfig:blogConfig,config:config,URL:URL,}); %>
+<header class="header">
+<h1><%-blogPosting.headline%></h1>
+</header>
+<main>
+<article class="item" id="categoryMain">
+<%
+for(const k of keywords){
+%>
+<a href="<%-k.url + extention%>" title="<%-k.text.trim()%>"><span class="keyword-<%-encodeURIComponent(k.text.trim())%>"><%-k.text.trim()%></span></a>
+<%
+}
+%>
+</article>
+<aside>
+<%- include('./template-blog-amp-ad.ejs') %>
+</aside>
+
+</main>
+<footer>
+<small>Copylight &copy; 2017 Satoshi Fujiwara. </small>
+</footer>
+<%- include('template-blog-amp-nav-footer.ejs',{blogPosting:blogPosting,blog:blog,blogConfig:blogConfig,config:config,URL:URL,prevURL:prevURL,nextURL:nextURL}); %>
+<%- include('./template-blog-amp-ga.ejs') %>
+</body>
+</html>

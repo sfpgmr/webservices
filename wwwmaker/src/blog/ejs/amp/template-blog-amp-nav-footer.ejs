@@ -1,0 +1,55 @@
+<%
+    const {blogPosting,blogConfig,config,URL,prevURL,nextURL} = params;
+    const blog = config['sf:blogConfig'].Blog;
+    const extention = '.amp.html';
+%>
+<nav class="footer">
+<%
+const prevSvg = `
+<svg viewBox="0 0 8 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="chevron-left">
+            <polygon points="5.5 3 7 4.5 3.25 8 7 11.5 5.5 13 0.5 8"></polygon>
+        </g>
+    </g>
+</svg>
+`;
+const nextSvg =`
+<svg viewBox="0 0 8 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="chevron-right" >
+            <polygon points="7.5 8 2.5 13 1 11.5 4.75 8 1 4.5 2.5 3"></polygon>
+        </g>
+    </g>
+</svg>
+`;
+%>
+<% if(prevURL) { %>
+<a class="nav-item nav-icon" href="<%-prevURL + extention %>" title="previous">
+<%-prevSvg%>
+</a>
+<% } else { %>
+<div class="nav-item nav-icon disabled">
+<%-prevSvg%>
+</div>
+<% } %>
+<a id="scroll-top" class="nav-item nav-icon" title="scroll top" href="#">
+<svg viewBox="0 0 12 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="triangle-up">
+            <polygon points="12 11 6 5 0 11"></polygon>
+        </g>
+    </g>
+</svg>
+</a>
+
+<% if(nextURL) { %>
+<a class="nav-item nav-icon" href="<%-nextURL + extention %>" title="next">
+<%-nextSvg%>
+</a>
+<% } else { %>
+<div class="nav-item nav-icon disabled">
+<%-nextSvg%>
+</div>
+<% } %>
+</nav>

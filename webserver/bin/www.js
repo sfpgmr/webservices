@@ -1619,9 +1619,11 @@ function handler(req,res){
           pr = pr.then(compressGzip.bind(null,homeDir + path$$1));
         });
         // 削除ファイル
-        payload.removed.forEach(path$$1=>{
-          pr = pr.then(fs.promises.unlink.bind(null,homeDir + path$$1 + '.gzip'));
-        });
+        if(payload.removed && payload.removed.length > 0){
+          payload.removed.forEach(path$$1=>{
+            pr = pr.then(fs.promises.unlink.bind(null,homeDir + path$$1 + '.gzip'));
+          });
+        }
         return pr;
       })
       .catch((e)=>{console.log(`Error:${e}`);});

@@ -22,9 +22,7 @@
   "dependencies": {
     "config": "^1.30.0",
     "debug": "^4.0.1",
-    "express-x-hub": "^1.0.4",
-    "github-webhook-handler": "^0.7.1",
-    "parsejson": "0.0.3"
+    "express-x-hub": "^1.0.4"
   },
   "devDependencies": {
     "rollup": "^0.62.0",

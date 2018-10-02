@@ -66,7 +66,7 @@ function handler(req,res){
         (payload.modified && payload.modified.length > 0) && (files.push(...payload.modified));
 
         let pr = Promise.resolve(0);
-        console.log(files);
+        console.log(payload,files);
         // 追加更新ファイル
         files.forEach(path=>{
           pr = pr.then(compressGzip.bind(null,homeDir + path));

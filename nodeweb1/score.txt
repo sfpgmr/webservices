@@ -1,1 +1,0 @@
-[{"name":"abc","score":69500},{"name":"s.f.","score":55450},{"name":"S.F.","score":49650},{"name":"aaaa","score":40500},{"name":"abc","score":39600},{"name":"aaaa","score":35700},{"name":"zx","score":33400},{"name":"aaa","score":32550},{"name":"guttally","score":30350},{"name":"crx","score":28300}]

@@ -1600,35 +1600,24 @@ function handler(req,res){
       payload.repository.name,
       payload.ref);
 
+      // githubに応答を返す
       res.writeHead(200, { 'content-type': 'application/json' });
       res.end('{"ok":true}');
 
-      exec('/usr/bin/git pull',opt)
-      //exec('/usr/bin/git reset --hard origin/master',opt)
-      .then((s)=>{
-        // git diffをとって変更のあったファイル一覧を取得する
-        var commitIDs = s.stdout.split(/\n/);
-        console.log(commitIDs);
-        console.log(payload.after,payload.before);
-        return exec(`/usr/bin/git diff --name-only ${payload.after} ${payload.before}`,opt);    
-      })
-      .then((s)=>{
+      exec('/usr/bin/git fetch --depth 1',opt)
+      .then(exec.bind(null,'/usr/bin/git reset --hard origin/master',opt))
+      .then(()=>{
         // 変更のあったファイルをgzip圧縮する
-        //console.log(stdout);
-        let files = s.stdout.split(/\n/);
+        let files = [...payload.added,...payload.modified];
         let pr = Promise.resolve(0);
-        files.forEach((d,i)=>{
-          let path$$1  = d.trim();
-          if(path$$1.length > 0){          
-            pr = pr
-              .then(compressGzip.bind(null,homeDir + path$$1))
-              .then(exec.bind(null,`/bin/chown ${process.env['WWW_UID']}:${process.env['WWW_GROUP']} ${homeDir}${path$$1}`))
-              .then(exec.bind(null,`/bin/chown ${process.env['WWW_UID']}:${process.env['WWW_GROUP']} ${homeDir}${path$$1}.gzip`))
-;
-  
-          }
+        // 追加更新ファイル
+        files.forEach(path$$1=>{
+          pr = pr.then(compressGzip.bind(null,homeDir + path$$1));
         });
-        console.log(stdout);
+        // 削除ファイル
+        payload.removed.forEach(path$$1=>{
+          pr = pr.then(fs.promises.unlink.bind(null,homeDir + path$$1 + '.gzip'));
+        });
         return pr;
       })
       .catch((e)=>{console.log(`Error:${e}`);});

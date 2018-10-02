@@ -76,6 +76,7 @@ function handler(req,res){
             pr = pr.then(fs.promises.unlink.bind(null,homeDir + path + '.gzip'));
           });
         }
+        pr.then(()=>console.log('webhook process is end.'));
         return pr;
       })
       .catch((e)=>{console.log(`Error:${e}`);});

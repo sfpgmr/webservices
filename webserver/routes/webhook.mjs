@@ -57,7 +57,7 @@ function handler(req,res){
       res.end('{"ok":true}');
 
       exec('/usr/bin/git fetch --depth 1',opt)
-      .then(exec.bind(null,'/usr/bin/git reset --hard origin/master',opt))
+      .then(s=>exec('/usr/bin/git reset --hard origin/master',opt))
       .then(s=>{
         // 変更のあったファイルをgzip圧縮する
         let files = [...payload.added,...payload.modified];

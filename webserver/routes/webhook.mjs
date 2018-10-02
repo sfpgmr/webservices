@@ -73,10 +73,10 @@ function handler(req,res){
         // 削除ファイル
         if(payload.removed && payload.removed.length > 0){
           payload.removed.forEach(path=>{
-            pr = pr.then(fs.promises.unlink.bind(null,homeDir + path + '.gzip'));
+            pr = pr.then(fs.promises.unlink.bind(null,homeDir + path + '.gz'));
           });
         }
-        pr.then(()=>console.log('webhook process is end.'));
+        pr = pr.then(()=>console.log('webhook process is end.'));
         return pr;
       })
       .catch((e)=>{console.log(`Error:${e}`);});

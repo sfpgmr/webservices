@@ -1621,10 +1621,10 @@ function handler(req,res){
         // 削除ファイル
         if(payload.removed && payload.removed.length > 0){
           payload.removed.forEach(path$$1=>{
-            pr = pr.then(fs.promises.unlink.bind(null,homeDir + path$$1 + '.gzip'));
+            pr = pr.then(fs.promises.unlink.bind(null,homeDir + path$$1 + '.gz'));
           });
         }
-        pr.then(()=>console.log('webhook process is end.'));
+        pr = pr.then(()=>console.log('webhook process is end.'));
         return pr;
       })
       .catch((e)=>{console.log(`Error:${e}`);});

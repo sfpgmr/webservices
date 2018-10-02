@@ -60,23 +60,25 @@ function handler(req,res){
       .then(s=>exec('/usr/bin/git reset --hard origin/master',opt))
       .then(s=>{
         // 変更のあったファイルをgzip圧縮する
-        let files = [];
-
-        (payload.added && payload.added.length > 0) && (files.push(...payload.added));
-        (payload.modified && payload.modified.length > 0) && (files.push(...payload.modified));
-
+        let commits = payload.commits;
         let pr = Promise.resolve(0);
-        console.log(payload,files);
-        // 追加更新ファイル
-        files.forEach(path=>{
-          pr = pr.then(compressGzip.bind(null,homeDir + path));
-        });
-        // 削除ファイル
-        if(payload.removed && payload.removed.length > 0){
-          payload.removed.forEach(path=>{
-            pr = pr.then(fs.promises.unlink.bind(null,homeDir + path + '.gz'));
+        (commits.length > 0) && commits.forEach(commit=>{
+          let files = [];
+          (commit.added && commit.added.length > 0) && (files.push(...commit.added));
+          (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
+  
+          //console.log(commit,files);
+          // 追加更新ファイル
+          files.forEach(path=>{
+            pr = pr.then(compressGzip.bind(null,homeDir + path));
           });
-        }
+          // 削除ファイル
+          if(commit.removed && commit.removed.length > 0){
+            commit.removed.forEach(path=>{
+              pr = pr.then(fs.promises.unlink.bind(null,homeDir + path + '.gz'));
+            });
+          }
+        });
         pr = pr.then(()=>console.log('webhook process is end.'));
         return pr;
       })

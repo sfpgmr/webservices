@@ -58,7 +58,7 @@ function handler(req,res){
 
       exec('/usr/bin/git fetch --depth 1',opt)
       .then(exec.bind(null,'/usr/bin/git reset --hard origin/master',opt))
-      .then(()=>{
+      .then(s=>{
         // 変更のあったファイルをgzip圧縮する
         let files = [...payload.added,...payload.modified];
         let pr = Promise.resolve(0);

@@ -60,7 +60,11 @@ function handler(req,res){
       .then(s=>exec('/usr/bin/git reset --hard origin/master',opt))
       .then(s=>{
         // 変更のあったファイルをgzip圧縮する
-        let files = [...payload.added,...payload.modified];
+        let files = [];
+
+        payload.added.length > 0 &&  files.push(...payload.added);
+        payload.modified.length > 0 && files.push(...payload.modified);
+
         let pr = Promise.resolve(0);
         // 追加更新ファイル
         files.forEach(path=>{

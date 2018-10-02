@@ -1610,8 +1610,8 @@ function handler(req,res){
         // 変更のあったファイルをgzip圧縮する
         let files = [];
 
-        payload.added.length > 0 &&  files.push(...payload.added);
-        payload.modified.length > 0 && files.push(...payload.modified);
+        (payload.added && payload.added.length > 0) && (files.push(...payload.added));
+        (payload.modified && payload.modified.length > 0) && (files.push(...payload.modified));
 
         let pr = Promise.resolve(0);
         // 追加更新ファイル

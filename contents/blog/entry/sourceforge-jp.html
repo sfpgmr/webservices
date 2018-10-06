@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<head>
+
+<meta charset="UTF-8" />
+<title>S.F. Blog:ソースコード</title>
+<link rel="amphtml" href="https://www.sfpgmr.net/blog/entry/sourceforge-jp.amp.html" />
+<link rel="alternate" type="application/atom+xml" title="S.F. Blog" href="/blog/feed.xml" />
+
+
+<meta name="description" content="..." />
+<meta name="keywords" content="menu" /> 	
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta itemprop="image" content="https://www.sfpgmr.net/img/sfblog.png" />
+<meta itemprop="name" content="ソースコード" />
+
+
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:site" content="@sfpgmr" />
+<meta name="twitter:url" content="https://www.sfpgmr.net/blog/entry/sourceforge-jp.html" />
+<meta name="twitter:title" content="ソースコード" />
+<meta name="twitter:description" content="......" />
+<meta name="twitter:image" content="https://www.sfpgmr.net/img/sf.png" />
+
+<meta property="og:type" content="article">
+<meta property="og:url" content="https://www.sfpgmr.net/blog/entry/sourceforge-jp.html" />
+<meta property="og:title" content="ソースコード" />
+<meta property="og:site_name" content="S.F. Blog" />
+<meta property="og:description" content="...">
+<meta property="og:image" content="https://www.sfpgmr.net/img/sf.png">
+
+<script src="//cdnjs.cloudflare.com/ajax/libs/d3/4.4.1/d3.min.js"></script>
+<script src="/blog/js/d3.layout.cloud.js"></script>
+<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
+<link rel="stylesheet" type="text/css" media="all" href="/blog/css/sfblogstyle.css" />
+<link rel="icon" href="/img/sfblog-icon.png" />
+<link rel="apple-touch-icon" sizes="64x64" href="/img/sfblog-icon.png">
+<script type="text/javascript">
+    if (!window.location.hostname.match(/localhost/)) {
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-15457703-9', 'auto');
+        ga('send', 'pageview');
+    }
+</script>
+
+<script type="application/ld+json">
+{
+ "@context": {
+  "@vocab": "http://schema.org/",
+  "@base": "https://blog.sfpgmr.net/",
+  "sf": "https://www.sfpgmr.net/"
+ },
+ "@type": "BlogPosting",
+ "@id": "https://www.sfpgmr.net/blog/entry/sourceforge-jp.html",
+ "mainEntityOfPage": {
+  "@type": "WebPage",
+  "@id": "https://www.sfpgmr.net/blog/"
+ },
+ "url": "https://www.sfpgmr.net/blog/entry/sourceforge-jp.html",
+ "keywords": "menu",
+ "about": "",
+ "author": {
+  "@id": "https://www.sfpgmr.net/profile.html#sfpgmr"
+ },
+ "image": {
+  "@type": "ImageObject",
+  "url": "https://www.sfpgmr.net/img/sf.png",
+  "width": "128",
+  "height": "128"
+ },
+ "publisher": {
+  "@type": "Organization",
+  "name": "SFPGMR",
+  "logo": {
+   "@type": "ImageObject",
+   "url": "https://www.sfpgmr.net/img/sfblog.png",
+   "width": "640",
+   "height": "640"
+  }
+ },
+ "datePublished": "2012-07-29T06:07:36+09:00",
+ "dateModified": "2017-11-15T21:58:42+09:00",
+ "headline": "ソースコード",
+ "description": "..."
+}
+</script>
+<script type="application/ld+json">
+{
+ "@context": {
+  "@vocab": "http://schema.org/",
+  "@base": "https://blog.sfpgmr.net/",
+  "sf": "https://www.sfpgmr.net/"
+ },
+ "@type": "Blog",
+ "url": "https://www.sfpgmr.net/blog/",
+ "headline": "S.F. Blog",
+ "name": "S.F. Blog",
+ "about": "IT技術や音楽に関する制作物の公開、情報発信を行っています。",
+ "keywords": "Programming,Music,C++,DirectX,HTML5,WebGL,javascript,WebAudio",
+ "author": {
+  "@type": "Person",
+  "@id": "https://www.sfpgmr.net/profile.html#sfpgmr",
+  "name": "Satoshi Fujiwara",
+  "image": {
+   "@type": "ImageObject",
+   "url": "https://www.sfpgmr.net/img/sf.png",
+   "width": "128",
+   "height": "128"
+  },
+  "alternateName": "SFPGMR"
+ },
+ "publisher": {
+  "@type": "Organization",
+  "name": "SFPGMR"
+ }
+}
+</script>
+
+</head>
+<body dir="ltr" style="text-align:left;">
+
+<nav class="main-nav" data-sf-name="main" >
+    <div class="nav-header">
+    <!--
+    <button class="nav-button" data-sf-target="main">
+      <svg width="32" height="32" viewbox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+      <g>
+        <line  id="svg_3" y2="8.750003" x2="26.249993" y1="8.750003" x1="5.750022" fill-opacity="null" stroke-opacity="null" stroke-width="4" stroke="#fff" fill="none"/>
+        <line  id="svg_4" y2="16.749992" x2="26.249993" y1="16.749992" x1="5.750022" fill-opacity="null" stroke-opacity="null" stroke-width="4" stroke="#fff" fill="none"/>
+        <line  id="svg_5" y2="24.749981" x2="26.249993" y1="24.749981" x1="5.750022" fill-opacity="null" stroke-opacity="null" stroke-width="4" stroke="#fff" fill="none"/>
+      </g>
+    </svg>
+    </button>
+    -->
+    <div class="nav-title"><a  class="nav-item" href="/blog/" >S.F. Blog</a></div>
+    </div>
+    <ul class="nav-items nav-display-default">
+    <li><a class="nav-item nav-icon" href="/blog/archive/" title="Archive">
+      <svg viewBox="0 0 14 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g stroke="none" stroke-width="1" fill-rule="evenodd">
+              <g id="calendar">
+                  <path d="M13,2 L12,2 L12,3.5 C12,3.78 11.78,4 11.5,4 L9.5,4 C9.22,4 9,3.78 9,3.5 L9,2 L6,2 L6,3.5 C6,3.78 5.78,4 5.5,4 L3.5,4 C3.22,4 3,3.78 3,3.5 L3,2 L2,2 C1.45,2 1,2.45 1,3 L1,14 C1,14.55 1.45,15 2,15 L13,15 C13.55,15 14,14.55 14,14 L14,3 C14,2.45 13.55,2 13,2 L13,2 Z M13,14 L2,14 L2,5 L13,5 L13,14 L13,14 Z M5,3 L4,3 L4,1 L5,1 L5,3 L5,3 Z M11,3 L10,3 L10,1 L11,1 L11,3 L11,3 Z M6,7 L5,7 L5,6 L6,6 L6,7 L6,7 Z M8,7 L7,7 L7,6 L8,6 L8,7 L8,7 Z M10,7 L9,7 L9,6 L10,6 L10,7 L10,7 Z M12,7 L11,7 L11,6 L12,6 L12,7 L12,7 Z M4,9 L3,9 L3,8 L4,8 L4,9 L4,9 Z M6,9 L5,9 L5,8 L6,8 L6,9 L6,9 Z M8,9 L7,9 L7,8 L8,8 L8,9 L8,9 Z M10,9 L9,9 L9,8 L10,8 L10,9 L10,9 Z M12,9 L11,9 L11,8 L12,8 L12,9 L12,9 Z M4,11 L3,11 L3,10 L4,10 L4,11 L4,11 Z M6,11 L5,11 L5,10 L6,10 L6,11 L6,11 Z M8,11 L7,11 L7,10 L8,10 L8,11 L8,11 Z M10,11 L9,11 L9,10 L10,10 L10,11 L10,11 Z M12,11 L11,11 L11,10 L12,10 L12,11 L12,11 Z M4,13 L3,13 L3,12 L4,12 L4,13 L4,13 Z M6,13 L5,13 L5,12 L6,12 L6,13 L6,13 Z M8,13 L7,13 L7,12 L8,12 L8,13 L8,13 Z M10,13 L9,13 L9,12 L10,12 L10,13 L10,13 Z" ></path>
+              </g>
+          </g>
+      </svg>
+    </a></li>
+    <li><a class="nav-item nav-icon" href="/blog/archive/category/" title="Category">
+      <svg viewBox="0 0 14 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g stroke="none" stroke-width="1" fill-rule="evenodd">
+              <g id="file-directory" >
+                  <path d="M13,4 L7,4 L7,3 C7,2.34 6.69,2 6,2 L1,2 C0.45,2 0,2.45 0,3 L0,13 C0,13.55 0.45,14 1,14 L13,14 C13.55,14 14,13.55 14,13 L14,5 C14,4.45 13.55,4 13,4 L13,4 Z M6,4 L1,4 L1,3 L6,3 L6,4 L6,4 Z"></path>
+              </g>
+          </g>
+      </svg>    
+    </a></li>
+    <li><a class="nav-item nav-icon" href="/blog/feed.xml" title="RSS Feed">
+      <svg viewBox="0 0 10 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g stroke="none" stroke-width="1" fill-rule="evenodd">
+              <g id="rss">
+                  <path d="M2,13 L0,13 L0,11 C1.11,11 2,11.89 2,13 L2,13 Z M0,3 L0,4 C4.97,4 9,8.03 9,13 L10,13 C10,7.48 5.52,3 0,3 L0,3 Z M0,7 L0,8 C2.75,8 5,10.25 5,13 L6,13 C6,9.69 3.31,7 0,7 L0,7 Z"></path>
+              </g>
+          </g>
+      </svg>
+    </a>
+    </li>
+    <li><a class="nav-item nav-icon" href="https://www.sfpgmr.net/blog/entry/sourceforge-jp.amp.html" title="AMP Page">
+        <svg viewBox="0 0 10 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <g stroke="none" stroke-width="1" fill-rule="evenodd">
+            <g id="zap">
+                <polygon points="10 7 6 7 9 0 0 9 4 9 1 16"></polygon>
+            </g>
+        </g>
+    </svg>
+    </a></li>
+    <li><a class="nav-item nav-icon" href="/" title="Home Page">
+      <svg viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <!-- Generator: Sketch 40.3 (33839) - http://www.bohemiancoding.com/sketch -->
+          <g stroke="none" stroke-width="1" fill-rule="evenodd">
+              <g id="home" >
+                  <path d="M16,9 L13,6 L13,2 L11,2 L11,4 L8,1 L0,9 L2,9 L3,14 C3,14.55 3.45,15 4,15 L12,15 C12.55,15 13,14.55 13,14 L14,9 L16,9 L16,9 Z M12,14 L9,14 L9,10 L7,10 L7,14 L4,14 L2.81,7.69 L8,2.5 L13.19,7.69 L12,14 L12,14 Z"></path>
+              </g>
+          </g>
+      </svg>
+    </a></li>
+    <li><a class="nav-item nav-icon" href="#" title="about">
+      <svg viewBox="0 0 14 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+          <g stroke="none" stroke-width="1" fill-rule="evenodd">
+              <g id="info" >
+                  <path d="M6.3,5.69 C6.11,5.5 6.02,5.27 6.02,4.99 C6.02,4.71 6.11,4.47 6.3,4.29 C6.49,4.11 6.72,4.01 7,4.01 C7.28,4.01 7.52,4.1 7.7,4.29 C7.88,4.48 7.98,4.71 7.98,4.99 C7.98,5.27 7.89,5.51 7.7,5.69 C7.51,5.87 7.28,5.99 7,5.99 C6.72,5.99 6.48,5.88 6.3,5.69 L6.3,5.69 Z M8,7.99 C7.98,7.74 7.89,7.51 7.69,7.3 C7.49,7.11 7.27,7 7,6.99 L6,6.99 C5.73,7.01 5.52,7.12 5.31,7.3 C5.11,7.5 5.01,7.74 5,7.99 L6,7.99 L6,10.99 C6.02,11.26 6.11,11.49 6.31,11.68 C6.51,11.88 6.73,11.99 7,11.99 L8,11.99 C8.27,11.99 8.48,11.88 8.69,11.68 C8.89,11.49 8.99,11.26 9,10.99 L8,10.99 L8,7.98 L8,7.99 Z M7,2.3 C3.86,2.3 1.3,4.84 1.3,7.98 C1.3,11.12 3.86,13.68 7,13.68 C10.14,13.68 12.7,11.13 12.7,7.98 C12.7,4.83 10.14,2.29 7,2.29 L7,2.3 Z M7,0.98 C10.86,0.98 14,4.12 14,7.98 C14,11.84 10.86,14.98 7,14.98 C3.14,14.98 0,11.86 0,7.98 C0,4.1 3.14,0.98 7,0.98 L7,0.98 Z"></path>
+              </g>
+          </g>
+      </svg>
+    </a></li>
+    </ul>
+</nav>
+
+<header class="header">
+<h1>ソースコード</h1>
+<div class="post-header" >
+<div>
+  <span class="sf-date">公開：<a href="/blog/archive/2012.html">2012</a>-07-29 06:07</span><br/>
+  <span class="sf-date">更新：2017-11-15 21:58</span>
+</div>
+</div>
+  
+<div>カテゴリ:<a href="/blog/archive/category/menu.html">menu</a></div>
+</header>
+<main>
+<aside>
+<!-- sf-blog-20170728 -->
+<ins class="adsbygoogle ad"
+     style="display:block"
+     data-ad-client="ca-pub-4402137407996189"
+     data-ad-slot="6612284040"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</aside>
+<article class="item">
+  
+</article>
+<aside>
+<!-- sf-blog-20170728 -->
+<ins class="adsbygoogle ad"
+     style="display:block"
+     data-ad-client="ca-pub-4402137407996189"
+     data-ad-slot="6612284040"
+     data-ad-format="auto"></ins>
+<script>
+(adsbygoogle = window.adsbygoogle || []).push({});
+</script>
+
+</aside>
+</main>
+<footer style="text-align:center;">
+<small>Copylight &copy; 2017 Satoshi Fujiwara. </small>
+</footer>
+
+<nav class="footer">
+
+
+<a class="nav-item nav-icon" href="/blog/entry/blog%E3%83%88%E3%83%83%E3%83%97.html" title="previous">
+
+<svg viewBox="0 0 8 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="chevron-left">
+            <polygon points="5.5 3 7 4.5 3.25 8 7 11.5 5.5 13 0.5 8"></polygon>
+        </g>
+    </g>
+</svg>
+
+</a>
+
+<div id="scroll-top" class="nav-item nav-icon" title="scroll top">
+<svg viewBox="0 0 12 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="triangle-up">
+            <polygon points="12 11 6 5 0 11"></polygon>
+        </g>
+    </g>
+</svg>
+</div>
+
+
+<a class="nav-item nav-icon" href="/blog/entry/the-windows-runtime-library-wrl-developing-windows-8-metro-style-apps-with-c-channel-9.html" title="next">
+
+<svg viewBox="0 0 8 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <g stroke="none" stroke-width="1" fill-rule="evenodd">
+        <g id="chevron-right" >
+            <polygon points="7.5 8 2.5 13 1 11.5 4.75 8 1 4.5 2.5 3"></polygon>
+        </g>
+    </g>
+</svg>
+
+</a>
+
+</nav>
+
+<script src="/blog/js/sfblogstyle.js" ></script>
+</body>
+</html>

@@ -7,10 +7,10 @@ const extention = '.amp.html';
 <!DOCTYPE html>
 <html AMP lang="ja" itemscope itemtype="http://schema.org/Article" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 <head>
-<%- include('template-blog-amp-head.ejs',{params:params}); %>
+<%- include('./template-blog-amp-head.ejs',{params:params}); %>
 </head>
 <body>
-<%- include('template-blog-amp-nav-header.ejs',{params:params}); %>
+<%- include('./template-blog-amp-nav-header.ejs',{params:params}); %>
 <header class="header">
 <h1><%-blogPosting.headline%></h1>
 <div class="post-header" >
@@ -50,7 +50,7 @@ const extention = '.amp.html';
 <footer>
 <small>Copylight &copy; 2017 Satoshi Fujiwara. </small>
 </footer>
-<%- include('template-blog-amp-nav-footer.ejs',{params:params}); %>
+<%- include('./template-blog-amp-nav-footer.ejs',{params:params}); %>
 <%- include('./template-blog-amp-ga.ejs') %>
 </body>
 </html>

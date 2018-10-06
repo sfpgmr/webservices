@@ -740,8 +740,9 @@ async function update() {
   }
 
   // git -add
-  await exec('git fetch --quiet');
-  await spawn('git', ['add', '--all']);
+  const opt = {cwd:blogConfig.mdDir};
+  await exec('git fetch --quiet',opt);
+  await spawn('git', ['add', '--all'],opt);
 
   // 差分情報の抽出
   let o = await spawn('git', ['--no-pager', 'diff', 'HEAD', '-C','-M','--name-status', '--relative=' + blogConfig.repoMdDir]);
@@ -857,9 +858,14 @@ async function update() {
     await generateSiteMap(entries, [], archiveDate);
     await fs.writeFile(blogConfig.entriesPath, JSON.stringify(entries), 'utf-8');
     if(blogConfig.pushAutomatic){
-      await spawn('git', ['add', '--all']);
-      await exec('git --no-pager commit -m "update content" --quiet');
-      await exec('git --no-pager push -f --quiet');
+      const optDest = {cwd:blogConfig.destBasePath};
+      await spawn('git', ['add', '--all'],optDest);
+      await exec('git --no-pager commit -m "update content" --quiet',optDest);
+      await exec('git --no-pager push -f --quiet',optDest);
+
+      await spawn('git', ['add', '--all'],opt);
+      await exec('git --no-pager commit -m "update content" --quiet',opt);
+      await exec('git --no-pager push -f --quiet',opt);
     }
   }
 }
@@ -982,7 +988,7 @@ async function create() {
   if(blogConfig.pushAutomatic){
     try {
       await spawn('git', ['add', '--all']);
-      await exec('git --no-pager commit -m "update content" --quiet');
+      await exec('git --no-pager commit -m "update content" --quiet',{cwd});
       await exec('git --no-pager push -f --quiet');
       await exec('git gc --quiet');
       await exec('git prune');

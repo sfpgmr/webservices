@@ -1,20 +1,26 @@
 "use strict";
 const md = require('./md-to-html3');
 // カレント作業ディレクトリの強制
-process.chdir(require('path').resolve(__dirname,'../'));
+process.chdir(require('path').resolve(__dirname, '../'));
 
-(()=>{
-  switch (process.argv[2]){
-  case 'create':
-    return md.create();
-  case 'update':
-    return md.update();
-  case 'reset':
-    return md.reset();
-  case 'archiveTest':
-    return md.archiveTest();
+(async () => {
+  try {
+    switch (process.argv[2]) {
+      case 'create':
+        await md.create();
+        break;
+      case 'update':
+        await md.update();
+        break;
+      case 'reset':
+        await md.reset();
+        break;
+      case 'archiveTest':
+        await md.archiveTest();
+        break;
+    }
+  } catch (e) {
+    console.error(e, e.stack);
   }
-})().catch(e=>{
-  console.error(e,e.stack);
-});
+})();
 

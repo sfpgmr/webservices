@@ -32,7 +32,6 @@
     "feed": "^1.1.0",
     "fs-extra": "^3.0.1",
     "github-webhook-handler": "^0.6.0",
-    "hatena-blog-api2": "git+https://github.com/sfpgmr/node-hatena-blog-api2.git",
     "highlight.js": "^9.12.0",
     "iconv-lite": "^0.4.18",
     "image-size": "^0.6.1",
@@ -43,6 +42,7 @@
     "request": "^2.88.0",
     "request-promise-native": "^1.0.5",
     "socket.io": "^2.2.0",
+    "sqlite3": "^4.0.6",
     "xmlrpc": "^1.3.2"
   }
 }

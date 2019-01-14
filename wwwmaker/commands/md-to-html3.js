@@ -137,7 +137,6 @@ function makeDescription(content)
 //// blogPosting情報の更新と.mdファイルのアップデート
 async function updateBlogPosting(mdPath,content,blogPosting,postAttr){
   let isContentUpdated = false;
-  // 新規
 
   if (!postAttr.blogPosting.datePublished) {//現在日付を埋め込む
     isContentUpdated = true;

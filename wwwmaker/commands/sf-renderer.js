@@ -311,14 +311,14 @@ async function codeWithIframe({srcPath,amp = false,iframe = true,thumbnail,width
   //  regpath = /\.(js|html|css|json|txt|md)$/;
   //}
 
-  function listFile(dir) {
+  async function listFile(dir) {
     // .mdディレクトリを再帰的に検索する
-    let dirs = fs.readdirSync(config.destEjsDir + dir);
-    dirs.forEach((d) => {
-      let p = path.normalize(config.destEjsDir + dir + d);
+    let dirs = fs.readdirSync(config.wwwRootDir + dir);
+    for(const d of dirs){
+      let p = path.normalize(config.wwwRootDir + d);
       let stats = fs.statSync(p);
       if (stats.isDirectory()) {
-        listFile(dir + d + '/');
+        await listFile(dir + d + '/');
       } else if (stats.isFile() && d.match(regpath)) 
       {
         filePaths.push(Object.assign({filePath:p,wwwpath:dir + d},path.parse(p)));
@@ -327,9 +327,10 @@ async function codeWithIframe({srcPath,amp = false,iframe = true,thumbnail,width
       if(stats.isFile() && (/index-thumbnail/i).test(d)){
         index_thumbnail = dir + d;
       }      
-    });
+    };
   }
-  listFile(srcPath);
+
+  await listFile(srcPath);
 
   if(index_thumbnail && !thumbnail) thumbnail = index_thumbnail;
 
@@ -381,7 +382,7 @@ async function img({srcPath,amp = false}){
       const url = new URL(p);
       imgObj = await request({uri:url,encoding: null});
     } else {
-      p = config.destEjsDir + p.substr(1);
+      p = config.wwwRootDir + p.substr(1);
       imgObj = await fs.readFile(p);
     }
   }

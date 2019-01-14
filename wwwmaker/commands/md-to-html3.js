@@ -168,7 +168,7 @@ async function updateBlogPosting(mdPath,content,blogPosting,postAttr){
     postAttr.blogPosting.url = blogPosting.url = blogPosting.url.replace(/\.\w*?$/ig,'');
   }
 
-  const contentPath = blogConfig.destEjsDir + (new URL(blogPosting.url)).pathname;
+  const contentPath = blogConfig.destEjsDir + (new URL(blogPosting.url)).pathname.replace(/\/blog/i,'');
 
   if (blogPosting.datePublished != 'draft') {
   //      var {bodyContent,ampBodyContent} = await generateContent(tokens);
@@ -328,7 +328,7 @@ async function generateArchive(docs, archiveDate,updatedDocs) {
   let first = false;
   // 年毎のアーカイブリストを作成
   for (const [year, d] of articlesPerYear) {
-    const basePath = blogConfig.destEjsDir + blogConfig.siteBlogRoot + blogConfig.archiveDir;
+    const basePath = blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot */+ blogConfig.archiveDir;
     const path = basePath + year;
 
     let nextURL = null, prevURL = null;
@@ -380,10 +380,10 @@ async function generateArchive(docs, archiveDate,updatedDocs) {
         blogPosting.keywords = config['sf:blogConfig'].Blog.keywords;
   
   
-        await fs.outputFile(blogConfig.destEjsDir + blogConfig.siteBlogRoot + 'index.html', listTemplate({ params: { blogPosts: d.blogPosts, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: nextURL, prevURL: prevURL,toppage:true } }), 'utf-8');
+        await fs.outputFile(blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + 'index.html', listTemplate({ params: { blogPosts: d.blogPosts, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: nextURL, prevURL: prevURL,toppage:true } }), 'utf-8');
   
         // AMP
-        await fs.outputFile(blogConfig.destEjsDir + blogConfig.siteBlogRoot + 'index.amp.html', ampListTemplate({ params: { blogPosts: d.blogPosts, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: nextURL, prevURL: prevURL,toppage:true } }), 'utf-8');
+        await fs.outputFile(blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + 'index.amp.html', ampListTemplate({ params: { blogPosts: d.blogPosts, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: nextURL, prevURL: prevURL,toppage:true } }), 'utf-8');
         // sitemap用データ
         // siteMapUrls.push({
         //   url: blogConfig.siteUrl + blogConfig.siteBlogRoot + 'index.html',
@@ -407,7 +407,7 @@ async function generateArchive(docs, archiveDate,updatedDocs) {
   // archiveのインデックスファイルを生成する
   
   // normal
-  const blogPostingUrl = blogConfig.siteUrl + blogConfig.siteBlogRoot + blogConfig.archiveDir + 'index';
+  const blogPostingUrl = blogConfig.siteUrl /*+ blogConfig.siteBlogRoot*/ + blogConfig.archiveDir + 'index';
  
   blogPosting = Object.assign(blogPosting, {
     '@id': blogPostingUrl,
@@ -418,10 +418,10 @@ async function generateArchive(docs, archiveDate,updatedDocs) {
     'url': blogPostingUrl
   });
 
-  await fs.outputFile(blogConfig.destEjsDir + blogConfig.siteBlogRoot + blogConfig.archiveDir + 'index.html', listTemplateIndex({ params: { blogPosts: archiveIndex, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: null, prevURL: null } }), 'utf-8');
+  await fs.outputFile(blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + blogConfig.archiveDir + 'index.html', listTemplateIndex({ params: { blogPosts: archiveIndex, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: null, prevURL: null } }), 'utf-8');
 
   // AMP
-  await fs.outputFile(blogConfig.destEjsDir + blogConfig.siteBlogRoot + blogConfig.archiveDir + 'index.amp.html', ampListTemplateIndex({ params: { blogPosts: archiveIndex, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: null, prevURL: null } }), 'utf-8');
+  await fs.outputFile(blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + blogConfig.archiveDir + 'index.amp.html', ampListTemplateIndex({ params: { blogPosts: archiveIndex, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: null, prevURL: null } }), 'utf-8');
 
   // // sitemap用データ
   // siteMapUrls.push({
@@ -496,7 +496,7 @@ async function generateKeywords(docs, archiveDate,updatedDocs) {
   let keywords = [];
   for (const [keyword, d] of docsPerKeyword) {
     const encodedKeyword = encodeURIComponent(keyword);
-    const path = blogConfig.destEjsDir + blogConfig.siteBlogRoot + blogConfig.archiveCategoryDir + encodedKeyword;
+    const path = blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + blogConfig.archiveCategoryDir + encodedKeyword;
     let nextURL = null, prevURL = null;
     let { value, done } = itNext.next();
     if (!done) {
@@ -569,7 +569,7 @@ async function generateKeywords(docs, archiveDate,updatedDocs) {
   });
 
   // normal
-  const archiveTemplateUrl = blogConfig.destEjsDir + blogConfig.siteBlogRoot + blogConfig.archiveCategoryDir;
+  const archiveTemplateUrl = blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + blogConfig.archiveCategoryDir;
   await fs.outputFile(archiveTemplateUrl + 'index.html', archiveTemplate({ params: { keywords: keywords, blogConfig: blogConfig, URL: URL, config: config, blogPosting: blogPosting, nextURL: null, prevURL: null } }), 'utf-8');
 
   // AMP
@@ -621,7 +621,7 @@ async function generateSiteMap(docs, urls) {
       }
     );
   }
-  const outPath = blogConfig.destEjsDir + blogConfig.siteBlogRoot + 'sitemap.xml';
+  const outPath = blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + 'sitemap.xml';
   await fs.outputFile(outPath, sitemap.toString(), 'utf-8');
   await compressGzip(outPath);
 
@@ -676,7 +676,7 @@ async function generateAtom(docs) {
     });
   }
 
-  await fs.outputFile(blogConfig.destEjsDir + blogConfig.siteBlogRoot + 'feed.xml', feed.atom1(), 'utf-8');
+  await fs.outputFile(blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + 'feed.xml', feed.atom1(), 'utf-8');
 }
 
 /**コンテンツのパース */
@@ -929,7 +929,7 @@ async function create() {
     const doc = entries[i];
     console.log(`${doc.mdPath}を処理中`);
     doc.index = i;
-    //console.log('output:' + doc.contentPath);
+    console.log('output:' + doc.contentPath);
     const prevURL = i == 0 ? null : toRelative(entries[i - 1].blogPosting.url);
     const nextURL = i == (e - 1) ? null : toRelative(entries[i + 1].blogPosting.url);
     // content 
@@ -987,7 +987,7 @@ async function create() {
   if(blogConfig.pushAutomatic){
     try {
       await spawn('git', ['add', '--all']);
-      await exec('git --no-pager commit -m "update content" --quiet',{cwd});
+      await exec('git --no-pager commit -m "update content" --quiet',{cwd:blogConfig.destBasePath});
       await exec('git --no-pager push -f --quiet');
       await exec('git gc --quiet');
       await exec('git prune');
@@ -1010,7 +1010,7 @@ async function reset() {
   }
   // コンテンツディレクトリの内容を削除
   await fs.remove(path.normalize(blogConfig.destEjsDir + blogConfig.siteContentPath));
-  await fs.remove(path.normalize(blogConfig.destEjsDir + blogConfig.siteBlogRoot + blogConfig.archiveDir));
+  await fs.remove(path.normalize(blogConfig.destEjsDir /*+ blogConfig.siteBlogRoot*/ + blogConfig.archiveDir));
   // 再構築
   return create();
 }

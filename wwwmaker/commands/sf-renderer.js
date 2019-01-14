@@ -311,26 +311,25 @@ async function codeWithIframe({srcPath,amp = false,iframe = true,thumbnail,width
   //  regpath = /\.(js|html|css|json|txt|md)$/;
   //}
 
-  async function listFile(dir) {
+  function listFile(dir) {
     // .mdディレクトリを再帰的に検索する
     let dirs = fs.readdirSync(config.wwwRootDir + dir);
-    for(const d of dirs){
-      let p = path.normalize(config.wwwRootDir + d);
+    dirs.forEach(d=>{
+      let p = path.normalize(config.wwwRootDir + dir + d);
       let stats = fs.statSync(p);
       if (stats.isDirectory()) {
-        await listFile(dir + d + '/');
+        listFile(dir + d + '/');
       } else if (stats.isFile() && d.match(regpath)) 
       {
         filePaths.push(Object.assign({filePath:p,wwwpath:dir + d},path.parse(p)));
-
       }
       if(stats.isFile() && (/index-thumbnail/i).test(d)){
         index_thumbnail = dir + d;
       }      
-    };
+    });
   }
 
-  await listFile(srcPath);
+  listFile(srcPath);
 
   if(index_thumbnail && !thumbnail) thumbnail = index_thumbnail;
 

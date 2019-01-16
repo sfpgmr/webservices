@@ -8,8 +8,10 @@ import tumblerRouter from './routes/tumblr.mjs';
 import webhookRouter from './routes/webhook.mjs';
 import xhub from 'express-x-hub';
 import fs from 'fs';
-
+//import http2 from 'http2';
+//import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
+//app.use(expressHTTP2Workaround({express:express,http2:http2 }));
 const staticOpts = {
   extensions:['html','htm'],
   indexFromEmptyFile:true

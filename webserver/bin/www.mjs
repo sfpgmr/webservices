@@ -7,10 +7,12 @@ import ScoreServer from './ScoreServer.mjs';
 //import {debug as debug_} from 'debug';
 //debug = debug_('webserver:server');
 import http2 from 'spdy';
+//import http2 from 'http2';
 import http from 'http';
 import fs from 'fs';
 
 const keys = JSON.parse(fs.readFileSync('/var/www/node/keys/webserver/keys.json'));
+
 
 /**
  * Get port from environment and store in Express.

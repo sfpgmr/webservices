@@ -24,7 +24,7 @@ app.enable('strict routing');
 
 app.use(logger('combined'));
 
-app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync('/var/www/node/keys/webhook/secret','utf-8').trim() }));
+app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync('~/www/node/keys/webhook/secret','utf-8').trim() }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -39,12 +39,12 @@ app.use(function(req, res, next) {
   }
 });
 app.use('/metrop/',expressStaticGzip('../metrop/html/',staticOpts));
-app.use('/images/',expressStaticGzip('/var/www/images/',staticOpts));
-app.use('/blog/',expressStaticGzip('/var/www/blog/',staticOpts));
-app.use('/content/',expressStaticGzip('/var/www/images/content',staticOpts));
+app.use('/images/',expressStaticGzip('~/www/images/',staticOpts));
+app.use('/blog/',expressStaticGzip('~/www/blog/',staticOpts));
+app.use('/content/',expressStaticGzip('~/www/images/content',staticOpts));
 
-app.use('/javascripts/',expressStaticGzip('/var/www/node/webserver/public/javascripts/',staticOpts));
-app.use('/stylesheets/',expressStaticGzip('/var/www/node/webserver/public/stylesheets/',staticOpts));
+app.use('/javascripts/',expressStaticGzip('~/www/node/webserver/public/javascripts/',staticOpts));
+app.use('/stylesheets/',expressStaticGzip('~/www/node/webserver/public/stylesheets/',staticOpts));
 
 
 //app.use('/', indexRouter);
@@ -54,7 +54,7 @@ app.use('/tumblr/',tumblerRouter);
 //app.use('/webhook',webhookRouter);
 app.use('/webhook/',webhookRouter);
 
-app.use('/',expressStaticGzip('/var/www/html/contents/'));
+app.use('/',expressStaticGzip('~/www/html/contents/'));
 
 
 // catch 404 and forward to error handler

@@ -9,8 +9,8 @@ import {exec as exec_} from 'child_process';
 import util from 'util';
 
 const exec = util.promisify(exec_);
-const homeDir = '/var/www/html/';
-const opt = {cwd:'/var/www/html'};
+const homeDir = '~/www/html/';
+const opt = {cwd:'~/www/html'};
 
 function handler(req,res){
   

@@ -11,7 +11,7 @@ import http2 from 'spdy';
 import http from 'http';
 import fs from 'fs';
 
-const keys = JSON.parse(fs.readFileSync('/var/www/node/keys/webserver/keys.json'));
+const keys = JSON.parse(fs.readFileSync('~/www/node/keys/webserver/keys.json'));
 
 
 /**

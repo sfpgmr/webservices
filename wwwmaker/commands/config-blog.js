@@ -1,11 +1,19 @@
+const os = require('os');
+const path = require('path');
+function resolveHome(filepath) {
+    if (filepath[0] === '~') {
+        return path.join(os.homedir(), filepath.slice(1));
+    }
+    return filepath;
+}
 module.exports = {
   srcJsDir: './src/blog/js/',
   srcNodeDir: './src/node/',
   srcEjsDir: './src/blog/ejs/',
   srcCssDir: './src/blog/css/',
-  destBasePath: '/var/www/blog',
-  destEjsDir: '/var/www/blog/',
-  wwwRootDir: '/var/www/html/contents/',
+  destBasePath: resolveHome('~/www/blog'),
+  destEjsDir: resolveHome('~/www/blog/'),
+  wwwRootDir: resolveHome('~/www/html/contents/'),
   archiveDir:'archive/',
   archiveCategoryDir:'archive/category/',
  // mdDir: './data/blog/contents/',

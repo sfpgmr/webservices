@@ -47,12 +47,12 @@ const blog = config['sf:blogConfig'].Blog;
     </a>
     </li>
     <%
-     /* let brogPostingUrl = new URL(blogPosting.url);
-      if(brogPostingUrl.origin.match(new RegExp(blogConfig.siteDomain))){
-        blogPosting.url = blogPosting.url.replace(brogPostingUrl.origin,'');
-      }*/
+      var blogPostingUrl = new String(blogPosting.url);
+      if(blogPostingUrl.match(new RegExp(blogConfig.siteUrl))){
+        blogPostingUrl = blogPostingUrl.replace(blogConfig.siteUrl,'/');
+      }
     %>
-    <li><a class="nav-item nav-icon" href="<%-blogPosting.url%>.amp.html" title="AMP Page">
+    <li><a class="nav-item nav-icon" href="<%-blogPostingUrl%>.amp.html" title="AMP Page">
         <svg viewBox="0 0 10 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
         <g stroke="none" stroke-width="1" fill-rule="evenodd">
             <g id="zap">

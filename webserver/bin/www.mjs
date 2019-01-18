@@ -27,8 +27,8 @@ app.set('port', port);
  */
 
 const options = {
-  key:fs.readFileSync(keys.key),
-  cert:fs.readFileSync(keys.cert)
+  key:fs.readFileSync(resolveHome(keys.key)),
+  cert:fs.readFileSync(resolveHome(keys.cert))
 };
 
 keys.passphrase && (options.passphrase = keys.passphrase);

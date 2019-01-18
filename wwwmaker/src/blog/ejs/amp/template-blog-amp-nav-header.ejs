@@ -47,7 +47,14 @@ const blog = config['sf:blogConfig'].Blog;
       </svg>
     </a>
     </li>
-    <li><a class="nav-item nav-icon" href="<%-blogPosting.url.replace('.amp','')%>.html" title="Desktop Page">
+    <%
+      var blogPostingUrl = new String(blogPosting.url);
+      if(blogPostingUrl.match(new RegExp(blogConfig.siteUrl))){
+        blogPostingUrl = blogPostingUrl.replace(blogConfig.siteUrl,'/');
+      }
+      blogPostingUrl = blogPostingUrl.replace('.amp','');
+    %>
+    <li><a class="nav-item nav-icon" href="<%-blogPostingUrl%>.html" title="Desktop Page">
         <svg viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
             <g stroke="none" stroke-width="1" fill-rule="evenodd">
                 <g>

@@ -8,6 +8,7 @@ import tumblerRouter from './routes/tumblr.mjs';
 import webhookRouter from './routes/webhook.mjs';
 import xhub from 'express-x-hub';
 import fs from 'fs';
+import resolveHome from './resolveHome.mjs';
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
@@ -24,7 +25,7 @@ app.enable('strict routing');
 
 app.use(logger('combined'));
 
-app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync('~/www/node/keys/webhook/secret','utf-8').trim() }));
+app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -38,13 +39,13 @@ app.use(function(req, res, next) {
     next();
   }
 });
-app.use('/metrop/',expressStaticGzip('../metrop/html/',staticOpts));
-app.use('/images/',expressStaticGzip('~/www/images/',staticOpts));
-app.use('/blog/',expressStaticGzip('~/www/blog/',staticOpts));
-app.use('/content/',expressStaticGzip('~/www/images/content',staticOpts));
+app.use('/metrop/',expressStaticGzip(resolveHome('../metrop/html/'),staticOpts));
+app.use('/images/',expressStaticGzip(resolveHome('~/www/images/'),staticOpts));
+app.use('/blog/',expressStaticGzip(resolveHome('~/www/blog/'),staticOpts));
+app.use('/content/',expressStaticGzip(resolveHome('~/www/images/content'),staticOpts));
 
-app.use('/javascripts/',expressStaticGzip('~/www/node/webserver/public/javascripts/',staticOpts));
-app.use('/stylesheets/',expressStaticGzip('~/www/node/webserver/public/stylesheets/',staticOpts));
+app.use('/javascripts/',expressStaticGzip(resolveHome('~/www/node/webserver/public/javascripts/'),staticOpts));
+app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/public/stylesheets/'),staticOpts));
 
 
 //app.use('/', indexRouter);
@@ -54,7 +55,7 @@ app.use('/tumblr/',tumblerRouter);
 //app.use('/webhook',webhookRouter);
 app.use('/webhook/',webhookRouter);
 
-app.use('/',expressStaticGzip('~/www/html/contents/'));
+app.use('/',expressStaticGzip(resolveHome('~/www/html/contents/')));
 
 
 // catch 404 and forward to error handler

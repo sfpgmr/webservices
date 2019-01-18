@@ -1,8 +1,9 @@
-//var //app = require('express')()
+/~/ //app = require('express')()
   //, server = require('http').createServer(app)
    /*,*/
   
 import socket_io from 'socket.io';
+import resolveHome from '../resolveHome.mjs';
 //.listen(8081, {
   //   origins:['www.enoie.net:*','github.sfpgmr.net:*','www.sfpgmr.net:*'/*,'localhost:*'*/]
   // })
@@ -106,7 +107,7 @@ export default class ScoreServer {
 
   async readFile() {
     try{
-      this.highScores = JSON.parse(await fs.promises.readFile('/var/www/node/webserver/score.json', 'utf-8'));
+      this.highScores = JSON.parse(await fs.promises.readFile(resolveHome('~/www/node/webserver/score.json'), 'utf-8'));
     } catch (e) {
       console.log(e);
       this.highScores = [];
@@ -118,7 +119,7 @@ export default class ScoreServer {
   
   writeFile() {
     console.log('writeFile');
-    fs.writeFileSync('/var/www/node/webserver/score.json', JSON.stringify(this.highScores), 'utf-8');
+    fs.writeFileSync(resolveHome('~/www/node/webserver/score.json'), JSON.stringify(this.highScores), 'utf-8');
   }  
 }
 

@@ -10,8 +10,9 @@ import http2 from 'spdy';
 //import http2 from 'http2';
 import http from 'http';
 import fs from 'fs';
+import resolveHome from '../resolveHome.mjs';
 
-const keys = JSON.parse(fs.readFileSync('~/www/node/keys/webserver/keys.json'));
+const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/webserver/keys.json')));
 
 
 /**

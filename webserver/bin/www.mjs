@@ -21,6 +21,7 @@ const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/webserver/k
 
 const port = normalizePort(process.env.PORT || '443');
 app.set('port', port);
+const httpPort = normalizePort(process.env.HTTP_PORT || '80');
 
 /**
  * Create HTTP server.
@@ -100,7 +101,7 @@ function onError(error) {
 function onListening() 
 {
   console.log(process.env['WWW_UID']);
-  process.setuid(process.env['WWW_UID']);
+  process.setuid && process.setuid(process.env['WWW_UID']);
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
@@ -112,4 +113,4 @@ function onListening()
 http.createServer(function (req, res) {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
-}).listen(80);
+}).listen(httpPort);

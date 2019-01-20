@@ -15,6 +15,7 @@ const fs = require('fs-extra');
 const hljs = require('highlight.js');
 const path = require('path');
 const {escape,unescape} = require('./marked');
+const resolveHome = require('./resolveHome.js');
 
 // tex描画エンジン
 
@@ -34,10 +35,11 @@ function texRenderer(tex)
   });
 }
 
+const amazonIds = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/wwwmaker/amazon.json')));
 const opHelper = new OperationHelper({
-  awsId: process.env.AWSID,
-  awsSecret: process.env.AWSSECRET,
-  assocId: process.env.ASSOCID,
+  awsId: amazonIds.AWSID,
+  awsSecret: amazonIds.AWSSECRET,
+  assocId: amazonIds.ASSOCID,
   locale: 'JP'
 });
 

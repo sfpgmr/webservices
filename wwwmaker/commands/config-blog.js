@@ -11,6 +11,7 @@ module.exports = {
   srcNodeDir: './src/node/',
   srcEjsDir: './src/blog/ejs/',
   srcCssDir: './src/blog/css/',
+  destCssDir:'./src/blog/ejs/amp/',
   destBasePath: resolveHome('~/www/blog'),
   destEjsDir: resolveHome('~/www/blog/'),
   wwwRootDir: resolveHome('~/www/html/contents/'),

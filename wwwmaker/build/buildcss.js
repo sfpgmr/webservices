@@ -14,7 +14,7 @@ const mixin = require('postcss-mixins');
 const nested = require('postcss-nested');
 const simpleVars = require('postcss-simple-vars');
 const apply = require('postcss-apply');
-const cssnext = require('cssnext');
+const cssnext = require('postcss-preset-env');
 const config = require('../commands/config-blog');
 const fs = require('fs-extra');
 

@@ -169,6 +169,7 @@ async function updateBlogPosting(mdPath,content,blogPosting,postAttr){
   }
 
   const contentPath = blogConfig.destEjsDir + (new URL(blogPosting.url)).pathname.replace(/\/blog/i,'');
+  //console.log(contentPath);
 
   if (blogPosting.datePublished != 'draft') {
   //      var {bodyContent,ampBodyContent} = await generateContent(tokens);

@@ -1,11 +1,6 @@
 const os = require('os');
 const path = require('path');
-function resolveHome(filepath) {
-    if (filepath[0] === '~') {
-        return path.join(os.homedir(), filepath.slice(1));
-    }
-    return filepath;
-}
+const resolveHome = require('./resolveHome');
 module.exports = {
   srcJsDir: './src/blog/js/',
   srcNodeDir: './src/node/',
@@ -17,8 +12,8 @@ module.exports = {
   wwwRootDir: resolveHome('~/www/html/contents/'),
   archiveDir:'archive/',
   archiveCategoryDir:'archive/category/',
- // mdDir: './data/blog/contents/',
-  mdDir: './data/blog/test/',
+  mdDir: './data/blog/contents/',
+  //mdDir: './data/blog/test/',
   cacheDir: './data/blog/temp/cache/',
   imageCacheDir: 'image/',
   repoMdDir: 'wwwmaker/data/blog/contents/',

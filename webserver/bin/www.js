@@ -22,6 +22,7 @@ var Stream = _interopDefault(require('stream'));
 var util = _interopDefault(require('util'));
 var parseUrl = _interopDefault(require('parseurl'));
 var url = _interopDefault(require('url'));
+var os = _interopDefault(require('os'));
 var http = _interopDefault(require('http'));
 var express = _interopDefault(require('express'));
 var zlib = _interopDefault(require('zlib'));
@@ -1382,7 +1383,14 @@ function expressStaticGzip(rootFolder,options = {indexFromEmptyFile:true}) {
     }
 }
 
-const api_key = '1IMRT696rxEVD6buKj3lM78Wc0hd1sv9MpZ94lvWvrTBvG3cqa';
+function resolveHome(filepath) {
+    if (filepath[0] === '~') {
+        return path__default.join(os.homedir(), filepath.slice(1));
+    }
+    return filepath;
+}
+
+const  api_key = fs.readFileSync(resolveHome('~/www/node/keys/nodeweb1/api_key.json')).api_key;
 
 function getPosts(params, func, errFunc)
 {
@@ -1557,8 +1565,8 @@ router.get('/index.html', function(req, res, next) {
 const router$1 = express.Router();
 
 const exec = util.promisify(child_process.exec);
-const homeDir = '/var/www/html/';
-const opt = {cwd:'/var/www/html'};
+const homeDir = resolveHome('~/www/blog/');
+const opt = {cwd:resolveHome('~/www/blog')};
 
 function handler(req,res){
   
@@ -1581,7 +1589,7 @@ function handler(req,res){
       , id    = req.headers['x-github-delivery'];
 
   
-    if(event == 'push' && payload.repository.name === 'www'){
+    if(event == 'push' && payload.repository.name === 'blog'){
       console.log('プッシュイベントを受信:%s to %s',
       payload.repository.name,
       payload.ref);
@@ -1618,7 +1626,6 @@ function handler(req,res){
       })
       .catch((e)=>{console.log(`Error:${e}`);});
     }
-
 }
 
 function compressGzip(path$$1) {
@@ -1642,7 +1649,10 @@ router$1.use('/',(req,res,next)=>{
   handler(req,res);
 });
 
+//import http2 from 'http2';
+//import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
+//app.use(expressHTTP2Workaround({express:express,http2:http2 }));
 const staticOpts = {
   extensions:['html','htm'],
   indexFromEmptyFile:true
@@ -1655,7 +1665,7 @@ app.enable('strict routing');
 
 app.use(logger('combined'));
 
-app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync('/var/www/node/keys/webhook/secret','utf-8').trim() }));
+app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -1669,13 +1679,13 @@ app.use(function(req, res, next) {
     next();
   }
 });
-app.use('/metrop/',expressStaticGzip('../metrop/html/',staticOpts));
-app.use('/images/',expressStaticGzip('/var/www/images/',staticOpts));
-app.use('/blog/',expressStaticGzip('/var/www/blog/',staticOpts));
-app.use('/content/',expressStaticGzip('/var/www/images/content',staticOpts));
+app.use('/metrop/',expressStaticGzip(resolveHome('../metrop/html/'),staticOpts));
+app.use('/images/',expressStaticGzip(resolveHome('~/www/images/'),staticOpts));
+app.use('/blog/',expressStaticGzip(resolveHome('~/www/blog/'),staticOpts));
+app.use('/content/',expressStaticGzip(resolveHome('~/www/images/content'),staticOpts));
 
-app.use('/javascripts/',expressStaticGzip('/var/www/node/webserver/public/javascripts/',staticOpts));
-app.use('/stylesheets/',expressStaticGzip('/var/www/node/webserver/public/stylesheets/',staticOpts));
+app.use('/javascripts/',expressStaticGzip(resolveHome('~/www/node/webserver/public/javascripts/'),staticOpts));
+app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/public/stylesheets/'),staticOpts));
 
 
 //app.use('/', indexRouter);
@@ -1685,7 +1695,7 @@ app.use('/tumblr/',router);
 //app.use('/webhook',webhookRouter);
 app.use('/webhook/',router$1);
 
-app.use('/',expressStaticGzip('/var/www/html/contents/'));
+app.use('/',expressStaticGzip(resolveHome('~/www/html/contents/')));
 
 
 // catch 404 and forward to error handler
@@ -1703,8 +1713,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('./error',{message:'error',error:err});
 });
-
-//var //app = require('express')()
 
 class ScoreEntry {
   constructor(name, score){
@@ -1804,7 +1812,7 @@ class ScoreServer {
 
   async readFile() {
     try{
-      this.highScores = JSON.parse(await fs.promises.readFile('/var/www/node/webserver/score.json', 'utf-8'));
+      this.highScores = JSON.parse(await fs.promises.readFile(resolveHome('~/www/node/webserver/score.json'), 'utf-8'));
     } catch (e) {
       console.log(e);
       this.highScores = [];
@@ -1816,7 +1824,7 @@ class ScoreServer {
   
   writeFile() {
     console.log('writeFile');
-    fs.writeFileSync('/var/www/node/webserver/score.json', JSON.stringify(this.highScores), 'utf-8');
+    fs.writeFileSync(resolveHome('~/www/node/webserver/score.json'), JSON.stringify(this.highScores), 'utf-8');
   }  
 }
 
@@ -1901,7 +1909,8 @@ process.on('SIGHUP', function () {
  * Module dependencies.
  */
 
-const keys = JSON.parse(fs.readFileSync('/var/www/node/keys/webserver/keys.json'));
+const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/webserver/keys.json')));
+
 
 /**
  * Get port from environment and store in Express.
@@ -1909,14 +1918,15 @@ const keys = JSON.parse(fs.readFileSync('/var/www/node/keys/webserver/keys.json'
 
 const port = normalizePort(process.env.PORT || '443');
 app.set('port', port);
+const httpPort = normalizePort(process.env.HTTP_PORT || '80');
 
 /**
  * Create HTTP server.
  */
 
 const options = {
-  key:fs.readFileSync(keys.key),
-  cert:fs.readFileSync(keys.cert)
+  key:fs.readFileSync(resolveHome(keys.key)),
+  cert:fs.readFileSync(resolveHome(keys.cert))
 };
 
 keys.passphrase && (options.passphrase = keys.passphrase);
@@ -1988,7 +1998,7 @@ function onError(error) {
 function onListening() 
 {
   console.log(process.env['WWW_UID']);
-  process.setuid(process.env['WWW_UID']);
+  process.setuid && process.setuid(process.env['WWW_UID']);
   var addr = server.address();
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
@@ -2000,4 +2010,4 @@ function onListening()
 http.createServer(function (req, res) {
     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
     res.end();
-}).listen(80);
+}).listen(httpPort);

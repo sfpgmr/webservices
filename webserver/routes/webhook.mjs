@@ -7,10 +7,11 @@ import zlib from 'zlib';
 
 import {exec as exec_} from 'child_process';
 import util from 'util';
+import resolveHome from '../resolveHome.mjs';
 
 const exec = util.promisify(exec_);
-const homeDir = '~/www/html/';
-const opt = {cwd:'~/www/html'};
+const homeDir = resolveHome('~/www/blog/');
+const opt = {cwd:resolveHome('~/www/blog')};
 
 function handler(req,res){
   
@@ -33,7 +34,7 @@ function handler(req,res){
       , id    = req.headers['x-github-delivery'];
 
   
-    if(event == 'push' && payload.repository.name === 'www'){
+    if(event == 'push' && payload.repository.name === 'blog'){
       console.log('プッシュイベントを受信:%s to %s',
       payload.repository.name,
       payload.ref);
@@ -70,7 +71,6 @@ function handler(req,res){
       })
       .catch((e)=>{console.log(`Error:${e}`);});
     }
-
 }
 
 function compressGzip(path) {

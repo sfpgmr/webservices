@@ -1,13 +1,14 @@
 "use strict";
 
-var http = require('http');
-var fs = require('fs');
-var zlib = require('zlib');
-var exec_ = require('child_process').exec;
-var createHandler = require('github-webhook-handler');
-var secret = fs.readFileSync('./secret','utf-8').trim();
-var handler = createHandler({ path: '/', secret: secret});
-var sockPath = '/tmp/webhook.sock';
+const http = require('http');
+const fs = require('fs');
+const zlib = require('zlib');
+const exec_ = require('child_process').exec;
+const createHandler = require('github-webhook-handler');
+const secret = fs.readFileSync('./secret','utf-8').trim();
+const handler = createHandler({ path: '/', secret: secret});
+const sockPath = '/tmp/webhook.sock';
+
 
 // ソケットの削除
 try {

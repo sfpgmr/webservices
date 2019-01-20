@@ -37,6 +37,7 @@
     "iconv-lite": "^0.4.18",
     "image-size": "^0.6.1",
     "js-htmlencode": "^0.3.0",
+    "katex": "^0.10.0",
     "marked": "^0.6.0",
     "mathjax-node": "^1.1.0",
     "request": "^2.88.0",

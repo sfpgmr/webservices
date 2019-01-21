@@ -748,7 +748,7 @@ async function update() {
   let o = await spawn('git', ['--no-pager', 'diff', 'HEAD', '-C','-M','--name-status', '--relative=' + blogConfig.repoMdDir]);
   // git config --global core.quotepath false ==> 日本語の\xxxエスケープ を禁止しないとファイルが読めない
 
-  let files = o.split(/\n/g)
+  let files = o.out.split(/\n/g)
     .map(d => d.split(/\t/g))
     .filter(d => d[0] != '');
 

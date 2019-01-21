@@ -16,7 +16,7 @@ module.exports = {
   //mdDir: './data/blog/test/',
   cacheDir: './data/blog/temp/cache/',
   imageCacheDir: 'image/',
-  repoMdDir: 'wwwmaker/data/blog/contents/',
+  repoMdDir: 'blog/contents/',
   //repoMdDir: 'wwwmaker/data/blog/test',
   entriesPath: './data/blog/entries.json',
   //entriesPath: './data/blog/entries-test.json',

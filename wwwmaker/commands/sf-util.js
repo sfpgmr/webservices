@@ -36,7 +36,7 @@ function spawn(command, args, options) {
       //reject(new Error(err));
     });
     s.on('close', () => {
-      resolve(out, errOut);
+      resolve({out:out, err:errOut});
     });
   });
 }

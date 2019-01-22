@@ -20,6 +20,12 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${file}"
+    },
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach Program",
+      "port": 38994
     }
   ]
 }

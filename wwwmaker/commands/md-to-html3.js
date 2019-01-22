@@ -745,7 +745,7 @@ async function update() {
   await spawn('git', ['add', '--all'],opt);
 
   // 差分情報の抽出
-  let o = await spawn('git', ['--no-pager', 'diff', 'HEAD', '-C','-M','--name-status', '--relative=' + blogConfig.repoMdDir]);
+  let o = await spawn('git', ['--no-pager', 'diff', 'HEAD', '-C','-M','--name-status', '--relative=' + blogConfig.repoMdDir],opt);
   // git config --global core.quotepath false ==> 日本語の\xxxエスケープ を禁止しないとファイルが読めない
 
   let files = o.out.split(/\n/g)
@@ -987,11 +987,14 @@ async function create() {
   //console.log(docs.length);
   if(blogConfig.pushAutomatic){
     try {
-      await spawn('git', ['add', '--all']);
-      await exec('git --no-pager commit -m "update content" --quiet',{cwd:blogConfig.destBasePath});
-      await exec('git --no-pager push -f --quiet');
-      await exec('git gc --quiet');
-      await exec('git prune');
+
+      const optDest = {cwd:blogConfig.destBasePath};
+      await spawn('git', ['add', '--all'],optDest);
+      await exec('git --no-pager commit -m "create content" --quiet',optDest);
+      await exec('git --no-pager push -f --quiet',optDest);
+
+      await exec('git gc --quiet',optDest);
+      await exec('git prune',optDest);
     } catch (e) {
       console.error(e.stdout || e);
     }

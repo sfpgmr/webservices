@@ -995,6 +995,12 @@ async function create() {
 
       await exec('git gc --quiet',optDest);
       await exec('git prune',optDest);
+      
+      const opt = {cwd:blogConfig.mdDir};
+      await spawn('git', ['add', '--all'],opt);
+      await exec('git --no-pager commit -m "update content" --quiet',opt);
+      await exec('git --no-pager push -f --quiet',opt);
+  
     } catch (e) {
       console.error(e.stdout || e);
     }

@@ -30,6 +30,7 @@ var child_process = require('child_process');
 var cookieParser = _interopDefault(require('cookie-parser'));
 var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
+var bodyParser = _interopDefault(require('body-parser'));
 var socket_io = _interopDefault(require('socket.io'));
 var http2 = _interopDefault(require('spdy'));
 
@@ -1670,8 +1671,8 @@ app.use(logger('combined'));
 app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 
 
-app.use(express.json({limit:'50mb'}));
-app.use(express.urlencoded({ extended: false,limit:'50mb' }));
+app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.urlencoded({ extended: false,limit:'50mb' }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {

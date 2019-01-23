@@ -33,6 +33,8 @@ function handler(req,res){
       , event = req.headers['x-github-event']
       , id    = req.headers['x-github-delivery'];
 
+      console.log('** sig **:',sig,event,id)
+
   
     if(event == 'push' && payload.repository.name === 'blog'){
       console.log('プッシュイベントを受信:%s to %s',

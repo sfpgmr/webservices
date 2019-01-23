@@ -28,8 +28,8 @@ app.use(logger('combined'));
 app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 
 
-app.use(express.json({limit:'10mb'}));
-app.use(express.urlencoded({ extended: false,limit:'10mb' }));
+app.use(express.json({limit:'50mb'}));
+app.use(express.urlencoded({ extended: false,limit:'50mb' }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {

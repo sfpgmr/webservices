@@ -9,6 +9,7 @@ import webhookRouter from './routes/webhook.mjs';
 import xhub from 'express-x-hub';
 import fs from 'fs';
 import resolveHome from './resolveHome.mjs';
+import bodyParser from 'body-parser';
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
@@ -28,8 +29,8 @@ app.use(logger('combined'));
 app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 
 
-app.use(express.json({limit:'50mb'}));
-app.use(express.urlencoded({ extended: false,limit:'50mb' }));
+app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.urlencoded({ extended: false,limit:'50mb' }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {

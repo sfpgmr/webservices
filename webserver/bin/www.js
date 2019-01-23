@@ -1672,7 +1672,7 @@ app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/nod
 
 
 app.use(bodyParser.json({limit:'50mb'}));
-app.use(bodyParser.urlencoded({ extended: true,limit:'50mb' }));
+app.use(bodyParser.urlencoded({ extended: true,limit:'50mb',parameterLimit:50000 }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));
 app.use(function(req, res, next) {

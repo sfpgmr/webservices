@@ -30,6 +30,7 @@ var child_process = require('child_process');
 var cookieParser = _interopDefault(require('cookie-parser'));
 var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
+var bodyParser = _interopDefault(require('body-parser'));
 var socket_io = _interopDefault(require('socket.io'));
 var http2 = _interopDefault(require('spdy'));
 
@@ -1651,7 +1652,6 @@ router$1.use('/',(req,res,next)=>{
   handler(req,res);
 });
 
-//import bodyParser from 'body-parser';
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();

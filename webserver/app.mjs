@@ -9,7 +9,7 @@ import webhookRouter from './routes/webhook.mjs';
 import xhub from 'express-x-hub';
 import fs from 'fs';
 import resolveHome from './resolveHome.mjs';
-//import bodyParser from 'body-parser';
+import bodyParser from 'body-parser';
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();

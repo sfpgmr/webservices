@@ -1671,7 +1671,7 @@ app.use(logger('combined'));
 app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 
 
-app.use(bodyParser.json({limit:'50mb'}));
+app.use(bodyParser.json({limit:'50mb',type: 'application/*+json'}));
 app.use(bodyParser.urlencoded({ extended: true,limit:'50mb',parameterLimit:10000 }));
 app.use(cookieParser());
 //app.use(express.static(path.join(__dirname, 'public')));

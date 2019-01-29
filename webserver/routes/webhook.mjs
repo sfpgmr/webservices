@@ -11,7 +11,7 @@ import resolveHome from '../resolveHome.mjs';
 
 const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');
-const opt = {cwd:resolveHome('~/www/blog')};
+const opt = {cwd:resolveHome('~/www/blog/')};
 
 function handler(req,res){
   

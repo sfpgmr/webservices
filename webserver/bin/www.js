@@ -3,15 +3,11 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var createError = _interopDefault(require('http-errors'));
-var express = _interopDefault(require('express'));
-var encodeUrl = _interopDefault(require('encodeurl'));
-var escapeHtml = _interopDefault(require('escape-html'));
-var parseUrl = _interopDefault(require('parseurl'));
-var path = require('path');
-var path__default = _interopDefault(path);
 var dbg = _interopDefault(require('debug'));
 var depd = _interopDefault(require('depd'));
 var destroy = _interopDefault(require('destroy'));
+var encodeUrl = _interopDefault(require('encodeurl'));
+var escapeHtml = _interopDefault(require('escape-html'));
 var etag = _interopDefault(require('etag'));
 var fresh = _interopDefault(require('fresh'));
 var fs = _interopDefault(require('fs'));
@@ -19,16 +15,20 @@ var mime = _interopDefault(require('mime'));
 var ms = _interopDefault(require('ms'));
 var onFinished = _interopDefault(require('on-finished'));
 var parseRange = _interopDefault(require('range-parser'));
+var path = require('path');
+var path__default = _interopDefault(path);
 var statuses = _interopDefault(require('statuses'));
 var Stream = _interopDefault(require('stream'));
 var util = _interopDefault(require('util'));
+var parseUrl = _interopDefault(require('parseurl'));
 var url = _interopDefault(require('url'));
-var cookieParser = _interopDefault(require('cookie-parser'));
-var logger = _interopDefault(require('morgan'));
-var http = _interopDefault(require('http'));
 var os = _interopDefault(require('os'));
+var http = _interopDefault(require('http'));
+var express = _interopDefault(require('express'));
 var zlib = _interopDefault(require('zlib'));
 var child_process = require('child_process');
+var cookieParser = _interopDefault(require('cookie-parser'));
+var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
 var bodyParser = _interopDefault(require('body-parser'));
 var socket_io = _interopDefault(require('socket.io'));
@@ -1567,6 +1567,7 @@ const router$1 = express.Router();
 
 const exec = util.promisify(child_process.exec);
 const homeDir = resolveHome('~/www/blog/');
+const repoDir = resolveHome('~/www/blog');
 const opt = {cwd:resolveHome('~/www/blog')};
 
 function handler(req,res){
@@ -1600,9 +1601,9 @@ function handler(req,res){
       // githubに応答を返す
       res.writeHead(200, { 'content-type': 'application/json' });
       res.end('{"ok":true}');
-
-      exec('/usr/bin/git fetch --depth 1',opt)
-      .then(s=>exec('/usr/bin/git reset --hard origin/master',opt))
+      
+      exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`,opt)
+      .then(s=>exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`,opt))
       .then(s=>{
         // 変更のあったファイルをgzip圧縮する
         let commits = payload.commits;

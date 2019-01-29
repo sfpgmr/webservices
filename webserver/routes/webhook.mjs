@@ -11,7 +11,8 @@ import resolveHome from '../resolveHome.mjs';
 
 const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');
-const opt = {cwd:resolveHome('~/www/blog/')};
+const repoDir = resolveHome('~/www/blog');
+const opt = {cwd:resolveHome('~/www/blog')};
 
 function handler(req,res){
   
@@ -44,9 +45,9 @@ function handler(req,res){
       // githubに応答を返す
       res.writeHead(200, { 'content-type': 'application/json' })
       res.end('{"ok":true}');
-
-      exec('/usr/bin/git fetch --depth 1',opt)
-      .then(s=>exec('/usr/bin/git reset --hard origin/master',opt))
+      
+      exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`,opt)
+      .then(s=>exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`,opt))
       .then(s=>{
         // 変更のあったファイルをgzip圧縮する
         let commits = payload.commits;

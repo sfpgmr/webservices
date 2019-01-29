@@ -22,7 +22,8 @@
   "dependencies": {
     "config": "^1.30.0",
     "debug": "^4.0.1",
-    "express-x-hub": "^1.0.4"
+    "express-x-hub": "^1.0.4",
+    "gulp": "^4.0.0"
   },
   "devDependencies": {
     "rollup": "^0.62.0",

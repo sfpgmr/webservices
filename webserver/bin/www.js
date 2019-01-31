@@ -1570,9 +1570,7 @@ const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
 const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 400 * 1024 };
 
-const asyncRoute = route => (req, res, next = console.error) => {
-  Promise.resolve(route(req, res)).catch(next);
-};
+const wrap = fn => (...args) => fn(...args).catch(args[2]);
 
 async function handler(req, res) {
 
@@ -1643,11 +1641,11 @@ function compressGzip(path$$1) {
   });
 }
 
-router$1.use('/index.html', asyncRoute(async (req, res, next) => {
+router$1.use('/index.html', wrap(async (req, res, next) => {
   await handler(req, res);
 }));
 
-router$1.use('/', asyncRoute(async (req, res, next) => {
+router$1.use('/', wrap(async (req, res, next) => {
   await handler(req, res);
 }));
 

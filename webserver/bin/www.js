@@ -1659,6 +1659,7 @@ router$1.use('/index.html', (req, res,next) => {
   try {
     handler(req, res);
   } catch(e) {
+    console.log(e);
     next();
   }
 });
@@ -1667,6 +1668,7 @@ router$1.use('/', (req, res,next) => {
   try {
     handler(req, res);
   } catch(e) {
+    console.log(e);
     next();
   }
 });

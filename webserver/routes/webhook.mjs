@@ -109,6 +109,7 @@ router.use('/index.html', (req, res,next) => {
   try {
     handler(req, res);
   } catch(e) {
+    console.log(e);
     next();
   }
 });
@@ -117,6 +118,7 @@ router.use('/', (req, res,next) => {
   try {
     handler(req, res);
   } catch(e) {
+    console.log(e);
     next();
   }
 });

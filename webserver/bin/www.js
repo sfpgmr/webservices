@@ -1568,7 +1568,7 @@ const router$1 = express.Router();
 const exec = util.promisify(child_process.exec);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = {cwd:resolveHome('~/www/blog')};
+const opt = {cwd:resolveHome('~/www/blog'),maxBuffer: 400 * 1024};
 
 function handler(req,res){
   

@@ -27,6 +27,8 @@ var http = _interopDefault(require('http'));
 var express = _interopDefault(require('express'));
 var zlib = _interopDefault(require('zlib'));
 var child_process = require('child_process');
+var queue = _interopDefault(require('async/queue'));
+require('vm');
 var cookieParser = _interopDefault(require('cookie-parser'));
 var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
@@ -1570,10 +1572,39 @@ const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
 const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 400 * 1024 };
 
-const wrap = fn => (...args) => fn(...args).catch(args[2]);
-let processing = false;
+// コンテンツを更新する処理
+const q = queue(
+async function (payload) {
+  try {
+    await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
+    await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt);
+    // 変更のあったファイルをgzip圧縮する
+    let commits = payload.commits;
+    if (commits.length > 0) {
+      for (const commit of commits) {
+        let files = [];
+        (commit.added && commit.added.length > 0) && (files.push(...commit.added));
+        (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
+        //console.log(commit,files);
+        // 追加更新ファイル
+        for (const path$$1 of files) {
+          await compressGzip(homeDir + path$$1);
+        }        // 削除ファイル
+        if (commit.removed && commit.removed.length > 0) {
+          for (const path$$1 of commit.removed) {
+            await fs.promises.unlink(homeDir + path$$1 + '.gz');
+          }        }
+      }
+    }  } catch (e) {
+    console.log(e.stack);
+  }
+});
 
-async function handler(req, res) {
+q.drain = ()=>{
+  console.log('update content done');
+};
+
+function handler(req, res) {
 
   function hasError(msg) {
     res.writeHead(400, { 'content-type': 'application/json' });
@@ -1588,56 +1619,29 @@ async function handler(req, res) {
     return hasError('X-Hub-Signature is not valid.');
   }
 
+  console.log('** sig **:', sig, event, id);
+  
   const payload = req.body,
     sig = req.headers['x-hub-signature']
     , event = req.headers['x-github-event']
     , id = req.headers['x-github-delivery'];
-
-  console.log('** sig **:', sig, event, id);
-
 
   if (event == 'push' && payload.repository.name === 'blog') {
     console.log('プッシュイベントを受信:%s to %s',
       payload.repository.name,
       payload.ref);
 
-    // githubに応答を返す
-    await res.writeHead(200, { 'content-type': 'application/json' });
-    await res.json({ ok: true });
-    //await res.end();
+    q.push(payload);
 
-    (async () => {
-      if (processing) return;
-      processing = true;
-      try {
-        await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
-        await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt);
-        // 変更のあったファイルをgzip圧縮する
-        let commits = payload.commits;
-        if (commits.length > 0) {
-          for (const commit of commits) {
-            let files = [];
-            (commit.added && commit.added.length > 0) && (files.push(...commit.added));
-            (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
-            //console.log(commit,files);
-            // 追加更新ファイル
-            for (const path$$1 of files) {
-              await compressGzip(homeDir + path$$1);
-            }            // 削除ファイル
-            if (commit.removed && commit.removed.length > 0) {
-              for (const path$$1 of commit.removed) {
-                await fs.promises.unlink(homeDir + path$$1 + '.gz');
-              }            }
-          }
-        }      } catch (e) {
-        console.log(e.stack);
-      }
-      processing = false;
-    })();
+    // githubに応答を返す
+    res.head({ 'content-type': 'application/json' });
+    res.json({ ok: true });
+    //await res.end();
     console.log('webhook process is end.');
   }
 }
 
+// 
 function compressGzip(path$$1) {
   // gzipファイルを作成する
   return new Promise((resolve, reject) => {
@@ -1651,13 +1655,21 @@ function compressGzip(path$$1) {
   });
 }
 
-router$1.use('/index.html', wrap(async (req, res) => {
-  await handler(req, res);
-}));
+router$1.use('/index.html', (req, res,next) => {
+  try {
+    handler(req, res);
+  } catch(e) {
+    next();
+  }
+});
 
-router$1.use('/', wrap(async (req, res) => {
-  await handler(req, res);
-}));
+router$1.use('/', (req, res,next) => {
+  try {
+    handler(req, res);
+  } catch(e) {
+    next();
+  }
+});
 
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';

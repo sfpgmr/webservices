@@ -84,7 +84,7 @@ function handler(req, res) {
     q.push(payload);
 
     // githubに応答を返す
-    res.head({ 'content-type': 'application/json' })
+    res.header({ 'content-type': 'application/json' })
     res.json({ ok: true });
     //await res.end();
     console.log('webhook process is end.');

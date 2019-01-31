@@ -10,14 +10,11 @@ import util from 'util';
 import resolveHome from '../resolveHome.mjs';
 
 import queue from 'async/queue';
-import { runInNewContext } from 'vm';
 
 const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 400 * 1024 };
-
-const wrap = fn => (...args) => fn(...args).catch(args[2]);
+const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024 };
 
 // コンテンツを更新する処理
 const q = queue(

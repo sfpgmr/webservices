@@ -28,7 +28,6 @@ var express = _interopDefault(require('express'));
 var zlib = _interopDefault(require('zlib'));
 var child_process = require('child_process');
 var queue = _interopDefault(require('async/queue'));
-require('vm');
 var cookieParser = _interopDefault(require('cookie-parser'));
 var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
@@ -1570,7 +1569,7 @@ const router$1 = express.Router();
 const exec = util.promisify(child_process.exec);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 400 * 1024 };
+const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024 };
 
 // コンテンツを更新する処理
 const q = queue(

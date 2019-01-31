@@ -14,9 +14,7 @@ const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
 const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 400 * 1024 };
 
-const asyncRoute = route => (req, res, next = console.error) => {
-  Promise.resolve(route(req, res)).catch(next)
-}
+const wrap = fn => (...args) => fn(...args).catch(args[2])
 
 async function handler(req, res) {
 
@@ -54,7 +52,6 @@ async function handler(req, res) {
     await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
     // 変更のあったファイルをgzip圧縮する
     let commits = payload.commits;
-    let pr = Promise.resolve(0);
     if (commits.length > 0) {
       for (const commit of commits) {
         let files = [];
@@ -91,11 +88,11 @@ function compressGzip(path) {
   });
 }
 
-router.use('/index.html', asyncRoute(async (req, res, next) => {
+router.use('/index.html', wrap(async (req, res, next) => {
   await handler(req, res);
 }));
 
-router.use('/', asyncRoute(async (req, res, next) => {
+router.use('/', wrap(async (req, res, next) => {
   await handler(req, res);
 }));
 

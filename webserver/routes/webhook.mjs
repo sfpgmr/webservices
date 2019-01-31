@@ -12,7 +12,7 @@ import resolveHome from '../resolveHome.mjs';
 const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = {cwd:resolveHome('~/www/blog'),maxBuffer: 200 * 1024};
+const opt = {cwd:resolveHome('~/www/blog'),maxBuffer: 400 * 1024};
 
 function handler(req,res){
   

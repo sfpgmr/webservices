@@ -45,9 +45,9 @@ async function handler(req, res) {
       payload.ref);
 
     // githubに応答を返す
-    res.writeHead(200, { 'content-type': 'application/json' })
-    res.end('{"ok":true}');
-
+    await res.writeHead(200, { 'content-type': 'application/json' })
+    await res.json({ok:true});
+    await res.end();
     await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
     await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
     // 変更のあったファイルをgzip圧縮する

@@ -1642,11 +1642,11 @@ function compressGzip(path$$1) {
 }
 
 router$1.use('/index.html', wrap(async (req, res, next) => {
-  await handler(req, res);
+  handler(req, res);
 }));
 
 router$1.use('/', wrap(async (req, res, next) => {
-  await handler(req, res);
+  handler(req, res);
 }));
 
 //import http2 from 'http2';

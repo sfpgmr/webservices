@@ -89,11 +89,11 @@ function compressGzip(path) {
 }
 
 router.use('/index.html', wrap(async (req, res, next) => {
-  handler(req, res);
+  await handler(req, res);
 }));
 
 router.use('/', wrap(async (req, res, next) => {
-  handler(req, res);
+  await handler(req, res);
 }));
 
 export default router;

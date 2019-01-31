@@ -69,13 +69,13 @@ function handler(req, res) {
     return hasError('X-Hub-Signature is not valid.');
   }
 
-  console.log('** sig **:', sig, event, id)
   
   const payload = req.body,
     sig = req.headers['x-hub-signature']
     , event = req.headers['x-github-event']
     , id = req.headers['x-github-delivery'];
 
+  console.log('** sig **:', sig, event, id)
   if (event == 'push' && payload.repository.name === 'blog') {
     console.log('プッシュイベントを受信:%s to %s',
       payload.repository.name,

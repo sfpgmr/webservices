@@ -14,7 +14,8 @@ const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
 const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 400 * 1024 };
 
-const wrap = fn => (...args) => fn(...args).catch(args[2])
+const wrap = fn => (...args) => fn(...args).catch(args[2]);
+let processing = false;
 
 async function handler(req, res) {
 
@@ -46,31 +47,40 @@ async function handler(req, res) {
 
     // githubに応答を返す
     await res.writeHead(200, { 'content-type': 'application/json' })
-    await res.json({ok:true});
+    await res.json({ ok: true });
     //await res.end();
-    await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
-    await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
-    // 変更のあったファイルをgzip圧縮する
-    let commits = payload.commits;
-    if (commits.length > 0) {
-      for (const commit of commits) {
-        let files = [];
-        (commit.added && commit.added.length > 0) && (files.push(...commit.added));
-        (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
 
-        //console.log(commit,files);
-        // 追加更新ファイル
-        for(const path of files) {
-          await compressGzip(homeDir + path);
+    (async () => {
+      if (processing) return;
+      processing = true;
+      try {
+        await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
+        await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
+        // 変更のあったファイルをgzip圧縮する
+        let commits = payload.commits;
+        if (commits.length > 0) {
+          for (const commit of commits) {
+            let files = [];
+            (commit.added && commit.added.length > 0) && (files.push(...commit.added));
+            (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
+            //console.log(commit,files);
+            // 追加更新ファイル
+            for (const path of files) {
+              await compressGzip(homeDir + path);
+            };
+            // 削除ファイル
+            if (commit.removed && commit.removed.length > 0) {
+              for (const path of commit.removed) {
+                await fs.promises.unlink(homeDir + path + '.gz');
+              };
+            }
+          }
         };
-        // 削除ファイル
-        if (commit.removed && commit.removed.length > 0) {
-          for(const path of commit.removed){
-            await fs.promises.unlink(homeDir + path + '.gz');
-          };
-        }
+      } catch (e) {
+        console.log(e.stack);
       }
-    };
+      processing = false;
+    })();
     console.log('webhook process is end.');
   }
 }
@@ -88,11 +98,11 @@ function compressGzip(path) {
   });
 }
 
-router.use('/index.html', wrap(async (req, res, next) => {
+router.use('/index.html', wrap(async (req, res) => {
   await handler(req, res);
 }));
 
-router.use('/', wrap(async (req, res, next) => {
+router.use('/', wrap(async (req, res) => {
   await handler(req, res);
 }));
 

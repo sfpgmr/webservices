@@ -1568,90 +1568,88 @@ const router$1 = express.Router();
 const exec = util.promisify(child_process.exec);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = {cwd:resolveHome('~/www/blog'),maxBuffer: 400 * 1024};
+const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 400 * 1024 };
 
-function handler(req,res){
-  
-  function hasError (msg) {
+const asyncRoute = route => (req, res, next = console.error) => {
+  Promise.resolve(route(req, res)).catch(next);
+};
+
+async function handler(req, res) {
+
+  function hasError(msg) {
     res.writeHead(400, { 'content-type': 'application/json' });
     res.end(JSON.stringify({ error: msg }));
   }
 
-  if(!req.isXHub){
+  if (!req.isXHub) {
     return hasError('No X-Hub Signature.');
   }
 
-  if(!req.isXHubValid()){
+  if (!req.isXHubValid()) {
     return hasError('X-Hub-Signature is not valid.');
   }
 
   const payload = req.body,
-      sig   = req.headers['x-hub-signature']
-      , event = req.headers['x-github-event']
-      , id    = req.headers['x-github-delivery'];
+    sig = req.headers['x-hub-signature']
+    , event = req.headers['x-github-event']
+    , id = req.headers['x-github-delivery'];
 
-      console.log('** sig **:',sig,event,id);
+  console.log('** sig **:', sig, event, id);
 
-  
-    if(event == 'push' && payload.repository.name === 'blog'){
-      console.log('プッシュイベントを受信:%s to %s',
+
+  if (event == 'push' && payload.repository.name === 'blog') {
+    console.log('プッシュイベントを受信:%s to %s',
       payload.repository.name,
       payload.ref);
 
-      // githubに応答を返す
-      res.writeHead(200, { 'content-type': 'application/json' });
-      res.end('{"ok":true}');
-      
-      exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`,opt)
-      .then(s=>exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`,opt))
-      .then(s=>{
-        // 変更のあったファイルをgzip圧縮する
-        let commits = payload.commits;
-        let pr = Promise.resolve(0);
-        (commits.length > 0) && commits.forEach(commit=>{
-          let files = [];
-          (commit.added && commit.added.length > 0) && (files.push(...commit.added));
-          (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
-  
-          //console.log(commit,files);
-          // 追加更新ファイル
-          files.forEach(path$$1=>{
-            pr = pr.then(compressGzip.bind(null,homeDir + path$$1));
-          });
-          // 削除ファイル
-          if(commit.removed && commit.removed.length > 0){
-            commit.removed.forEach(path$$1=>{
-              pr = pr.then(fs.promises.unlink.bind(null,homeDir + path$$1 + '.gz'));
-            });
-          }
-        });
-        pr = pr.then(()=>console.log('webhook process is end.'));
-        return pr;
-      })
-      .catch((e)=>{console.log(`Error:${e}`);});
-    }
+    // githubに応答を返す
+    res.writeHead(200, { 'content-type': 'application/json' });
+    res.end('{"ok":true}');
+
+    await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
+    await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt);
+    // 変更のあったファイルをgzip圧縮する
+    let commits = payload.commits;
+    if (commits.length > 0) {
+      for (const commit of commits) {
+        let files = [];
+        (commit.added && commit.added.length > 0) && (files.push(...commit.added));
+        (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
+
+        //console.log(commit,files);
+        // 追加更新ファイル
+        for(const path$$1 of files) {
+          await compressGzip(homeDir + path$$1);
+        }        // 削除ファイル
+        if (commit.removed && commit.removed.length > 0) {
+          for(const path$$1 of commit.removed){
+            await fs.promises.unlink(homeDir + path$$1 + '.gz');
+          }        }
+      }
+    }    console.log('webhook process is end.');
+  }
 }
 
 function compressGzip(path$$1) {
-    // gzipファイルを作成する
-    return new Promise((resolve,reject)=>{
-      var out = fs.createWriteStream(path$$1 + '.gz');
-      out.on('finish', resolve.bind(null));
-    
-      fs.createReadStream(path$$1)
-        .pipe(zlib.createGzip({ level: zlib.Z_BEST_COMPRESSION }))
-        .pipe(out);
-      out = void(0);                  
-    });
+  // gzipファイルを作成する
+  return new Promise((resolve, reject) => {
+    const out = fs.createWriteStream(path$$1 + '.gz');
+    out.on('finish', resolve.bind(null));
+
+    fs.createReadStream(path$$1)
+      .pipe(zlib.createGzip({ level: zlib.Z_BEST_COMPRESSION }))
+      .pipe(out);
+    out = void (0);
+  });
 }
 
-router$1.use('/index.html',(req,res,next)=>{
-  handler(req,res);
-});
+router$1.use('/index.html', asyncRoute(async (req, res, next) => {
+  await handler(req, res);
+}));
 
-router$1.use('/',(req,res,next)=>{
-  handler(req,res);
-});
+router$1.use('/', asyncRoute(async (req, res, next) => {
+  await handler(req, res);
+}));
 
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';

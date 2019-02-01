@@ -3,11 +3,15 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var createError = _interopDefault(require('http-errors'));
+var express = _interopDefault(require('express'));
+var encodeUrl = _interopDefault(require('encodeurl'));
+var escapeHtml = _interopDefault(require('escape-html'));
+var parseUrl = _interopDefault(require('parseurl'));
+var path = require('path');
+var path__default = _interopDefault(path);
 var dbg = _interopDefault(require('debug'));
 var depd = _interopDefault(require('depd'));
 var destroy = _interopDefault(require('destroy'));
-var encodeUrl = _interopDefault(require('encodeurl'));
-var escapeHtml = _interopDefault(require('escape-html'));
 var etag = _interopDefault(require('etag'));
 var fresh = _interopDefault(require('fresh'));
 var fs = _interopDefault(require('fs'));
@@ -15,21 +19,17 @@ var mime = _interopDefault(require('mime'));
 var ms = _interopDefault(require('ms'));
 var onFinished = _interopDefault(require('on-finished'));
 var parseRange = _interopDefault(require('range-parser'));
-var path = require('path');
-var path__default = _interopDefault(path);
 var statuses = _interopDefault(require('statuses'));
 var Stream = _interopDefault(require('stream'));
 var util = _interopDefault(require('util'));
-var parseUrl = _interopDefault(require('parseurl'));
 var url = _interopDefault(require('url'));
-var os = _interopDefault(require('os'));
+var cookieParser = _interopDefault(require('cookie-parser'));
+var logger = _interopDefault(require('morgan'));
 var http = _interopDefault(require('http'));
-var express = _interopDefault(require('express'));
+var os = _interopDefault(require('os'));
 var zlib = _interopDefault(require('zlib'));
 var child_process = require('child_process');
 var queue = _interopDefault(require('async/queue'));
-var cookieParser = _interopDefault(require('cookie-parser'));
-var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
 var bodyParser = _interopDefault(require('body-parser'));
 var socket_io = _interopDefault(require('socket.io'));
@@ -1566,7 +1566,15 @@ router.get('/index.html', function(req, res, next) {
 
 const router$1 = express.Router();
 
-const exec = util.promisify(child_process.exec);
+// const exec = util.promisify(exec_);
+function exec(command,opt){
+return new Promise((resolve,reject)=>{
+  child_process.exec(command,opt,(err,stdout,stderr)=>{
+    err && reject(err);
+    resolve({stdout:stdout,stderr:stderr});
+  });
+});
+}
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
 const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024 };
@@ -1575,8 +1583,10 @@ const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024 };
 const q = queue(
 async function (payload) {
   try {
-    await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
-    await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt);
+    let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
+    console.log(res.stdout,res.stderr);
+    res = await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt);
+    console.log(res.stdout,res.stderr);
     // 変更のあったファイルをgzip圧縮する
     let commits = payload.commits;
     if (commits.length > 0) {

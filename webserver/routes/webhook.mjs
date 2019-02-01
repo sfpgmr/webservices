@@ -11,7 +11,15 @@ import resolveHome from '../resolveHome.mjs';
 
 import queue from 'async/queue';
 
-const exec = util.promisify(exec_);
+// const exec = util.promisify(exec_);
+function exec(command,opt){
+return new Promise((resolve,reject)=>{
+  exec_(command,opt,(err,stdout,stderr)=>{
+    err && reject(err);
+    resolve({stdout:stdout,stderr:stderr});
+  });
+});
+}
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
 const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024 };
@@ -20,8 +28,10 @@ const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024 };
 const q = queue(
 async function (payload) {
   try {
-    await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
-    await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
+    let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
+    console.log(res.stdout,res.stderr);
+    res = await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
+    console.log(res.stdout,res.stderr);
     // 変更のあったファイルをgzip圧縮する
     let commits = payload.commits;
     if (commits.length > 0) {

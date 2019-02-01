@@ -11,23 +11,16 @@ import resolveHome from '../resolveHome.mjs';
 
 import queue from 'async/queue';
 
-// const exec = util.promisify(exec_);
-function exec(command,opt){
-return new Promise((resolve,reject)=>{
-  exec_(command,opt,(err,stdout,stderr)=>{
-    err && reject(err);
-    resolve({stdout:stdout,stderr:stderr});
-  });
-});
-}
+const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024 };
+const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024};
 
 // コンテンツを更新する処理
 const q = queue(
 async function (payload) {
   try {
+    console.log(opt.uid);
     let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
     console.log(res.stdout,res.stderr);
     res = await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
@@ -73,7 +66,7 @@ function handler(req, res) {
   }
 
   if (!req.isXHubValid()) {
-    return hasError('X-Hub-Signature is not valid.');
+     return hasError('X-Hub-Signature is not valid.');
   }
 
   
@@ -102,7 +95,7 @@ function handler(req, res) {
 function compressGzip(path) {
   // gzipファイルを作成する
   return new Promise((resolve, reject) => {
-    const out = fs.createWriteStream(path + '.gz');
+    let out = fs.createWriteStream(path + '.gz');
     out.on('finish', resolve.bind(null));
 
     fs.createReadStream(path)

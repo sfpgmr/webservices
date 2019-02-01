@@ -1566,23 +1566,16 @@ router.get('/index.html', function(req, res, next) {
 
 const router$1 = express.Router();
 
-// const exec = util.promisify(exec_);
-function exec(command,opt){
-return new Promise((resolve,reject)=>{
-  child_process.exec(command,opt,(err,stdout,stderr)=>{
-    err && reject(err);
-    resolve({stdout:stdout,stderr:stderr});
-  });
-});
-}
+const exec = util.promisify(child_process.exec);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024 };
+const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024};
 
 // コンテンツを更新する処理
 const q = queue(
 async function (payload) {
   try {
+    console.log(opt.uid);
     let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
     console.log(res.stdout,res.stderr);
     res = await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt);
@@ -1625,7 +1618,7 @@ function handler(req, res) {
   }
 
   if (!req.isXHubValid()) {
-    return hasError('X-Hub-Signature is not valid.');
+     return hasError('X-Hub-Signature is not valid.');
   }
 
   
@@ -1654,7 +1647,7 @@ function handler(req, res) {
 function compressGzip(path$$1) {
   // gzipファイルを作成する
   return new Promise((resolve, reject) => {
-    const out = fs.createWriteStream(path$$1 + '.gz');
+    let out = fs.createWriteStream(path$$1 + '.gz');
     out.on('finish', resolve.bind(null));
 
     fs.createReadStream(path$$1)

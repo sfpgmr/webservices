@@ -1,4 +1,3 @@
-'use strict';
 
 const Renderer = require('./marked.js').Renderer;
 const htmlEncode = require('js-htmlencode').htmlEncode;
@@ -7,32 +6,53 @@ const mjApi = require('mathjax-node');
 mjApi.start();
 const URL = require('url').URL;
 const util = require('util');
-const {parseAttributes} = require('./sf-util');
+const { parseAttributes } = require('./sf-util');
 const config = require('./config-blog');
 const request = require('request-promise-native');
 const sizeOf = require('image-size');
 const fs = require('fs-extra');
 const hljs = require('highlight.js');
 const path = require('path');
-const {escape,unescape} = require('./marked');
+const { escape, unescape } = require('./marked');
 const resolveHome = require('./resolveHome.js');
+const katex = require('katex');
 
 // tex描画エンジン
 
-function texRenderer(tex)
-{
-  //tex = tex.replace(/\\([\[\]])/ig,'$1');
+// function texRenderer(tex) {
+//   //tex = tex.replace(/\\([\[\]])/ig,'$1');
+//   return new Promise((resolve, reject) => {
+//     mjApi.typeset({
+//       math: tex,
+//       format: 'TeX',
+//       svg: true
+//     }, (data) => {
+//       if (data.errors) reject(new Error(data.errors.join('\n')));
+//       //console.log(data.svg);
+//       resolve(data.svg);
+//     });
+//   });
+// }
+
+function texRenderer(tex){
   return new Promise((resolve,reject)=>{
-    mjApi.typeset({
-      math:tex,
-      format:'TeX',
-      svg:true
-    },(data)=>{
-      if(data.errors) reject(new Error(data.errors.join('\n')));
-      //console.log(data.svg);
-      resolve(data.svg);
-    });
+    try {
+      let res = katex.renderToString(tex);
+      resolve(res);
+    } catch (e) {
+      reject(e);
+    }
   });
+}
+
+let amazonCache;
+try {
+  let s = fs.statSync('./amazon-cache.json');
+  if (s.isFile) {
+    amazonCache = new Map(JSON.parse(fs.readFileSync('./amazon-cache.json', 'utf-8')));
+  }
+} catch (e) {
+  amazonCache = new Map();
 }
 
 const amazonIds = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/wwwmaker/amazon.json')));
@@ -73,56 +93,64 @@ const noimage = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
 </svg>
 `;
 
-async function doAmazonContents(asin,p1,p2,amp = false) {
+async function doAmazonContents(asin, p1, p2, amp = false) {
+  return '';
   let resp = null;
   let retry = 10;
-  const imgTag = amp ? 'amp-img':'img';
+  const imgTag = amp ? 'amp-img' : 'img';
 
-  while (retry && !resp) {
-    try {
-      resp = await opHelper.execute('ItemLookup', {
-        Condition: 'All',
-        ResponseGroup: 'Medium',
-        ItemId: asin
-      });
-    } catch (e) {
-      await new Promise((resolve, reject) => {
-        setTimeout(() => resolve(), 1000);
-      });
-      --retry;
-      if (!retry) throw e;
+  let item;
+
+  if (!amazonCache.has(asin)) {
+    while (retry && !resp) {
+      try {
+        resp = await opHelper.execute('ItemLookup', {
+          Condition: 'All',
+          ResponseGroup: 'Medium',
+          ItemId: asin
+        });
+      } catch (e) {
+        await new Promise((resolve, reject) => {
+          setTimeout(() => resolve(), 1000);
+        });
+        --retry;
+        if (!retry) throw e;
+      }
+      if (!resp.result.ItemLookupResponse) {
+        resp = null;
+        --retry;
+        if (!retry) throw new Error('API呼び出しに失敗');
+        await new Promise((resolve, reject) => {
+          setTimeout(() => resolve(), 1000);
+        });
+      }
     }
-    if (!resp.result.ItemLookupResponse) {
-      resp = null;
-      --retry;
-      if (!retry) throw new Error('API呼び出しに失敗');
-      await new Promise((resolve, reject) => {
-        setTimeout(() => resolve(), 1000);
-      });
-    }
+    item = resp.result.ItemLookupResponse.Items.Item;
+    amazonCache.set(asin,item);
+  } else {
+    item = amazonCache.get(asin);
   }
-  let item = resp.result.ItemLookupResponse.Items.Item;
   let content = '';
   switch (p1) {
-  case 'image':
-    switch (p2) {
-    case 'large':
-      content =
-        `<aside class="amazon-image"><a href="${item.DetailPageURL}" target="_blank" title="amazon詳細ページへ"><${imgTag} src="${item.LargeImage.URL}" alt="${htmlEncode(item.ItemAttributes.Title)}"  width="${item.LargeImage.Width._}" height="${item.LargeImage.Height._}" ></${imgTag}></a></aside>`;
-      break;
-    case 'small':
-      content =
-        `<aside class="amazon-image"><a href="${item.DetailPageURL}" target="_blank" title="amazon詳細ページへ"><${imgTag} src="${item.SmallImage.URL}" alt="${htmlEncode(item.ItemAttributes.Title)}"  width="${item.SmallImage.Width._}" height="${item.SmallImage.Height._}"></${imgTag}></a></aside>`;
+    case 'image':
+      switch (p2) {
+        case 'large':
+          content =
+            `<aside class="amazon-image"><a href="${item.DetailPageURL}" target="_blank" title="amazon詳細ページへ"><${imgTag} src="${item.LargeImage.URL}" alt="${htmlEncode(item.ItemAttributes.Title)}"  width="${item.LargeImage.Width._}" height="${item.LargeImage.Height._}" ></${imgTag}></a></aside>`;
+          break;
+        case 'small':
+          content =
+            `<aside class="amazon-image"><a href="${item.DetailPageURL}" target="_blank" title="amazon詳細ページへ"><${imgTag} src="${item.SmallImage.URL}" alt="${htmlEncode(item.ItemAttributes.Title)}"  width="${item.SmallImage.Width._}" height="${item.SmallImage.Height._}"></${imgTag}></a></aside>`;
+          break;
+        default:
+          content =
+            `<aside class="amazon-image"><a href="${item.DetailPageURL}" target="_blank" title="amazon詳細ページへ"><${imgTag} src="${item.LargeImage.URL}" alt="${htmlEncode(item.ItemAttributes.Title)}"  width="${item.LargeImage.Width._}" height="${item.LargeImage.Height._}"></${imgTag}></a></aside>`;
+          break;
+      }
       break;
     default:
       content =
-        `<aside class="amazon-image"><a href="${item.DetailPageURL}" target="_blank" title="amazon詳細ページへ"><${imgTag} src="${item.LargeImage.URL}" alt="${htmlEncode(item.ItemAttributes.Title)}"  width="${item.LargeImage.Width._}" height="${item.LargeImage.Height._}"></${imgTag}></a></aside>`;
-      break;
-    }
-    break;
-  default:
-    content =
-          `<aside class="amazon">
+        `<aside class="amazon">
 <div class="amazon-detail-svglogo">
 <svg viewBox="0 0 120 110" xmlns="http://www.w3.org/2000/svg">
 <g>
@@ -132,10 +160,10 @@ async function doAmazonContents(asin,p1,p2,amp = false) {
 </div>
 <div class="amazon-detail-image">
 <a href="${item.DetailPageURL}" target="_blank" title="amazon詳細ページへ">`
-          + (item.SmallImage ?
-            `<${imgTag} src="${item.SmallImage.URL}" alt="${htmlEncode(item.ItemAttributes.Title) || 'タイトルなし'}" width="${item.SmallImage.Width._}" height="${item.SmallImage.Height._}" ></${imgTag}>` : noimage)
-          +
-          `</a>
+        + (item.SmallImage ?
+          `<${imgTag} src="${item.SmallImage.URL}" alt="${htmlEncode(item.ItemAttributes.Title) || 'タイトルなし'}" width="${item.SmallImage.Width._}" height="${item.SmallImage.Height._}" ></${imgTag}>` : noimage)
+        +
+        `</a>
 </div>
 <div class="amazon-detail">
 <div class="amazon-title">
@@ -145,7 +173,7 @@ async function doAmazonContents(asin,p1,p2,amp = false) {
 </div>
 </aside>
 `;
-    break;
+      break;
   }
   return content;
 }
@@ -161,36 +189,35 @@ class NormalRenderer extends Renderer {
 
   async custom(text, command, param) {
     console.log(text, command, param);
-    switch (command)
-    {
-    case 'asin':
-      const params = param.split(':');
-      return doAmazonContents(params[0],params[1],params[2]);
-    case 'adsense':
-      return infeedAd;
-    case 'codeWithIframe':
-      try {
-        // まずJSON形式なのか確認
-        let paramjson = JSON.parse(param);
-        return codeWithIframe(paramjson);
-      } catch (e){
-        return codeWithIframe({srcPath:param});
-      }
-    case "iframe":
-      try {
-        // まずJSON形式なのか確認
-        let paramjson = Object.assign({amp:false} ,JSON.parse(param));
-        return iframe_(paramjson);
-      } catch (e){
-        return iframe_({srcPath:param,amp:false});
-      }
+    switch (command) {
+      case 'asin':
+        const params = param.split(':');
+        return doAmazonContents(params[0], params[1], params[2]);
+      case 'adsense':
+        return infeedAd;
+      case 'codeWithIframe':
+        try {
+          // まずJSON形式なのか確認
+          let paramjson = JSON.parse(param);
+          return codeWithIframe(paramjson);
+        } catch (e) {
+          return codeWithIframe({ srcPath: param });
+        }
+      case "iframe":
+        try {
+          // まずJSON形式なのか確認
+          let paramjson = Object.assign({ amp: false }, JSON.parse(param));
+          return iframe_(paramjson);
+        } catch (e) {
+          return iframe_({ srcPath: param, amp: false });
+        }
     }
     return text;
   }
 
-  async tex(text){
+  async tex(text) {
     return texRenderer(text);
-  }  
+  }
 }
 
 /////////////////////////////////////
@@ -209,49 +236,53 @@ class AmpRenderer extends Renderer {
     let iframe = /<iframe\s?([^>]*?)\/?>(?:<\/iframe>)?/ig;
     let img = /<img\s?([^>]*?)\/?>(?:<\/img>)?/ig;
     let m = null;
-    
-    while((m = img.exec(html))){
+
+    while ((m = img.exec(html))) {
       let attribs = parseAttributes(m[1]);
-      let ampImgStr =  await this.image(attribs['src'],attribs['title'],attribs['alt']);
-      html = html.replace(m[0],ampImgStr);
+      if(attribs['src'].match(/i\.[^\.]*\.microsoft\.com/)){
+        attribs['src'] = attribs['src'].replace(/i\.([^\.]*)\.microsoft\.com/,'$1.microsoft.com');
+      }
+      let ampImgStr = await this.image(attribs['src'], attribs['title'], attribs['alt']);
+      html = html.replace(m[0], ampImgStr);
     }
 
-    html = html.replace(iframe,(m,m1)=>{
+    html = html.replace(iframe, (m, m1) => {
       let attribs = parseAttributes(m1);
-      if(/youtube/.test(attribs.src)){
+      if (/youtube/.test(attribs.src)) {
         // YouTube
-        let url = new URL(attribs.src,'https://www.youtube.com');
+        let url = new URL(attribs.src, 'https://www.youtube.com');
         let id = (/([^/]+?)?$/.exec(url.pathname))[1];
-        if(id){
+        if (id) {
           return `<amp-youtube data-videoid="${id}" data-param-videoId="${id}" layout="responsive" width="${attribs.width}" height="${attribs.height}"></amp-youtube>`;
         }
       }
-      attribs.width = (!attribs.width || /%/.test(attribs.width))?1024: attribs.width;
-      attribs.height = (!attribs.height || /%/.test(attribs.height))?768: attribs.height;
+      attribs.width = (!attribs.width || /%/.test(attribs.width)) ? 1024 : attribs.width;
+      attribs.height = (!attribs.height || /%/.test(attribs.height)) ? 768 : attribs.height;
       //return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder?'frameboarder="' + attribs.frameboarder + '"':''} ${attribs.allowfullscreen?'allowfullscreen':''} sandbox="allow-scripts allow-same-origin allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
-      return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder?'frameboarder="' + attribs.frameboarder + '"':''} ${attribs.allowfullscreen?'allowfullscreen':''} sandbox="allow-scripts allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;    });
+      return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder ? 'frameboarder="' + attribs.frameboarder + '"' : ''} ${attribs.allowfullscreen ? 'allowfullscreen' : ''} sandbox="allow-scripts allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
+    });
 
-    html = html.replace(/embed-responsive-?(?:4by3|16by9)?/ig,'');
+    html = html.replace(/embed-responsive-?(?:4by3|16by9)?/ig, '');
     return html;
   }
 
   async image(href, title, text) {
+    console.log('****image****',href);
     // amp-image対応
     let out = `<amp-img src="${href}" alt="${text}"`;
     if (title) {
       out += ` title="${title}"`;
     }
     // width,heightの算出
-    if(/^\//.test(href)){
-      href = new URL(href,config.siteUrl);
+    if (/^\//.test(href)) {
+      href = new URL(href, config.siteUrl);
     }
 
     try {
-      let imgObj = await request({uri:href,encoding: null});
+      let imgObj = await request({ uri: href, encoding: null });
       let size = await sizeOf(imgObj);
       out += ` width="${size.width}" height="${size.height}" layout="responsive">`;
-    } catch(e)
-    {
+    } catch (e) {
       out += ' width="100" height="100" layout="responsive">';
     }
     //const cacheDir = config.cacheDir + config.imageCacheDir;
@@ -259,40 +290,39 @@ class AmpRenderer extends Renderer {
     return out;
   }
 
-  async tex(text){
+  async tex(text) {
     let svg = await texRenderer(text);
-    svg = 
+    svg =
       svg
-        .replace(/style=[`"]?[^`"]*[`"]?/ig,'')
-        .replace(/focusable=[`"]?[^'"]*[`"]?/ig,'');
+        .replace(/style=[`"]?[^`"]*[`"]?/ig, '')
+        .replace(/focusable=[`"]?[^'"]*[`"]?/ig, '');
     return svg;
-  }  
+  }
 
   async custom(text, command, param) {
     console.log(text, command, param);
-    switch (command)
-    {
-    case 'asin':
-      const params = param.split(':');
-      return doAmazonContents(params[0],params[1],params[2],true);
-    case 'adsense':
-      return ampAd;
-    case 'codeWithIframe':
-      try {
-        // まずJSON形式なのか確認
-        let paramjson = Object.assign({amp:true} ,JSON.parse(param));
-        return codeWithIframe(paramjson);
-      } catch (e){
-        return codeWithIframe({srcPath:param,amp:true});
-      }
-    case "iframe":
-      try {
-        // まずJSON形式なのか確認
-        let paramjson = Object.assign({amp:true} ,JSON.parse(param));
-        return iframe_(paramjson);
-      } catch (e){
-        return iframe_({srcPath:param,amp:true});
-      }
+    switch (command) {
+      case 'asin':
+        const params = param.split(':');
+        return doAmazonContents(params[0], params[1], params[2], true);
+      case 'adsense':
+        return ampAd;
+      case 'codeWithIframe':
+        try {
+          // まずJSON形式なのか確認
+          let paramjson = Object.assign({ amp: true }, JSON.parse(param));
+          return codeWithIframe(paramjson);
+        } catch (e) {
+          return codeWithIframe({ srcPath: param, amp: true });
+        }
+      case "iframe":
+        try {
+          // まずJSON形式なのか確認
+          let paramjson = Object.assign({ amp: true }, JSON.parse(param));
+          return iframe_(paramjson);
+        } catch (e) {
+          return iframe_({ srcPath: param, amp: true });
+        }
     }
     return text;
   }
@@ -300,8 +330,7 @@ class AmpRenderer extends Renderer {
 
 
 
-async function codeWithIframe({srcPath,amp = false,iframe = true,thumbnail,width=1024,height=768,srcCode = true,res = true,except = null,sandbox = ''})
-{
+async function codeWithIframe({ srcPath, amp = false, iframe = true, thumbnail, width = 1024, height = 768, srcCode = true, res = true, except = null, sandbox = '' }) {
   // ファイル一覧を作成
   let filePaths = [];
   let index_thumbnail;
@@ -316,55 +345,53 @@ async function codeWithIframe({srcPath,amp = false,iframe = true,thumbnail,width
   function listFile(dir) {
     // .mdディレクトリを再帰的に検索する
     let dirs = fs.readdirSync(config.wwwRootDir + dir);
-    dirs.forEach(d=>{
+    dirs.forEach(d => {
       let p = path.normalize(config.wwwRootDir + dir + d);
       let stats = fs.statSync(p);
       if (stats.isDirectory()) {
         listFile(dir + d + '/');
-      } else if (stats.isFile() && d.match(regpath)) 
-      {
-        filePaths.push(Object.assign({filePath:p,wwwpath:dir + d},path.parse(p)));
+      } else if (stats.isFile() && d.match(regpath)) {
+        filePaths.push(Object.assign({ filePath: p, wwwpath: dir + d }, path.parse(p)));
       }
-      if(stats.isFile() && (/index-thumbnail/i).test(d)){
+      if (stats.isFile() && (/index-thumbnail/i).test(d)) {
         index_thumbnail = dir + d;
-      }      
+      }
     });
   }
 
   listFile(srcPath);
 
-  if(index_thumbnail && !thumbnail) thumbnail = index_thumbnail;
+  if (index_thumbnail && !thumbnail) thumbnail = index_thumbnail;
 
-  let src = '<h4>動作サンプル</h4>'; 
+  let src = '<h4>動作サンプル</h4>';
 
   src += `<p><a href="${srcPath}" target="_blank">新しいウィンドウで開く</a></p>`;
-  
-  if(iframe) {
-    src += iframe_({srcPath:srcPath,amp:amp,width:width,height:height,sandbox});
-  } else if(thumbnail){
-    if(!amp){
+
+  if (iframe) {
+    src += iframe_({ srcPath: srcPath, amp: amp, width: width, height: height, sandbox });
+  } else if (thumbnail) {
+    if (!amp) {
       src += `<a href="${srcPath}" target="_blank" title="新しいウィンドウで開きます。">
 <img src="${thumbnail}" width="${width}" height="${height}" />
 </a>`;
     } else {
       src += `<a href="${srcPath}" target="_blank" title="新しいウィンドウで開きます。"><amp-img src="${thumbnail}" width="${width}" height="${height}" layout="responsive"></amp-image></a>`;
     }
-  } 
-  
-  src += '<h4>ソースコード・リソース</h4>';
-  if(except)
-  {
-    except = new RegExp(except,'i');
   }
-  for(const filePath of filePaths){
-    src +=`<p class="sf-src-url" id="${escape(filePath.base)}"><a href="${filePath.wwwpath}" target="_blank" title="ソースコードを見る">${filePath.wwwpath}</a></p>`;
-    if((/\.(?:jpeg|a?png|gif|bmp|jpg)$/i).test(filePath.ext)){
-      if(res){
-        src += await img({srcPath:filePath.wwwpath,amp:amp});
+
+  src += '<h4>ソースコード・リソース</h4>';
+  if (except) {
+    except = new RegExp(except, 'i');
+  }
+  for (const filePath of filePaths) {
+    src += `<p class="sf-src-url" id="${escape(filePath.base)}"><a href="${filePath.wwwpath}" target="_blank" title="ソースコードを見る">${filePath.wwwpath}</a></p>`;
+    if ((/\.(?:jpeg|a?png|gif|bmp|jpg)$/i).test(filePath.ext)) {
+      if (res) {
+        src += await img({ srcPath: filePath.wwwpath, amp: amp });
       }
     } else {
-      if(srcCode && (!except || !except.test(filePath.wwwpath))){
-        let codeSrc = hljs.highlight(filePath.ext.slice(1).replace('mjs','js'),await fs.readFile(filePath.filePath,'utf-8')).value;
+      if (srcCode && (!except || !except.test(filePath.wwwpath))) {
+        let codeSrc = hljs.highlight(filePath.ext.slice(1).replace('mjs', 'js'), await fs.readFile(filePath.filePath, 'utf-8')).value;
         src += `<pre><code class="hljs">${codeSrc}</code></pre>`;
       }
     }
@@ -372,50 +399,48 @@ async function codeWithIframe({srcPath,amp = false,iframe = true,thumbnail,width
   return src;
 }
 
-async function img({srcPath,amp = false}){
+async function img({ srcPath, amp = false }) {
   let p = srcPath;
   const matches = /^\/(.)/.exec(p);
   let imgObj;
-  if(matches){
-    if(matches[1] == '/') 
-    {
+  if (matches) {
+    if (matches[1] == '/') {
       p = 'https:' + p;
       const url = new URL(p);
-      imgObj = await request({uri:url,encoding: null});
+      imgObj = await request({ uri: url, encoding: null });
     } else {
       p = config.wwwRootDir + p.substr(1);
       imgObj = await fs.readFile(p);
     }
   }
   const size = await sizeOf(imgObj);
-  const width = size.width,height = size.height;
-  if(!amp){
+  const width = size.width, height = size.height;
+  if (!amp) {
     return `<img src="${srcPath}" width="${width}" height="${height}" />`;
   } else {
     return `<amp-img src="${srcPath}" width="${width}" height="${height}" layout="responsive"></amp-image>`;
-  } 
+  }
 }
 
-function iframe_({srcPath,amp = false,width=1024,height=768,sandbox = ''})
-{
+function iframe_({ srcPath, amp = false, width = 1024, height = 768, sandbox = '' }) {
 
   let src = '';
   let matches = /^\/(.)/.exec(srcPath);
-  if(matches){
-    if(matches[1] != '/'){
+  if (matches) {
+    if (matches[1] != '/') {
       srcPath = config.alterUrl + srcPath.substr(1);
     } else {
-      srcPath = srcPath.replace(/\/\/www\.sfpgmr\.net\//i,config.alterUrl);
+      srcPath = srcPath.replace(/\/\/www\.sfpgmr\.net\//i, config.alterUrl);
     }
   } else {
-    srcPath =  srcPath.replace(/(?:https?:)?\/\/www\.sfpgmr\.net\//i,config.alterUrl);
+    srcPath = srcPath.replace(/(?:https?:)?\/\/www\.sfpgmr\.net\//i, config.alterUrl);
   }
 
-  if(amp){
+  if (amp) {
     src = `<amp-iframe src="${srcPath}" width="${width}" height="${height}" frameboarder="0" sandbox="allow-scripts allow-presentation allow-same-origin ${sandbox}" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
   } else {
     src = `
-    <div class="embed-responsive" style="padding-top:${Math.round(height/width * 10000)/100}%">
+    <div class="embed-responsive" style="padding-top:${Math.round(height / width * 10000) / 100}%">
     <iframe src="${srcPath}" frameborder="0" scrolling="no" width="${width}" height="${height}" sandbox="allow-scripts allow-presentation allow-same-origin ${sandbox}"></iframe>
     </div>
     `;
@@ -425,6 +450,7 @@ function iframe_({srcPath,amp = false,width=1024,height=768,sandbox = ''})
 
 
 module.exports = {
-  NormalRenderer:NormalRenderer,
-  AmpRenderer:AmpRenderer
+  NormalRenderer: NormalRenderer,
+  AmpRenderer: AmpRenderer,
+  amazonCache:amazonCache
 };

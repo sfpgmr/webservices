@@ -44,7 +44,7 @@ const Feed = require('feed');
 const uuid = require('uuid');
 
 // marked用カスタムレンダラ
-const {NormalRenderer,AmpRenderer} = require('./sf-renderer');
+const {NormalRenderer,AmpRenderer,amazonCache} = require('./sf-renderer');
 
 // 通常HTML記事生成テンプレート
 const template = ejs.compile(
@@ -868,6 +868,7 @@ async function update() {
       await exec('git --no-pager push -f --quiet',opt);
     }
   }
+  await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
 }
 
 /**初期設定 */
@@ -926,7 +927,8 @@ async function create() {
   // Atom Feedの生成
   await generateAtom(entries);
 
-  for (let i = 0, e = entries.length; i < e; ++i) {
+  for (let i = 
+    0, e = entries.length; i < e; ++i) {
     const doc = entries[i];
     console.log(`${doc.mdPath}を処理中`);
     doc.index = i;
@@ -950,6 +952,8 @@ async function create() {
       console.warn(m,e);
       ampContent = m + '\n' + e.stack;
     }
+    
+    console.log('parse完了');
 
     // normal HTML
     await fs.outputFile(doc.contentPath + '.html',
@@ -978,6 +982,7 @@ async function create() {
         }
       })
       , 'utf-8');  
+      console.log('出力完了:' + doc.contentPath);
   }
 
   //await db.entries.insert(docs);
@@ -1005,6 +1010,7 @@ async function create() {
       console.error(e.stdout || e);
     }
   }
+  await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
 }
 
 /**再構築 */

@@ -11,7 +11,7 @@
     "name": "build-blog",
     "program": "${workspaceFolder}/commands/build-blog.js",
     "args": [
-      "update"
+      "reset"
     ],
     "useWSL": true
   },

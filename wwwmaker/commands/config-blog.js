@@ -17,7 +17,7 @@ module.exports = {
   cacheDir: './data/blog/temp/cache/',
   imageCacheDir: 'image/',
   repoMdDir: 'blog/contents/',
-  //repoMdDir: 'wwwmaker/data/blog/test',
+  //repoMdDir: 'blog/contents/',
   entriesPath: './data/blog/entries.json',
   //entriesPath: './data/blog/entries-test.json',
   siteUrl: 'https://www.sfpgmr.net/',

@@ -68,7 +68,14 @@ function parseAttributes(attrbStr){
   let p = attrbStr.trim().split(/\s/g);
   let attribs = {};
   for(let i = 0,e = p.length;i < e;++i){
-    let attrib =p[i].split(/=/);
+    let att = p[i];
+    let pos = att.indexOf('=');
+    if(pos == -1){
+      attribs[att] = att;
+      continue; 
+    } 
+
+    let attrib = [att.substr(0,pos),att.substr(pos+1)];
     
     attrib[0] = attrib[0].trim().toLowerCase();
     attrib[1] = (attrib[1] && attrib[1].trim().replace(/^['"]?([^`"]*)['"]?$/,'$1')) || '';

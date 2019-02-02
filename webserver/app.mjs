@@ -43,7 +43,7 @@ app.use(function(req, res, next) {
 });
 app.use('/metrop/',expressStaticGzip(resolveHome('../metrop/html/'),staticOpts));
 app.use('/images/',expressStaticGzip(resolveHome('~/www/images/'),staticOpts));
-app.use('/blog/',expressStaticGzip(resolveHome('~/www/blog/'),staticOpts));
+app.use('/blog/',expressStaticGzip(resolveHome('~/www/blog/contents/'),staticOpts));
 app.use('/content/',expressStaticGzip(resolveHome('~/www/images/content'),staticOpts));
 
 app.use('/javascripts/',expressStaticGzip(resolveHome('~/www/node/webserver/public/javascripts/'),staticOpts));

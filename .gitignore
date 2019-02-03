@@ -32,3 +32,5 @@ hidden
 data
 password
 secret
+log*.*
+amazon-cache.json

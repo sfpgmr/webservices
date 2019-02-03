@@ -6,6 +6,7 @@
 @import "./amazon.css";
 @import "./legacy-support.css";
 @import "./hljs.css";
+/*@import "./katex.css";*/
 
 /* デバイス共通属性 */
 @media screen {

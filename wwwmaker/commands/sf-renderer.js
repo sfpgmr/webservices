@@ -19,31 +19,36 @@ const katex = require('katex');
 
 // tex描画エンジン
 
-// function texRenderer(tex) {
-//   //tex = tex.replace(/\\([\[\]])/ig,'$1');
-//   return new Promise((resolve, reject) => {
-//     mjApi.typeset({
-//       math: tex,
-//       format: 'TeX',
-//       svg: true
-//     }, (data) => {
-//       if (data.errors) reject(new Error(data.errors.join('\n')));
-//       //console.log(data.svg);
-//       resolve(data.svg);
-//     });
-//   });
-// }
+function texRenderer(tex) {
+  tex = tex.replace(/\\([\[\]])/ig,'$1');
 
-function texRenderer(tex){
-  return new Promise((resolve,reject)=>{
-    try {
-      let res = katex.renderToString(tex);
-      resolve(res);
-    } catch (e) {
-      reject(e);
-    }
+  return new Promise((resolve, reject) => {
+    mjApi.typeset({
+      math: tex,
+      format: 'TeX',
+      svg: true
+    }, (data) => {
+      if (data.errors) reject(new Error(data.errors.join('\n')));
+      //console.log(data.svg);
+      console.log(`****mathjax**** tex:"${tex}" svg:"${data.svg}"`);
+      resolve(data.svg);
+    });
   });
 }
+
+// function texRenderer(tex){
+//   return new Promise((resolve,reject)=>{
+//     try {
+//       let res = katex.renderToString(tex);
+//       console.log('####katex####');
+//       console.log(tex);
+//       console.log(res);
+//       resolve(res);
+//     } catch (e) {
+//       reject(e);
+//     }
+//   });
+// }
 
 let amazonCache;
 try {

@@ -13,7 +13,7 @@ import bodyParser from 'body-parser';
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
-app.use(bodyParser.json({limit:'50mb'}));
+//app.use(bodyParser.json({limit:'50mb'}));
 //app.use(expressHTTP2Workaround({express:express,http2:http2 }));
 const staticOpts = {
   extensions:['html','htm'],

@@ -4,7 +4,8 @@ const util = require('util');
 const exec =  util.promisify(require('child_process').exec);
 const blogConfig = require('./config-blog');
 
-const rootDir = '../' + blogConfig.contentRoot;
+//const rootDir = '../' + blogConfig.contentRoot;
+const rootDir = blogConfig.destEjsDir;
 
 async function gzContents() {
   // ファイル一覧を作成

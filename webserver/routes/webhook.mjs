@@ -117,7 +117,8 @@ function compressGzip(path) {
 //   }
 // });
 
-router.post('/', bodyParser.json({limit:'50mb'}),(req, res,next) => {
+//router.post('/', bodyParser.json({limit:'50mb'}),(req, res,next) => {
+router.post('/',(req, res,next) => {
   try {
     handler(req, res);
   } catch(e) {

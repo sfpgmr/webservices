@@ -1668,7 +1668,8 @@ function compressGzip(path$$1) {
 //   }
 // });
 
-router$1.post('/', bodyParser.json({limit:'50mb'}),(req, res,next) => {
+//router.post('/', bodyParser.json({limit:'50mb'}),(req, res,next) => {
+router$1.post('/',(req, res,next) => {
   try {
     handler(req, res);
   } catch(e) {
@@ -1722,9 +1723,10 @@ app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/publ
 //app.use('/users', usersRouter);
 app.use('/tumblr/',router);
 //app.use('/tumblr',tumblerRouter);
-//app.use('/webhook',webhookRouter);
-app.use(bodyParser());
-app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),router$1);
+app.use(bodyParser.json({limit:'50mb',parameterLimit:50000}));
+app.use(bodyParser.urlencoded({ extended: true,limit:'50mb',parameterLimit:50000 }));
+app.use('/webhook',router$1);
+//app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
 
 app.use('/',expressStaticGzip(resolveHome('~/www/html/contents/')));
 

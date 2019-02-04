@@ -9,10 +9,11 @@ import webhookRouter from './routes/webhook.mjs';
 import xhub from 'express-x-hub';
 import fs from 'fs';
 import resolveHome from './resolveHome.mjs';
-import bodyParser from 'body-parser';
+//import bodyParser from 'body-parser';
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
+app.use(express.json({limit:'50mb'}));
 //app.use(bodyParser.json({limit:'50mb'}));
 //app.use(expressHTTP2Workaround({express:express,http2:http2 }));
 const staticOpts = {
@@ -55,8 +56,8 @@ app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/publ
 //app.use('/users', usersRouter);
 app.use('/tumblr/',tumblerRouter);
 //app.use('/tumblr',tumblerRouter);
-app.use(bodyParser.json({limit:'100mb',parameterLimit:50000}));
-app.use(bodyParser.urlencoded({ extended: true,limit:'100mb',parameterLimit:50000 }));
+//app.use(bodyParser.json({limit:'100mb',parameterLimit:50000}));
+//app.use(bodyParser.urlencoded({ extended: true,limit:'100mb',parameterLimit:50000 }));
 app.use('/webhook',webhookRouter);
 //app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
 

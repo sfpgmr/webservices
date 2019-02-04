@@ -30,7 +30,7 @@ var os = _interopDefault(require('os'));
 var zlib = _interopDefault(require('zlib'));
 var child_process = require('child_process');
 var queue = _interopDefault(require('async/queue'));
-var bodyParser = _interopDefault(require('body-parser'));
+require('body-parser');
 var xhub = _interopDefault(require('express-x-hub'));
 var socket_io = _interopDefault(require('socket.io'));
 var http2 = _interopDefault(require('spdy'));
@@ -1678,9 +1678,11 @@ router$1.post('/',(req, res,next) => {
   }
 });
 
+//import bodyParser from 'body-parser';
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
+app.use(express.json({limit:'50mb'}));
 //app.use(bodyParser.json({limit:'50mb'}));
 //app.use(expressHTTP2Workaround({express:express,http2:http2 }));
 const staticOpts = {
@@ -1723,8 +1725,8 @@ app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/publ
 //app.use('/users', usersRouter);
 app.use('/tumblr/',router);
 //app.use('/tumblr',tumblerRouter);
-app.use(bodyParser.json({limit:'100mb',parameterLimit:50000}));
-app.use(bodyParser.urlencoded({ extended: true,limit:'100mb',parameterLimit:50000 }));
+//app.use(bodyParser.json({limit:'100mb',parameterLimit:50000}));
+//app.use(bodyParser.urlencoded({ extended: true,limit:'100mb',parameterLimit:50000 }));
 app.use('/webhook',router$1);
 //app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
 

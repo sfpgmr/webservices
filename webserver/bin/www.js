@@ -1723,8 +1723,8 @@ app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/publ
 //app.use('/users', usersRouter);
 app.use('/tumblr/',router);
 //app.use('/tumblr',tumblerRouter);
-app.use(bodyParser.json({limit:'50mb',parameterLimit:50000}));
-app.use(bodyParser.urlencoded({ extended: true,limit:'50mb',parameterLimit:50000 }));
+app.use(bodyParser.json({limit:'100mb',parameterLimit:50000}));
+app.use(bodyParser.urlencoded({ extended: true,limit:'100mb',parameterLimit:50000 }));
 app.use('/webhook',router$1);
 //app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
 

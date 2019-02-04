@@ -55,8 +55,8 @@ app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/publ
 //app.use('/users', usersRouter);
 app.use('/tumblr/',tumblerRouter);
 //app.use('/tumblr',tumblerRouter);
-//app.use('/webhook',webhookRouter);
-app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
+app.use('/webhook',webhookRouter);
+//app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
 
 app.use('/',expressStaticGzip(resolveHome('~/www/html/contents/')));
 

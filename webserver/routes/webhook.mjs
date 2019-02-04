@@ -10,17 +10,19 @@ import util from 'util';
 import resolveHome from '../resolveHome.mjs';
 
 import queue from 'async/queue';
+import bodyParser from 'body-parser';
 
 const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
 const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024};
 
+
 // コンテンツを更新する処理
 const q = queue(
 async function (payload) {
   try {
-    console.log(opt.uid);
+    //process.setuid(process.env['GIT_UID']);
     let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
     console.log(res.stdout,res.stderr);
     res = await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
@@ -48,6 +50,7 @@ async function (payload) {
   } catch (e) {
     console.log(e.stack);
   }
+  //process.setuid(process.env['WWW_UID']);
 });
 
 q.drain = ()=>{
@@ -65,9 +68,9 @@ function handler(req, res) {
     return hasError('No X-Hub Signature.');
   }
 
-  if (!req.isXHubValid()) {
+  /*if (!req.isXHubValid()) {
      return hasError('X-Hub-Signature is not valid.');
-  }
+  }*/
 
   
   const payload = req.body,
@@ -105,16 +108,16 @@ function compressGzip(path) {
   });
 }
 
-router.use('/index.html', (req, res,next) => {
-  try {
-    handler(req, res);
-  } catch(e) {
-    console.log(e);
-    next();
-  }
-});
+// router.post('/index.html', bodyParser.json({limit:'50mb'}),(req, res,next) => {
+//   try {
+//     handler(req, res);
+//   } catch(e) {
+//     console.log(e);
+//     next();
+//   }
+// });
 
-router.use('/', (req, res,next) => {
+router.post('/', bodyParser.json({limit:'50mb'}),(req, res,next) => {
   try {
     handler(req, res);
   } catch(e) {

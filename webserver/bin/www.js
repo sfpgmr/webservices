@@ -28,10 +28,10 @@ var express = _interopDefault(require('express'));
 var zlib = _interopDefault(require('zlib'));
 var child_process = require('child_process');
 var queue = _interopDefault(require('async/queue'));
+var bodyParser = _interopDefault(require('body-parser'));
 var cookieParser = _interopDefault(require('cookie-parser'));
 var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
-var bodyParser = _interopDefault(require('body-parser'));
 var socket_io = _interopDefault(require('socket.io'));
 var http2 = _interopDefault(require('spdy'));
 
@@ -1571,11 +1571,12 @@ const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
 const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024};
 
+
 // コンテンツを更新する処理
 const q = queue(
 async function (payload) {
   try {
-    console.log(opt.uid);
+    //process.setuid(process.env['GIT_UID']);
     let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
     console.log(res.stdout,res.stderr);
     res = await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt);
@@ -1600,6 +1601,7 @@ async function (payload) {
     }  } catch (e) {
     console.log(e.stack);
   }
+  //process.setuid(process.env['WWW_UID']);
 });
 
 q.drain = ()=>{
@@ -1617,9 +1619,9 @@ function handler(req, res) {
     return hasError('No X-Hub Signature.');
   }
 
-  if (!req.isXHubValid()) {
+  /*if (!req.isXHubValid()) {
      return hasError('X-Hub-Signature is not valid.');
-  }
+  }*/
 
   
   const payload = req.body,
@@ -1657,16 +1659,16 @@ function compressGzip(path$$1) {
   });
 }
 
-router$1.use('/index.html', (req, res,next) => {
-  try {
-    handler(req, res);
-  } catch(e) {
-    console.log(e);
-    next();
-  }
-});
+// router.post('/index.html', bodyParser.json({limit:'50mb'}),(req, res,next) => {
+//   try {
+//     handler(req, res);
+//   } catch(e) {
+//     console.log(e);
+//     next();
+//   }
+// });
 
-router$1.use('/', (req, res,next) => {
+router$1.post('/', bodyParser.json({limit:'50mb'}),(req, res,next) => {
   try {
     handler(req, res);
   } catch(e) {
@@ -1720,8 +1722,8 @@ app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/publ
 //app.use('/users', usersRouter);
 app.use('/tumblr/',router);
 //app.use('/tumblr',tumblerRouter);
-//app.use('/webhook',webhookRouter);
-app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),router$1);
+app.use('/webhook',router$1);
+//app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
 
 app.use('/',expressStaticGzip(resolveHome('~/www/html/contents/')));
 

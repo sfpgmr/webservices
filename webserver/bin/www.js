@@ -3,15 +3,11 @@
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
 var createError = _interopDefault(require('http-errors'));
-var express = _interopDefault(require('express'));
-var encodeUrl = _interopDefault(require('encodeurl'));
-var escapeHtml = _interopDefault(require('escape-html'));
-var parseUrl = _interopDefault(require('parseurl'));
-var path = require('path');
-var path__default = _interopDefault(path);
 var dbg = _interopDefault(require('debug'));
 var depd = _interopDefault(require('depd'));
 var destroy = _interopDefault(require('destroy'));
+var encodeUrl = _interopDefault(require('encodeurl'));
+var escapeHtml = _interopDefault(require('escape-html'));
 var etag = _interopDefault(require('etag'));
 var fresh = _interopDefault(require('fresh'));
 var fs = _interopDefault(require('fs'));
@@ -19,18 +15,22 @@ var mime = _interopDefault(require('mime'));
 var ms = _interopDefault(require('ms'));
 var onFinished = _interopDefault(require('on-finished'));
 var parseRange = _interopDefault(require('range-parser'));
+var path = require('path');
+var path__default = _interopDefault(path);
 var statuses = _interopDefault(require('statuses'));
 var Stream = _interopDefault(require('stream'));
 var util = _interopDefault(require('util'));
+var parseUrl = _interopDefault(require('parseurl'));
 var url = _interopDefault(require('url'));
-var cookieParser = _interopDefault(require('cookie-parser'));
-var logger = _interopDefault(require('morgan'));
-var http = _interopDefault(require('http'));
 var os = _interopDefault(require('os'));
+var http = _interopDefault(require('http'));
+var express = _interopDefault(require('express'));
 var zlib = _interopDefault(require('zlib'));
 var child_process = require('child_process');
 var queue = _interopDefault(require('async/queue'));
 require('body-parser');
+var cookieParser = _interopDefault(require('cookie-parser'));
+var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
 var socket_io = _interopDefault(require('socket.io'));
 var http2 = _interopDefault(require('spdy'));
@@ -1682,8 +1682,8 @@ router$1.post('/',(req, res,next) => {
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
-app.use(xhub({ limit:'50mb',algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
-app.use(express.json({limit:'50mb'}));
+app.use(xhub({ limit:'10mb',algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
+app.use(express.json({limit:'10mb'}));
 //app.use(bodyParser.json({limit:'50mb'}));
 //app.use(expressHTTP2Workaround({express:express,http2:http2 }));
 const staticOpts = {

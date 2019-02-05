@@ -1683,7 +1683,6 @@ router$1.post('/',(req, res,next) => {
 //import expressHTTP2Workaround from 'express-http2-workaround';
 const app = express();
 app.use(express.json({limit:'50mb'}));
-app.use(xhub({ algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 //app.use(bodyParser.json({limit:'50mb'}));
 //app.use(expressHTTP2Workaround({express:express,http2:http2 }));
 const staticOpts = {
@@ -1697,6 +1696,7 @@ app.set('view engine', 'ejs');
 app.enable('strict routing');
 
 app.use(logger('combined'));
+app.use(xhub({ limit:'50mb',algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 
 
 

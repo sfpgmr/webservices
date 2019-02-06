@@ -34,3 +34,4 @@ password
 secret
 log*.*
 amazon-cache.json
+img-cache.json

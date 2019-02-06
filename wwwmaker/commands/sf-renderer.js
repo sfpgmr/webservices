@@ -53,11 +53,29 @@ function texRenderer(tex) {
 let amazonCache;
 try {
   let s = fs.statSync('./amazon-cache.json');
+  
   if (s.isFile) {
     amazonCache = new Map(JSON.parse(fs.readFileSync('./amazon-cache.json', 'utf-8')));
   }
 } catch (e) {
   amazonCache = new Map();
+}
+
+let imgCache;
+// イメージのキャッシュ
+try {
+  let s = fs.statSync('./img-cache.json');
+  
+  if (s.isFile) {
+    imgCache = new Map(JSON.parse(fs.readFileSync('./img-cache.json', 'utf-8')));
+  }
+} catch (e) {
+  imgCache = new Map();
+}
+
+async function saveCache(){
+  await fs.writeFile('./img-cache.json',JSON.stringify([...imgCache]),'utf-8');
+  await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
 }
 
 const amazonIds = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/wwwmaker/amazon.json')));
@@ -99,7 +117,6 @@ const noimage = `<svg width="64" height="64" xmlns="http://www.w3.org/2000/svg">
 `;
 
 async function doAmazonContents(asin, p1, p2, amp = false) {
-  return '';
   let resp = null;
   let retry = 10;
   const imgTag = amp ? 'amp-img' : 'img';
@@ -135,6 +152,9 @@ async function doAmazonContents(asin, p1, p2, amp = false) {
   } else {
     item = amazonCache.get(asin);
   }
+  
+  console.log('****amazon***',item.DetailPageURL);
+
   let content = '';
   switch (p1) {
     case 'image':
@@ -233,6 +253,11 @@ class AmpRenderer extends Renderer {
     super(options);
     const url = new URL(config.siteUrl);
     this.scheme = url.protocol;
+
+  }
+
+  saveCache(){
+    return 
   }
 
   async html(html) {
@@ -284,8 +309,15 @@ class AmpRenderer extends Renderer {
     }
 
     try {
-      let imgObj = await request({ uri: href, encoding: null });
-      let size = await sizeOf(imgObj);
+      let imgObj;
+      let size;
+      if(imgCache.has(href)){
+        size = imgCache.get(href);
+      } else {
+        imgObj = await request({ uri: href, encoding: null });
+        size = await sizeOf(imgObj);
+        imgCache.set(href,{width:size.width,height:size.height});
+      }
       out += ` width="${size.width}" height="${size.height}" layout="responsive">`;
     } catch (e) {
       out += ' width="100" height="100" layout="responsive">';
@@ -457,5 +489,5 @@ function iframe_({ srcPath, amp = false, width = 1024, height = 768, sandbox = '
 module.exports = {
   NormalRenderer: NormalRenderer,
   AmpRenderer: AmpRenderer,
-  amazonCache:amazonCache
+  saveCache:saveCache
 };

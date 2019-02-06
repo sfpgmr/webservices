@@ -30,11 +30,12 @@ async function (payload) {
     // 変更のあったファイルをgzip圧縮する
     let commits = payload.commits;
     if (commits.length > 0) {
+
       for (const commit of commits) {
         let files = [];
         (commit.added && commit.added.length > 0) && (files.push(...commit.added));
         (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
-        //console.log(commit,files);
+        console.log(commit,files);
         // 追加更新ファイル
         for (const path of files) {
           await compressGzip(homeDir + path);

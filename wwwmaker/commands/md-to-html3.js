@@ -44,7 +44,7 @@ const Feed = require('feed');
 const uuid = require('uuid');
 
 // marked用カスタムレンダラ
-const {NormalRenderer,AmpRenderer,amazonCache} = require('./sf-renderer');
+const {NormalRenderer,AmpRenderer,saveCache} = require('./sf-renderer');
 
 // 通常HTML記事生成テンプレート
 const template = ejs.compile(
@@ -868,7 +868,8 @@ async function update() {
       await exec('git --no-pager push -f --quiet',opt);
     }
   }
-  await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
+  //await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
+  await saveCache();
 }
 
 /**初期設定 */
@@ -1010,7 +1011,8 @@ async function create() {
       console.error(e.stdout || e);
     }
   }
-  await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
+  await saveCache();
+  //await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
 }
 
 /**再構築 */

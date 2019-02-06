@@ -1,2 +1,3 @@
 #!/bin/bash
+#  node --inspect-brk ./commands/build-blog $1 
 node ./commands/build-blog $1 

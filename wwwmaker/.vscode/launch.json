@@ -24,8 +24,7 @@
     {
       "type": "node",
       "request": "attach",
-      "name": "Attach Program",
-      "port": 38994
+      "name": "Attach Program"
     }
   ]
 }

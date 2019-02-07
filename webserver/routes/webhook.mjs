@@ -29,16 +29,17 @@ async function (payload) {
     console.log(res.stdout,res.stderr);
     // 変更のあったファイルをgzip圧縮する
     let commits = payload.commits;
-    console.log('****commits****',commits);
+    console.log('****commits****',commits.length);
     if (commits.length > 0) {
 
       for (const commit of commits) {
         let files = [];
         (commit.added && commit.added.length > 0) && (files.push(...commit.added));
         (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
-        console.log(commit,files);
+        console.log(files.length);
         // 追加更新ファイル
         for (const path of files) {
+          console.log(homeDir + path);
           await compressGzip(homeDir + path);
         };
         // 削除ファイル

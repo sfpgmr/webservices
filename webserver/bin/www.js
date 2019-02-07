@@ -1583,7 +1583,7 @@ async function (payload) {
     console.log(res.stdout,res.stderr);
     // 変更のあったファイルをgzip圧縮する
     let commits = payload.commits;
-    console.log('****commits****',commits.length);
+    console.log('****commits****',commits);
     if (commits.length > 0) {
 
       for (const commit of commits) {

@@ -320,7 +320,9 @@ class AmpRenderer extends Renderer {
       }
       out += ` width="${size.width}" height="${size.height}" layout="responsive">`;
     } catch (e) {
+      console.log('**** failed ****')
       out += ' width="100" height="100" layout="responsive">';
+      imgCache.set(href,{width:100,height:100,error:e.code || true});
     }
     //const cacheDir = config.cacheDir + config.imageCacheDir;
     out += '</amp-img>';

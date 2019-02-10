@@ -28,7 +28,6 @@ var express = _interopDefault(require('express'));
 var zlib = _interopDefault(require('zlib'));
 var child_process = require('child_process');
 var queue = _interopDefault(require('async/queue'));
-require('body-parser');
 var cookieParser = _interopDefault(require('cookie-parser'));
 var logger = _interopDefault(require('morgan'));
 var xhub = _interopDefault(require('express-x-hub'));
@@ -1625,9 +1624,9 @@ function handler(req, res) {
     return hasError('No X-Hub Signature.');
   }
 
-  /*if (!req.isXHubValid()) {
+  if (!req.isXHubValid()) {
      return hasError('X-Hub-Signature is not valid.');
-  }*/
+  }
 
   
   const payload = req.body,

@@ -1593,8 +1593,8 @@ async function (payload) {
         console.log(files.length);
         // 追加更新ファイル
         for (const path$$1 of files) {
-          console.log(homeDir + path$$1);
           await compressGzip(homeDir + path$$1);
+          console.log(homeDir + path$$1);
         }        // 削除ファイル
         if (commit.removed && commit.removed.length > 0) {
           for (const path$$1 of commit.removed) {

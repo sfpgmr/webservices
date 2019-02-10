@@ -1601,6 +1601,9 @@ async function (payload) {
             await fs.promises.unlink(homeDir + path$$1 + '.gz');
           }        }
       }
+
+      console.log('****commits****',files);
+
     }  } catch (e) {
     console.log(e.stack);
   }

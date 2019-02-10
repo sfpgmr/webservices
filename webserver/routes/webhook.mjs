@@ -49,6 +49,9 @@ async function (payload) {
           };
         }
       }
+
+      console.log('****commits****',files);
+
     };
   } catch (e) {
     console.log(e.stack);

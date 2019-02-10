@@ -160,7 +160,7 @@ async function updateBlogPosting(mdPath,content,blogPosting,postAttr){
     const shasum = crypto.createHash('md5');
     shasum.update(content);
     let hash = shasum.digest('hex');
-    let url = new URL(blogConfig.siteUrl + blogConfig.siteContentPath + yearMonthPath + '/' + hash);
+    let url = new URL(blogConfig.siteUrl + blogConfig.siteBlogRoot + blogConfig.siteContentPath + yearMonthPath + '/' + hash);
     postAttr.blogPosting.url = blogPosting.url = postAttr.blogPosting.url = url.toString();
     
   } else {
@@ -994,18 +994,18 @@ async function create() {
   if(blogConfig.pushAutomatic){
     try {
 
-      const optDest = {cwd:blogConfig.destBasePath};
-      await spawn('git', ['add', '--all'],optDest);
-      await exec('git --no-pager commit -m "create content" --quiet',optDest);
-      await exec('git --no-pager push -f --quiet',optDest);
+      const optDest = {cwd:blogConfig.destRepoDir};
+      await spawn('git', ['-C',blogConfig.destRepoDir,'add', '--all'],optDest);
+      await exec(`git --no-pager -C ${blogConfig.destRepoDir} commit -m "create content" --quiet`,optDest);
+      await exec(`git --no-pager -C ${blogConfig.destRepoDir} push -f --quiet`,optDest);
 
-      await exec('git gc --quiet',optDest);
-      await exec('git prune',optDest);
+      await exec(`git -C ${blogConfig.destRepoDir} gc --quiet`,optDest);
+      await exec(`git -C ${blogConfig.destRepoDir} prune`,optDest);
       
-      const opt = {cwd:blogConfig.mdDir};
-      await spawn('git', ['add', '--all'],opt);
-      await exec('git --no-pager commit -m "update content" --quiet',opt);
-      await exec('git --no-pager push -f --quiet',opt);
+      const opt = {cwd:blogConfig.mdRepoDir};
+      await spawn('git', ['-C',blogConfig.mdRepoDir,'add', '--all'],opt);
+      await exec(`git --no-pager -C ${blogConfig.mdRepoDir} commit -m "update content" --quiet`,opt);
+      await exec(`git --no-pager -C ${blogConfig.mdRepoDir} push -f --quiet`,opt);
   
     } catch (e) {
       console.error(e.stdout || e);

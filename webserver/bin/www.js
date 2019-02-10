@@ -1600,9 +1600,9 @@ async function (payload) {
           for (const path$$1 of commit.removed) {
             await fs.promises.unlink(homeDir + path$$1 + '.gz');
           }        }
+        console.log('****gzip end****');
       }
 
-      console.log('****commits****',files);
 
     }  } catch (e) {
     console.log(e.stack);

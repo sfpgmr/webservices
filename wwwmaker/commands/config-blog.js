@@ -30,7 +30,7 @@ module.exports = {
   siteAtomDir:'feed/',
   ampDir:'amp/',
   contentRoot:'contents/',
-  pushAutomatic:false,
+  pushAutomatic:true,
   author:'SFPGMR',
   authorLink:'https://www.sfpgmr.net/profile.html#sfpgmr',
   'json-ld':{

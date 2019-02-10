@@ -39,8 +39,8 @@ async function (payload) {
         console.log(files.length);
         // 追加更新ファイル
         for (const path of files) {
-          console.log(homeDir + path);
           await compressGzip(homeDir + path);
+          console.log(homeDir + path);
         };
         // 削除ファイル
         if (commit.removed && commit.removed.length > 0) {

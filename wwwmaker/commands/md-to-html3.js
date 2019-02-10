@@ -858,14 +858,24 @@ async function update() {
     await generateSiteMap(entries, [], archiveDate);
     await fs.writeFile(blogConfig.entriesPath, JSON.stringify(entries), 'utf-8');
     if(blogConfig.pushAutomatic){
-      const optDest = {cwd:blogConfig.destBasePath};
-      await spawn('git', ['add', '--all'],optDest);
-      await exec('git --no-pager commit -m "update content" --quiet',optDest);
-      await exec('git --no-pager push -f --quiet',optDest);
-
-      await spawn('git', ['add', '--all'],opt);
-      await exec('git --no-pager commit -m "update content" --quiet',opt);
-      await exec('git --no-pager push -f --quiet',opt);
+      try {
+  
+        const optDest = {/*cwd:blogConfig.destRepoDir*/};
+        await spawn('git', ['-C',blogConfig.destRepoDir,'add', '--all'],optDest);
+        await exec(`git --no-pager -C ${blogConfig.destRepoDir} commit -m "create content" --quiet`,optDest);
+        await exec(`git --no-pager -C ${blogConfig.destRepoDir} push -f --quiet`,optDest);
+  
+        await exec(`git -C ${blogConfig.destRepoDir} gc --quiet`,optDest);
+        await exec(`git -C ${blogConfig.destRepoDir} prune`,optDest);
+        
+        const opt = {/*cwd:blogConfig.mdRepoDir*/};
+        await spawn('git', ['-C',blogConfig.mdRepoDir,'add', '--all'],opt);
+        await exec(`git --no-pager -C ${blogConfig.mdRepoDir} commit -m "update content" --quiet`,opt);
+        await exec(`git --no-pager -C ${blogConfig.mdRepoDir} push -f --quiet`,opt);
+    
+      } catch (e) {
+        console.error(e.stdout || e);
+      }
     }
   }
   //await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
@@ -994,7 +1004,7 @@ async function create() {
   if(blogConfig.pushAutomatic){
     try {
 
-      const optDest = {cwd:blogConfig.destRepoDir};
+      const optDest = {/*cwd:blogConfig.destRepoDir*/};
       await spawn('git', ['-C',blogConfig.destRepoDir,'add', '--all'],optDest);
       await exec(`git --no-pager -C ${blogConfig.destRepoDir} commit -m "create content" --quiet`,optDest);
       await exec(`git --no-pager -C ${blogConfig.destRepoDir} push -f --quiet`,optDest);
@@ -1002,7 +1012,7 @@ async function create() {
       await exec(`git -C ${blogConfig.destRepoDir} gc --quiet`,optDest);
       await exec(`git -C ${blogConfig.destRepoDir} prune`,optDest);
       
-      const opt = {cwd:blogConfig.mdRepoDir};
+      const opt = {/*cwd:blogConfig.mdRepoDir*/};
       await spawn('git', ['-C',blogConfig.mdRepoDir,'add', '--all'],opt);
       await exec(`git --no-pager -C ${blogConfig.mdRepoDir} commit -m "update content" --quiet`,opt);
       await exec(`git --no-pager -C ${blogConfig.mdRepoDir} push -f --quiet`,opt);

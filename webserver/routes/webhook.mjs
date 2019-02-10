@@ -48,9 +48,9 @@ async function (payload) {
             await fs.promises.unlink(homeDir + path + '.gz');
           };
         }
+        console.log('****gzip end****');
       }
 
-      console.log('****commits****',files);
 
     };
   } catch (e) {

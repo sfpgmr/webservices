@@ -10,7 +10,6 @@ import util from 'util';
 import resolveHome from '../resolveHome.mjs';
 
 import queue from 'async/queue';
-import bodyParser from 'body-parser';
 
 const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');
@@ -74,9 +73,9 @@ function handler(req, res) {
     return hasError('No X-Hub Signature.');
   }
 
-  /*if (!req.isXHubValid()) {
+  if (!req.isXHubValid()) {
      return hasError('X-Hub-Signature is not valid.');
-  }*/
+  }
 
   
   const payload = req.body,

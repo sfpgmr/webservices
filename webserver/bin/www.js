@@ -1568,48 +1568,55 @@ const router$1 = express.Router();
 const exec = util.promisify(child_process.exec);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024};
+const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 3000 * 1024 };
 
 
 // コンテンツを更新する処理
 const q = queue(
-async function (payload) {
-  try {
-    //process.setuid(process.env['GIT_UID']);
-    let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
-    console.log(res.stdout,res.stderr);
-    res = await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt);
-    console.log(res.stdout,res.stderr);
-    // 変更のあったファイルをgzip圧縮する
-    let commits = payload.commits;
-    console.log('****commits****',commits.length);
-    if (commits.length > 0) {
+  async function (payload) {
+    try {
+      //process.setuid(process.env['GIT_UID']);
+      let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
+      console.log(res.stdout, res.stderr);
+      res = await exec(`/usr/bin/git  reset --hard origin/master`, opt);
+      res = await exec(`/usr/bin/git --no-pager -C ${repoDir} diff ${payload.before}...HEAD -C -M --name-status --relative`, opt);
 
-      for (const commit of commits) {
-        let files = [];
-        (commit.added && commit.added.length > 0) && (files.push(...commit.added));
-        (commit.modified && commit.modified.length > 0) && (files.push(...commit.modified));
-        console.log(files.length);
-        // 追加更新ファイル
-        for (const path$$1 of files) {
-          await compressGzip(homeDir + path$$1);
-          console.log(homeDir + path$$1);
-        }        // 削除ファイル
-        if (commit.removed && commit.removed.length > 0) {
-          for (const path$$1 of commit.removed) {
-            await fs.promises.unlink(homeDir + path$$1 + '.gz');
-          }        }
-        console.log('****gzip end****');
+      let files = res.stdout.split(/\n/g)
+        .map(d => {
+          let ret = d.split(/\t/g);
+          ret[1] = homeDir + ret[1];
+          return ret;
+        })
+        .filter(d => d[0] != '');
+
+      for (const d of files) {
+        switch (d[0]) {
+          /* 追加 */
+          /* 更新 */
+          case 'A':
+            await compressGzip(d[1]);
+            console.log('appended:', d[1]);
+            break;
+          case 'M':
+            await compressGzip(d[1]);
+            console.log('modified:', d[1]);
+            break;
+          /* 削除 */
+          case 'D':
+            await fs.promises.unlink(d[1] + '.gz');
+            console.log('deleted:', d[1]);
+            break;
+        }
       }
-
-
-    }  } catch (e) {
-    console.log(e.stack);
+      console.log('****gzip end****');
+    } catch (e) {
+      console.log(e.stack);
+    }
+    //process.setuid(process.env['WWW_UID']);
   }
-  //process.setuid(process.env['WWW_UID']);
-});
+);
 
-q.drain = ()=>{
+q.drain = () => {
   console.log('update content done');
 };
 
@@ -1625,10 +1632,10 @@ function handler(req, res) {
   }
 
   if (!req.isXHubValid()) {
-     return hasError('X-Hub-Signature is not valid.');
+    return hasError('X-Hub-Signature is not valid.');
   }
 
-  
+
   const payload = req.body,
     sig = req.headers['x-hub-signature']
     , event = req.headers['x-github-event']
@@ -1674,10 +1681,10 @@ function compressGzip(path$$1) {
 // });
 
 //router.post('/', bodyParser.json({limit:'50mb'}),(req, res,next) => {
-router$1.post('/',(req, res,next) => {
+router$1.post('/', (req, res, next) => {
   try {
     handler(req, res);
-  } catch(e) {
+  } catch (e) {
     console.log(e);
     next();
   }

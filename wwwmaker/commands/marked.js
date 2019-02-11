@@ -836,17 +836,24 @@ class Renderer {
     return text;
   }
 
-  heading(text, level, raw) {
-    var slug = raw
+  slug(str){
+    let slug = str
       .toLowerCase()
       .trim()
       .replace(/[\u2000-\u206F\u2E00-\u2E7F\\'!"#$%&()*+,./:;<=>?@[\]^`{|}~]/g, '')
       .replace(/\s/g, '-');
+    return encodeURIComponent(str).replace(/[!'()*]/g, function(c) {
+      return '%' + c.charCodeAt(0).toString(16);
+    });
+  }
+
+  heading(text, level, raw) {
+
     return '<h'
       + level
       + ' id="'
       + this.options.headerPrefix
-      + raw.toLowerCase().replace(/[^\w]+/g, '-')
+      + this.slug(raw)
       + '">'
       + text
       + '</h'

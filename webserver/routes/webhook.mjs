@@ -14,7 +14,7 @@ import queue from 'async/queue';
 const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');
 const repoDir = resolveHome('~/www/blog');
-const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 1000 * 1024};
+const opt = { cwd: resolveHome('~/www/blog'), maxBuffer: 3000 * 1024};
 
 
 // コンテンツを更新する処理
@@ -24,7 +24,43 @@ async function (payload) {
     //process.setuid(process.env['GIT_UID']);
     let res = await exec(`/usr/bin/git -C ${repoDir} fetch --depth 1`, opt);
     console.log(res.stdout,res.stderr);
-    res = await exec(`/usr/bin/git -C ${repoDir} reset --hard origin/master`, opt)
+    res = await exec(`/usr/bin/git  reset --hard origin/master`, opt);
+    res = await exec(`/usr/bin/git --no-pager -C ${repoDir} diff ${payload.before}...HEAD -C -M --name-status --relative`,opt);
+    
+    let files = res.stdout.split(/\n/g)
+    .map(d => d.split(/\t/g))
+    .filter(d => d[0] != '');
+
+    for (const d of files) {
+      switch (d[0]) {
+        /* 追加 */
+        case 'A':
+          {
+            const doc = await appendMd(d[1], entries);
+            doc && updatedDocs.push(doc);
+          }
+          break;
+        /* 更新 */
+        case 'M':
+          {
+            let doc = await updateMd(d[1], entries);
+            if(!doc){
+              doc = await appendMd(d[1],entries);
+            } 
+            doc && updatedDocs.push(doc);
+          }
+          break;
+        /* 削除 */
+        case 'D':
+          {
+            const doc = await deleteMd(d[1], entries);
+            doc && updatedDocs.push(doc);
+          }
+          break;
+        }
+    }
+
+
     console.log(res.stdout,res.stderr);
     // 変更のあったファイルをgzip圧縮する
     let commits = payload.commits;

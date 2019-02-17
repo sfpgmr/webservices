@@ -634,7 +634,7 @@ async function generateSiteMap(docs, urls) {
       blogConfig.siteUrl + 'sitemap-web.xml'
     ]
   });
-  const outPathSmi = blogConfig.destEjsDir + 'sitemap.xml';
+  const outPathSmi = blogConfig.wwwRootDir + 'sitemap.xml';
   await fs.outputFile(outPathSmi, sitemapIndex.toString(), 'utf-8');
   await compressGzip(outPathSmi);
 }
@@ -740,12 +740,13 @@ async function update() {
   }
 
   // git -add
-  const opt = {cwd:blogConfig.mdDir};
-  await exec('git fetch --quiet',opt);
-  await spawn('git', ['add', '--all'],opt);
+  let mdRepoDir = path.resolve(blogConfig.mdRepoDir);
+  const opt = {cwd:mdRepoDir};
+  await exec(`git -C ${mdRepoDir} fetch --quiet`,);
+  await spawn('git', ['-C',mdRepoDir,'add', '--all'],opt);
 
   // 差分情報の抽出
-  let o = await spawn('git', ['--no-pager', 'diff', 'HEAD', '-C','-M','--name-status', '--relative=' + blogConfig.repoMdDir],opt);
+  let o = await spawn('git', ['-C',mdRepoDir,'--no-pager', 'diff', 'HEAD', '-C','-M','--name-status', '--relative=' + blogConfig.repoMdDir],opt);
   // git config --global core.quotepath false ==> 日本語の\xxxエスケープ を禁止しないとファイルが読めない
 
   let files = o.out.split(/\n/g)
@@ -869,9 +870,10 @@ async function update() {
         await exec(`git -C ${blogConfig.destRepoDir} prune`,optDest);
         
         const opt = {/*cwd:blogConfig.mdRepoDir*/};
-        await spawn('git', ['-C',blogConfig.mdRepoDir,'add', '--all'],opt);
-        await exec(`git --no-pager -C ${blogConfig.mdRepoDir} commit -m "update content" --quiet`,opt);
-        await exec(`git --no-pager -C ${blogConfig.mdRepoDir} push -f --quiet`,opt);
+        const mdRepoDir = path.resolve(blogConfig.mdRepoDir);
+        await spawn('git', ['-C',mdRepoDir,'add', '--all'],opt);
+        await exec(`git --no-pager -C ${mdRepoDir} commit -m "update content" --quiet`,opt);
+        await exec(`git --no-pager -C ${mdRepoDir} push -f --quiet`,opt);
     
       } catch (e) {
         console.error(e.stdout || e);
@@ -1013,9 +1015,10 @@ async function create() {
       await exec(`git -C ${blogConfig.destRepoDir} prune`,optDest);
       
       const opt = {/*cwd:blogConfig.mdRepoDir*/};
-      await spawn('git', ['-C',blogConfig.mdRepoDir,'add', '--all'],opt);
-      await exec(`git --no-pager -C ${blogConfig.mdRepoDir} commit -m "update content" --quiet`,opt);
-      await exec(`git --no-pager -C ${blogConfig.mdRepoDir} push -f --quiet`,opt);
+      let mdPath = path.resolve(blogConfig.mdRepoDir);
+      await spawn('git', ['-C',mdPath,'add', '--all'],opt);
+      await exec(`git --no-pager -C ${mdPath} commit -m "update content" --quiet`,opt);
+      await exec(`git --no-pager -C ${mdPath} push -f --quiet`,opt);
   
     } catch (e) {
       console.error(e.stdout || e);

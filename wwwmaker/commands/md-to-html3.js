@@ -862,12 +862,13 @@ async function update() {
       try {
   
         const optDest = {/*cwd:blogConfig.destRepoDir*/};
-        await spawn('git', ['-C',blogConfig.destRepoDir,'add', '--all'],optDest);
-        await exec(`git --no-pager -C ${blogConfig.destRepoDir} commit -m "create content" --quiet`,optDest);
-        await exec(`git --no-pager -C ${blogConfig.destRepoDir} push -f --quiet`,optDest);
+        const destRepoDir = path.resolve(blogConfig.destRepoDir);
+        await spawn('git', ['-C',destRepoDir,'add', '--all'],optDest);
+        await exec(`git --no-pager -C ${destRepoDir} commit -m "create content" --quiet`,optDest);
+        await exec(`git --no-pager -C ${destRepoDir} push -f --quiet`,optDest);
   
-        await exec(`git -C ${blogConfig.destRepoDir} gc --quiet`,optDest);
-        await exec(`git -C ${blogConfig.destRepoDir} prune`,optDest);
+        await exec(`git -C ${destRepoDir} gc --quiet`,optDest);
+        await exec(`git -C ${destRepoDir} prune`,optDest);
         
         const opt = {/*cwd:blogConfig.mdRepoDir*/};
         const mdRepoDir = path.resolve(blogConfig.mdRepoDir);
@@ -1007,12 +1008,13 @@ async function create() {
     try {
 
       const optDest = {/*cwd:blogConfig.destRepoDir*/};
-      await spawn('git', ['-C',blogConfig.destRepoDir,'add', '--all'],optDest);
-      await exec(`git --no-pager -C ${blogConfig.destRepoDir} commit -m "create content" --quiet`,optDest);
-      await exec(`git --no-pager -C ${blogConfig.destRepoDir} push -f --quiet`,optDest);
+      const destRepoDir = path.resolve(blogConfig.destRepoDir);
+      await spawn('git', ['-C',destRepoDir,'add', '--all'],optDest);
+      await exec(`git --no-pager -C ${destRepoDir} commit -m "create content" --quiet`,optDest);
+      await exec(`git --no-pager -C ${destRepoDir} push -f --quiet`,optDest);
 
-      await exec(`git -C ${blogConfig.destRepoDir} gc --quiet`,optDest);
-      await exec(`git -C ${blogConfig.destRepoDir} prune`,optDest);
+      await exec(`git -C ${destRepoDir} gc --quiet`,optDest);
+      await exec(`git -C ${destRepoDir} prune`,optDest);
       
       const opt = {/*cwd:blogConfig.mdRepoDir*/};
       let mdPath = path.resolve(blogConfig.mdRepoDir);

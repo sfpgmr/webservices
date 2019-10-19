@@ -12,6 +12,7 @@ import resolveHome from './resolveHome.mjs';
 //import bodyParser from 'body-parser';
 //import http2 from 'http2';
 //import expressHTTP2Workaround from 'express-http2-workaround';
+express.static.mime.types['wasm'] = 'application/wasm';
 const app = express();
 app.use(xhub({ limit:'10mb',algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
 app.use(express.json({limit:'10mb'}));

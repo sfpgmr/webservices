@@ -9,7 +9,9 @@ import { exec as exec_ } from 'child_process';
 import util from 'util';
 import resolveHome from '../resolveHome.mjs';
 
-import queue from 'async/queue';
+import async from 'async';
+
+const queue = async.queue;
 
 const exec = util.promisify(exec_);
 const homeDir = resolveHome('~/www/blog/');

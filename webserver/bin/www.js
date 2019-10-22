@@ -17,7 +17,6 @@ var mount = _interopDefault(require('koa-mount'));
 require('koa-ejs');
 var json = _interopDefault(require('koa-json'));
 var logger = _interopDefault(require('koa-morgan'));
-require('koa-x-hub');
 var bodyParser = _interopDefault(require('koa-bodyparser'));
 var webhook = _interopDefault(require('koa-webhook'));
 var socket_io = _interopDefault(require('socket.io'));
@@ -182,9 +181,9 @@ app.use(logger('combined'));
 //app.use(cookie());
 
 app.use(async (ctx,next)=> {
-  if (ctx.request.hostname == 'blog.sfpgmr.net') {
+  if (ctx.hostname == 'blog.sfpgmr.net') {
     ctx.status = 301;
-    ctx.response.redirect('https://www.sfpgmr.net/blog' + req.url);
+    ctx.redirect('https://www.sfpgmr.net/blog' + req.url);
   } else {
     await next();
   }

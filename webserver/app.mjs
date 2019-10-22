@@ -39,7 +39,7 @@ app.use(logger('combined'));
 app.use(async (ctx,next)=> {
   if (ctx.hostname == 'blog.sfpgmr.net') {
     ctx.status = 301;
-    ctx.redirect('https://www.sfpgmr.net/blog' + req.url);
+    ctx.redirect('https://www.sfpgmr.net/blog' + ctx.url);
   } else {
     await next();
   }

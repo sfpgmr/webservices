@@ -1,6 +1,6 @@
 "use strict";
-import express from 'express';
-const router = express.Router();
+//import Router from 'koa-router';
+//const router = new Router();
 
 import fs from 'fs';
 import zlib from 'zlib';
@@ -68,41 +68,49 @@ q.drain = () => {
   console.log('update content done');
 };
 
-function handler(req, res) {
+// function handler(ctx) {
+//   const req = ctx.request;
+//   const res = ctx.response;
 
-  function hasError(msg) {
-    res.writeHead(400, { 'content-type': 'application/json' })
-    res.end(JSON.stringify({ error: msg }))
-  }
+//   function hasError(msg) {
+//     res.writeHead(400, { 'content-type': 'application/json' })
+//     res.end(JSON.stringify({ error: msg }))
+//   }
 
-  if (!req.isXHub) {
-    return hasError('No X-Hub Signature.');
-  }
+//   if (!req.isXHub) {
+//     ctx.throw(403,'No X-Hub Signature.');
+//   }
 
-  if (!req.isXHubValid()) {
-    return hasError('X-Hub-Signature is not valid.');
-  }
+//   if (!req.isXHubValid()) {
+//     ctx.throw(403,'X-Hub-Signature is not valid.');
+//   }
 
 
-  const payload = req.body,
-    sig = req.headers['x-hub-signature']
-    , event = req.headers['x-github-event']
-    , id = req.headers['x-github-delivery'];
+//   const payload = req.body,
+//     sig = req.headers['x-hub-signature']
+//     , event = req.headers['x-github-event']
+//     , id = req.headers['x-github-delivery'];
 
-  console.log('** sig **:', sig, event, id)
-  if (event == 'push' && payload.repository.name === 'blog') {
-    console.log('プッシュイベントを受信:%s to %s',
-      payload.repository.name,
-      payload.ref);
+//   console.log('** sig **:', sig, event, id)
+//   if (event == 'push' && payload.repository.name === 'blog') {
+//     console.log('プッシュイベントを受信:%s to %s',
+//       payload.repository.name,
+//       payload.ref);
 
-    q.push(payload);
+//     q.push(payload);
 
-    // githubに応答を返す
-    res.header({ 'content-type': 'application/json' })
-    res.json({ ok: true });
-    //await res.end();
-    console.log('webhook process is end.');
-  }
+//     // githubに応答を返す
+//     ctx.header({ 'content-type': 'application/json' });
+//     ctx.body = { ok: true };
+//     //await res.end();
+//     console.log('webhook process is end.');
+//   }
+// }
+
+function handler(ctx){
+  q.push(ctx.webhook);
+  ctx.type ="json";
+  ctx.body = { ok: true };
 }
 
 // 
@@ -111,6 +119,7 @@ function compressGzip(path) {
   return new Promise((resolve, reject) => {
     let out = fs.createWriteStream(path + '.gz');
     out.on('finish', resolve.bind(null));
+  
 
     fs.createReadStream(path)
       .pipe(zlib.createGzip({ level: zlib.Z_BEST_COMPRESSION }))
@@ -129,15 +138,17 @@ function compressGzip(path) {
 // });
 
 //router.post('/', bodyParser.json({limit:'50mb'}),(req, res,next) => {
-router.post('/', (req, res, next) => {
-  try {
-    handler(req, res);
-  } catch (e) {
-    console.log(e);
-    next();
+function webhookHandler (){
+  return async (ctx,next)=>{
+    try {
+      handler(ctx);
+    } catch (e) {
+      console.log(e);
+    }
+    await next();
   }
-});
+}
 
-export default router;
+export default webhookHandler;
 
 

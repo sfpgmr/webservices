@@ -28,6 +28,7 @@
     "koa-mount": "^4.0.0",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
+    "koa-webhook": "0.0.1",
     "koa-x-hub": "^1.0.0",
     "morgan": "^1.9.1",
     "socket.io": "^2.3.0",

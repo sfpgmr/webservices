@@ -2,20 +2,16 @@
  * Module dependencies.
  */
  
-import app from '../app2.mjs';
+import app from '../app.mjs';
 import ScoreServer from './ScoreServer.mjs';
 //import {debug as debug_} from 'debug';
 //debug = debug_('webserver:server');
-//import http2 from 'spdy';
-import http2 from 'http2';
+import http2 from 'spdy';
+//import http2 from 'http2';
 import http from 'http';
 import fs from 'fs';
 import resolveHome from '../resolveHome.mjs';
 
-//const app = new Koa();
-// app.use(ctx => {
-//   ctx.body = 'Hello Koa';
-// });
 const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/webserver/keys.json')));
 
 
@@ -24,8 +20,7 @@ const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/webserver/k
  */
 
 const port = normalizePort(process.env.PORT || '443');
-//app.
-//app.set('port', port);
+app.set('port', port);
 const httpPort = normalizePort(process.env.HTTP_PORT || '80');
 
 /**
@@ -37,10 +32,9 @@ const options = {
   cert:fs.readFileSync(resolveHome(keys.cert))
 };
 
-
 keys.passphrase && (options.passphrase = keys.passphrase);
 
-const server = http2.createSecureServer(options,app.callback());
+const server = http2.createServer(options,app);
 const scoreSever = new ScoreServer(server,process);
 
 
@@ -112,11 +106,11 @@ function onListening()
   var bind = typeof addr === 'string'
     ? 'pipe ' + addr
     : 'port ' + addr.port;
-   console.debug('Listening on ' + bind);
+  //debug('Listening on ' + bind);
 }
 
 // Redirect from http port 80 to https
-// http.createServer(function (req, res) {
-//     res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
-//     res.end();
-// }).listen(httpPort);
+http.createServer(function (req, res) {
+    res.writeHead(301, { "Location": "https://" + req.headers['host'] + req.url });
+    res.end();
+}).listen(httpPort);

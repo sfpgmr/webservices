@@ -5,15 +5,8 @@ import Koa from 'koa';
 import serve from 'koa-static';
 import Router from 'koa-router';
 import mount from 'koa-mount';
-import render from 'koa-ejs';
 import json from 'koa-json';
 
-//import expressStaticGzip from "./express-static-gzip.mjs";
-//import cookieParser from 'cookie-parser';
-
-//import cookie from 'koa-cookie';
-
-//import logger from 'morgan';
 import logger from 'koa-morgan'
 
 //import tumblerRouter from './routes/tumblr.mjs';
@@ -46,23 +39,12 @@ app.use(async (ctx,next)=> {
 });
 
 app.use(mount('/metrop/',serve('../metrop/html')));
-//app.use(mount('/metrop/data/',serve('../metrop/html/data/')));
 app.use(mount('/images/',serve(resolveHome('~/www/images/'))));
 app.use(mount('/blog/',serve(resolveHome('~/www/blog/contents/'))));
 app.use(mount('/content/',serve(resolveHome('~/www/images/content'))));
 
 app.use(mount('/javascripts/',serve(resolveHome('~/www/node/webserver/public/javascripts/'))));
 app.use(mount('/stylesheets/',serve(resolveHome('~/www/node/webserver/public/stylesheets/'))));
-
-
-//app.use('/', indexRouter);
-//app.use('/users', usersRouter);
-//router.use('/tumblr/',tumblerRouter);
-//app.use('/tumblr',tumblerRouter);
-//app.use(bodyParser.json({limit:'100mb',parameterLimit:50000}));
-//app.use(bodyParser.urlencoded({ extended: true,limit:'100mb',parameterLimit:50000 }));
-//router.use('/webhook',webhookRouter);
-//app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
 app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
 app.use(mount('/',serve(resolveHome('~/www/html/contents/'))));
 //.use(router.routes());

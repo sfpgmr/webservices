@@ -18,8 +18,6 @@ import logger from 'koa-morgan'
 
 //import tumblerRouter from './routes/tumblr.mjs';
 import webhookHandler from './routes/webhook.mjs';
-//import xhub from 'express-x-hub';
-import xhub from 'koa-x-hub';
 
 import fs from 'fs';
 import resolveHome from './resolveHome.mjs';
@@ -39,9 +37,9 @@ app.use(logger('combined'));
 //app.use(cookie());
 
 app.use(async (ctx,next)=> {
-  if (ctx.request.hostname == 'blog.sfpgmr.net') {
+  if (ctx.hostname == 'blog.sfpgmr.net') {
     ctx.status = 301;
-    ctx.response.redirect('https://www.sfpgmr.net/blog' + req.url);
+    ctx.redirect('https://www.sfpgmr.net/blog' + req.url);
   } else {
     await next();
   }

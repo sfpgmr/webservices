@@ -2,21 +2,20 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var os = _interopDefault(require('os'));
-var path = _interopDefault(require('path'));
-var fs = _interopDefault(require('fs'));
-var zlib = _interopDefault(require('zlib'));
-var child_process = require('child_process');
-var util = _interopDefault(require('util'));
-var async = _interopDefault(require('async'));
 require('http-errors');
 var Koa = _interopDefault(require('koa'));
 var serve = _interopDefault(require('koa-static'));
 var Router = _interopDefault(require('koa-router'));
 var mount = _interopDefault(require('koa-mount'));
-require('koa-ejs');
 var json = _interopDefault(require('koa-json'));
 var logger = _interopDefault(require('koa-morgan'));
+var fs = _interopDefault(require('fs'));
+var zlib = _interopDefault(require('zlib'));
+var child_process = require('child_process');
+var util = _interopDefault(require('util'));
+var os = _interopDefault(require('os'));
+var path = _interopDefault(require('path'));
+var async = _interopDefault(require('async'));
 var bodyParser = _interopDefault(require('koa-bodyparser'));
 var webhook = _interopDefault(require('koa-webhook'));
 var socket_io = _interopDefault(require('socket.io'));
@@ -133,14 +132,14 @@ function handler(ctx){
 }
 
 // 
-function compressGzip(path$$1) {
+function compressGzip(path) {
   // gzipファイルを作成する
   return new Promise((resolve, reject) => {
-    let out = fs.createWriteStream(path$$1 + '.gz');
+    let out = fs.createWriteStream(path + '.gz');
     out.on('finish', resolve.bind(null));
   
 
-    fs.createReadStream(path$$1)
+    fs.createReadStream(path)
       .pipe(zlib.createGzip({ level: zlib.Z_BEST_COMPRESSION }))
       .pipe(out);
     out = void (0);
@@ -190,23 +189,12 @@ app.use(async (ctx,next)=> {
 });
 
 app.use(mount('/metrop/',serve('../metrop/html')));
-//app.use(mount('/metrop/data/',serve('../metrop/html/data/')));
 app.use(mount('/images/',serve(resolveHome('~/www/images/'))));
 app.use(mount('/blog/',serve(resolveHome('~/www/blog/contents/'))));
 app.use(mount('/content/',serve(resolveHome('~/www/images/content'))));
 
 app.use(mount('/javascripts/',serve(resolveHome('~/www/node/webserver/public/javascripts/'))));
 app.use(mount('/stylesheets/',serve(resolveHome('~/www/node/webserver/public/stylesheets/'))));
-
-
-//app.use('/', indexRouter);
-//app.use('/users', usersRouter);
-//router.use('/tumblr/',tumblerRouter);
-//app.use('/tumblr',tumblerRouter);
-//app.use(bodyParser.json({limit:'100mb',parameterLimit:50000}));
-//app.use(bodyParser.urlencoded({ extended: true,limit:'100mb',parameterLimit:50000 }));
-//router.use('/webhook',webhookRouter);
-//app.use('/webhook/',bodyParser.json({limit:'50mb',type: 'application/*+json'}),webhookRouter);
 app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
 app.use(mount('/',serve(resolveHome('~/www/html/contents/'))));
 

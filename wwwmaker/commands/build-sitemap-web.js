@@ -18,18 +18,19 @@ async function generateSiteMap(docs,urls,archiveDate)
 
 
  let filePaths = [];
-  async function listFile(mdDir) {
+  async function listFile(mdDir,basePath) {
     // .mdディレクトリを再帰的に検索する
     let dirs = fs.readdirSync(mdDir);
     dirs.forEach((d) => {
       let mdPath = mdDir + d;
       let stats = fs.statSync(mdPath);
       if (stats.isDirectory() && !d.match(/blog|less|scripts|sh/ig)) {
-        listFile(mdPath + '/');
+        listFile(mdPath + '/',basePath);
       } else if (stats.isFile() && d.match(/\.html?$/)) {
+        
         sitemap.add(
           {
-            url:blogConfig.siteUrl + mdPath.replace(/\.\.\/contents\//,''),
+            url:blogConfig.siteUrl + mdPath.replace(basePath,''),
             changefreq:'weekly',
             priority:0.6,
             lastmodrealtime: true,
@@ -40,10 +41,10 @@ async function generateSiteMap(docs,urls,archiveDate)
     });
   }
 
-  await listFile(blogConfig.destEjsDir);
+  await listFile(blogConfig.wwwRootDir,blogConfig.wwwRootDir);
 
   // sitemap index 
-  const outPathSmi = blogConfig.destEjsDir + 'sitemap-web.xml';
+  const outPathSmi = blogConfig.wwwRootDir + 'sitemap-web.xml';
   await fs.outputFile(outPathSmi,sitemap.toString(),'utf-8');
   await compressGzip(outPathSmi);
 }

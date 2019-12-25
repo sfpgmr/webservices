@@ -2,7 +2,7 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var createError = _interopDefault(require('http-errors'));
+require('http-errors');
 var Koa = _interopDefault(require('koa'));
 var serve = _interopDefault(require('koa-static'));
 var Router = _interopDefault(require('koa-router'));
@@ -211,9 +211,9 @@ app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
 
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+// app.use(function(req, res, next) {
+//   next(createError(404));
+// });
 
 // error handler
 app.use(async (ctx, next) =>{

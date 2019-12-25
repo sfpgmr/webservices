@@ -2,7 +2,7 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-require('http-errors');
+var createError = _interopDefault(require('http-errors'));
 var Koa = _interopDefault(require('koa'));
 var serve = _interopDefault(require('koa-static'));
 var Router = _interopDefault(require('koa-router'));
@@ -206,6 +206,25 @@ app.use(mount('/javascripts/',serve(resolveHome('~/www/node/webserver/public/jav
 app.use(mount('/stylesheets/',serve(resolveHome('~/www/node/webserver/public/stylesheets/'),serveOpts)));
 app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
 app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
+//.use(router.routes());
+//  .use(router.allowedMethods());
+
+
+// catch 404 and forward to error handler
+app.use(function(req, res, next) {
+  next(createError(404));
+});
+
+// error handler
+app.use(async (ctx, next) =>{
+  // set locals, only providing error in development
+  ctx.response.res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  // render the error page
+  res.status(err.status || 500);
+  res.render('./error',{message:'error',error:err});
+});
 
 class ScoreEntry {
   constructor(name, score){

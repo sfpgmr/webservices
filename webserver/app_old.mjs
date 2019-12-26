@@ -21,7 +21,7 @@ app.use(express.json({limit:'10mb'}));
 const staticOpts = {
   extensions:['html','htm'],
   indexFromEmptyFile:true,
-  defer:true
+  defer:false
 }
 //app.use(bodyParser.json());
 // view engine setup

@@ -66,14 +66,14 @@ app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
 // });
 
 // error handler
-app.use(async (ctx, next) =>{
-  // set locals, only providing error in development
-  ctx.response.res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+// app.use(async (ctx, next) =>{
+//   // set locals, only providing error in development
+//   ctx.response.res.locals.message = err.message;
+//   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('./error',{message:'error',error:err});
-});
+//   // render the error page
+//   res.status(err.status || 500);
+//   res.render('./error',{message:'error',error:err});
+// });
 
 export default app;

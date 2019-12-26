@@ -20,7 +20,8 @@ app.use(express.json({limit:'10mb'}));
 //app.use(expressHTTP2Workaround({express:express,http2:http2 }));
 const staticOpts = {
   extensions:['html','htm'],
-  indexFromEmptyFile:true
+  indexFromEmptyFile:true,
+  defer:true
 }
 //app.use(bodyParser.json());
 // view engine setup

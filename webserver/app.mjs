@@ -27,7 +27,7 @@ app.use(json());
 app.use(bodyParser({jsonLimit:'10mb'}));
 //app.use(xhub({algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()}));
 
-app.use(logger('combined'));
+app.use(logger('dev'));
 
 //app.use(cookie());
 

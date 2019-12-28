@@ -424,7 +424,8 @@ const httpPort = normalizePort(process.env.HTTP_PORT || '80');
 
 const options = {
   key:fs.readFileSync(resolveHome(keys.key)),
-  cert:fs.readFileSync(resolveHome(keys.cert))
+  cert:fs.readFileSync(resolveHome(keys.cert)),
+  allowHTTP1: true
 };
 
 

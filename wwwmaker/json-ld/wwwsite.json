@@ -7,13 +7,13 @@
       "url": "https://www.sfpgmr.net/",
       "headline":"S.F. Web",
       "name":"S.F. Web",
-      "about": "IT技術や音楽に関する制作物の公開、情報発信を行っています。",
-      "keywords": "Programming,Music,C++,DirectX,HTML5,WebGL,javascript,WebAudio",
+      "about": "IT技術・音楽・ゲームに関する制作物の公開、情報発信を行っています。",
+      "keywords": "Programming,Music,Game,C++,DirectX,HTML5,WebGL,javascript,WebAudio",
       "author": {
         "@type": "Person",
         "@id": "./profile.html#sfpgmr",
         "name": "Satoshi Fujiwara",
-        "image": "https://zwruag-bn1305.files.1drv.com/y3mFBuAXaFp6eZEIswK7KTEL7DTVzrpSxGKqJ7xHWSLwz5MgMJHIM4lvatwuA3gOSZOw_SP2xK_OEpvkHsczcUpmUa-NiWXHZbOgoIMZX7JLAHo2q4wThQrFls8P-uT35rewqyT6GvvsGLzwqDWXunYCUEISi51cCxhE8UTbDiVTtc?width=100&height=100&cropmode=none",
+        "image": "https://sfpgmr.net/img/sfpgmr.png",
         "alternateName":"SFPGMR"
       }
   }

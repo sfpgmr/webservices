@@ -41,13 +41,13 @@ const extention = '.html';
 <link rel="icon" href="/img/sfblog-icon.png" />
 <link rel="apple-touch-icon" sizes="64x64" href="/img/sfblog-icon.png">
 <%
-  let blogJsonLd = Object.assign({'@context':config['@context']},blog);
-  let blogPostingJsonLd = Object.assign({'@context':config['@context']},blogPosting);
-  blogPostingJsonLd['@id'] = blogPostingJsonLd.url = blogPostingJsonLd.url + extention;
+  let graph = [];
+  graph.push(Object.assign({},blogPosting));
+  graph.push(Object.assign({},blog));
+  graph[0]['@id'] = graph[0].url = graph[0].url + extention;
+
+  let blogJsonLd = {'@context':config['@context'],'@graph':graph};
 %>
-<script type="application/ld+json">
-<%- JSON.stringify(blogPostingJsonLd,null,1); %>
-</script>
 <script type="application/ld+json">
 <%- JSON.stringify(blogJsonLd,null,1); %>
 </script>

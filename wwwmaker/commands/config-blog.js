@@ -36,33 +36,35 @@ module.exports = {
   'json-ld':{
     '@context': {
       '@vocab': 'http://schema.org/',
-      '@base': 'https://blog.sfpgmr.net/',
+      '@base': 'https://sfpgmr.net/',
       'sf':'https://www.sfpgmr.net/'
     },
     'sf:blogConfig': {
       'Blog': {
         '@type': 'Blog',
-        'url': 'https://www.sfpgmr.net/blog/',
+        'url': 'https://sfpgmr.net/blog/',
+        '@id':'/#blog',
         'headline': 'S.F. Blog',
         'name': 'S.F. Blog',
         'about': 'IT技術や音楽に関する制作物の公開、情報発信を行っています。',
         'keywords': 'Programming,Music,C++,DirectX,HTML5,WebGL,javascript,WebAudio',
         'author': {
           '@type': 'Person',
-          '@id': 'https://www.sfpgmr.net/profile.html#sfpgmr',
+          '@id': '/profile.html#sfpgmr',
           'name': 'Satoshi Fujiwara',
           'image': {
             '@type': 'ImageObject',
-            'url': 'https://www.sfpgmr.net/img/sf.png',
-            'width':'128',
-            'height':'128'
+            'url': 'https://sfpgmr.net/img/sfpgmr.png',
+            'width':'256',
+            'height':'256'
           },
           'alternateName': 'SFPGMR'
         },
         'publisher': {
           '@type': 'Organization',
           'name': 'SFPGMR'
-        }
+        },
+        "isPartOf":{'@id':'/#website'}
       },
       'sf:templates': {
         'sf:pageTemplate': '',
@@ -75,17 +77,17 @@ module.exports = {
         '@id': '',
         'mainEntityOfPage':{
           '@type':'WebPage',
-          '@id':'https://www.sfpgmr.net/blog/'
+          '@id':''
         },
         'url': '',
         'keywords': '',
         'about': '',
         'author': {
-          '@id': 'https://www.sfpgmr.net/profile.html#sfpgmr'
+          '@id': '/profile.html#sfpgmr'
         },
         'image': {
           '@type': 'ImageObject',
-          'url': 'https://www.sfpgmr.net/img/sf.png',
+          'url': 'https://sfpgmr.net/img/sf.png',
           'width':'128',
           'height':'128'
         },
@@ -94,11 +96,12 @@ module.exports = {
           'name': 'SFPGMR',
           'logo':{
             '@type': 'ImageObject',
-            'url': 'https://www.sfpgmr.net/img/sfblog.png',
+            'url': 'https://sfpgmr.net/img/sfblog.png',
             'width':'640',
             'height':'640'
           }
-        }
+        },
+        "isPartOf":{"@id":"/#blog"}
       }
     }  
   }

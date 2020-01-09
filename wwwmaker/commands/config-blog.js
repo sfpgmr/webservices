@@ -1,6 +1,8 @@
 const os = require('os');
 const path = require('path');
 const resolveHome = require('./resolveHome');
+const fs = require('fs');
+
 module.exports = {
   srcJsDir: './src/blog/js/',
   srcNodeDir: './src/node/',
@@ -64,7 +66,7 @@ module.exports = {
           '@type': 'Organization',
           'name': 'SFPGMR'
         },
-        "isPartOf":{'@id':'/#website'}
+        "isPartOf":{"@id":"/#webiste"}
       },
       'sf:templates': {
         'sf:pageTemplate': '',

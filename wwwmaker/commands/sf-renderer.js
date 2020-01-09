@@ -329,6 +329,11 @@ class AmpRenderer extends Renderer {
     return out;
   }
 
+  async paragraph(text) {
+    //console.log('<<<text\n' + text + '\n>>>text');
+    return '<p>' + await this.html(text) + '</p>\n';
+  }
+
   async tex(text) {
     let svg = await texRenderer(text);
     svg =

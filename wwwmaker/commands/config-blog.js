@@ -3,7 +3,7 @@ const path = require('path');
 const resolveHome = require('./resolveHome');
 const fs = require('fs');
 
-module.exports = {
+const config = {
   srcJsDir: './src/blog/js/',
   srcNodeDir: './src/node/',
   srcEjsDir: './src/blog/ejs/',
@@ -24,7 +24,7 @@ module.exports = {
   //repoMdDir: 'blog/contents/',
   entriesPath: './data/blog/entries.json',
   //entriesPath: './data/blog/entries-test.json',
-  siteUrl: 'https://www.sfpgmr.net/',
+  siteUrl: 'https://sfpgmr.net/',
   alterUrl: 'https://alter.sfpgmr.net/',
   siteDomain: 'sfpgmr\.net',
   siteBlogRoot: 'blog/',
@@ -34,7 +34,8 @@ module.exports = {
   contentRoot:'contents/',
   pushAutomatic:true,
   author:'SFPGMR',
-  authorLink:'https://www.sfpgmr.net/profile.html#sfpgmr',
+  authorLink:'https://sfpgmr.net/profile.html#sfpgmr',
+  websitePath:'./json-ld/wwwsite.json',
   'json-ld':{
     '@context': {
       '@vocab': 'http://schema.org/',
@@ -66,7 +67,7 @@ module.exports = {
           '@type': 'Organization',
           'name': 'SFPGMR'
         },
-        "isPartOf":{"@id":"/#webiste"}
+        "isPartOf":{"@id":"/#website"}
       },
       'sf:templates': {
         'sf:pageTemplate': '',
@@ -105,6 +106,10 @@ module.exports = {
         },
         "isPartOf":{"@id":"/#blog"}
       }
-    }  
-  }
+    }
+  },
 };
+
+
+
+module.exports = config;

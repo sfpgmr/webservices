@@ -5,7 +5,7 @@ let blog = config['sf:blogConfig'].Blog;
 <!DOCTYPE html>
 <html AMP lang="ja" itemscope itemtype="http://schema.org/Article" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 <head>
-<%- include('template-blog-head.ejs',{params:params}); %>
+<%- include('template-blog-amp-head.ejs',{params:params}); %>
 </head>
 <body dir="ltr" style="text-align:left;">
 <%- include('template-blog-nav-header.ejs',{params:params}); %>
@@ -67,5 +67,7 @@ function makeSVG(){
 makeSVG();
 window.addEventListener('resize',makeSVG);
 </script>
+<%- include('./template-blog-amp-scripts.ejs') %>
+
 </body>
 </html>

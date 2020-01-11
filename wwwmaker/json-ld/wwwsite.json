@@ -1,8 +1,4 @@
 {
-  "@context": {
-    "@vocab": "http://schema.org/",
-    "@base": "https://sfpgmr.net/"
-  },
   "@type": "WebSite",
   "url": "https://sfpgmr.net/",
   "@id": "/#website",

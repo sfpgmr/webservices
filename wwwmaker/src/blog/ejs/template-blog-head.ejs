@@ -44,6 +44,7 @@ const extention = '.html';
   let graph = [];
   graph.push(Object.assign({},blogPosting));
   graph.push(Object.assign({},blog));
+  graph.push(config.WebSite);
   graph[0]['@id'] = graph[0].url = graph[0].url + extention;
 
   let blogJsonLd = {'@context':config['@context'],'@graph':graph};

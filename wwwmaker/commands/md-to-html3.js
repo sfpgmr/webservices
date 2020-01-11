@@ -29,7 +29,10 @@ const fs = require('fs-extra');
 
 // blog 設定ファイル
 const blogConfig = require('./config-blog');
+
 const config = blogConfig['json-ld'];
+const website = JSON.parse(fs.readFileSync(blogConfig.websitePath,'utf8'));
+config.WebSite = website;
 
 const crypto = require('crypto');
 const util = require('util');
@@ -189,7 +192,7 @@ async function updateBlogPosting(mdPath,content,blogPosting,postAttr){
 /** コンテンツの追加 */
 async function appendMd(mdPath, entries) {
   let content = await fs.readFile(mdPath, 'utf-8');
-  console.log(`${mdPath}:ファイルを解析`);
+  //console.log(`${mdPath}:ファイルを解析`);
   let { tokens, postAttr, blogPosting } = parseContent(content);
 
   if (blogPosting.datePublished != 'draft') {

@@ -1,7 +1,7 @@
 import fs from 'fs';
 import util from 'util';
 import path from 'path';
-import wwwconfig from '../data/wwwconfig.mjs';
+import wwwconfig from './wwwconfig.mjs';
 import jsdom from 'jsdom';
 const { JSDOM } = jsdom;
 

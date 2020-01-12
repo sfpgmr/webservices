@@ -32,6 +32,6 @@ for(const k of keywords){
 <small>Copylight &copy; 2017 Satoshi Fujiwara. </small>
 </footer>
 <%- include('template-blog-nav-footer.ejs',{blogPosting:blogPosting,blog:blog,blogConfig:blogConfig,config:config,URL:URL,prevURL:prevURL,nextURL:nextURL}); %>
-<script src="/blog/js/sfblogstyle.js" ></script>
+<%- include('template-blog-scripts.ejs'); %>
 </body>
 </html>

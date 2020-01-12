@@ -24,7 +24,7 @@ let blog = config['sf:blogConfig'].Blog;
 <small>Copylight &copy; 2017 Satoshi Fujiwara. </small>
 </footer>
 <%- include('template-blog-nav-footer.ejs',{params:params}); %>
-<script src="/blog/js/sfblogstyle.js" ></script>
+<%- include('template-blog-scripts.ejs'); %>
 <script>
 function makeSVG(){
   d3.selectAll('#categoryMain svg').remove();
@@ -67,5 +67,6 @@ function makeSVG(){
 makeSVG();
 window.addEventListener('resize',makeSVG);
 </script>
+
 </body>
 </html>

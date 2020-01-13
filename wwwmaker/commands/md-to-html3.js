@@ -62,6 +62,9 @@ const ampTemplate = ejs.compile(
 // ユーティリティ
 const {exec,spawn,toISOString,compressGzip} = require('./sf-util');
 
+// icon libraries
+const octicons = require('@primer/octicons');
+const simpleIcons = require('simple-icons');
 
 // markedオプションの設定
 marked.setOptions({

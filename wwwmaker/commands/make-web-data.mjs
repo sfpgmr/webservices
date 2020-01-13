@@ -3,6 +3,15 @@ import util from 'util';
 import path from 'path';
 import wwwconfig from './wwwconfig.mjs';
 import jsdom from 'jsdom';
+import Mecab from 'mecab-async';
+const mecab = new Mecab();
+mecab.options = {
+  maxBuffer: 10000 * 1024,
+  timeout: 1000
+};
+
+const mecab_parse = util.promisify(mecab.parse).bind(mecab);
+
 const { JSDOM } = jsdom;
 
 async function listFile(rootDir, dir, files, dirs) {
@@ -49,14 +58,21 @@ async function listFile(rootDir, dir, files, dirs) {
       let keywords = document.querySelector('meta[name = "keywords"]');
       keywords = keywords ? keywords.content : undefined;
 
-      //let about = document.querySelector('body');
-      //about = about ? about.textContent.replace(/\s+/g,' ').substr(0,128):undefined;
+      // let about = document.querySelector('body');
+      // let vocabs;
+      // if(about){
+      //   const text = about.textContent.replace(/\s+/g,' ');//.substr(0,128):undefined;
+      //   vocabs = await mecab_parse(text);
+      //   vocabs = vocabs.filter(v=>v[2]=='固有名詞'&&(!v[0].match(/\w/i))).map(v=>v[0]).filter((x, i, self)=>self.indexOf(x) === i);
+      // }
+
       files.push({
         path: relativePath,
         url: wwwconfig.baseUrl + '/' + relativePath,
         description: description,
         title: title,
         keywords: keywords,
+        //vocabs:vocabs
         //about:about
       });
     }

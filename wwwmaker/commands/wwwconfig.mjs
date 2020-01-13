@@ -1,7 +1,6 @@
 
 import resolveHome from './resolveHome.mjs';
 import fs from 'fs';
-import { isNullOrUndefined } from 'util';
 
  const wwwconfig = {
   root:resolveHome("~/www/html/contents/"),

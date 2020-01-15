@@ -13,6 +13,7 @@ mecab.options = {
 const mecab_parse = util.promisify(mecab.parse).bind(mecab);
 
 const { JSDOM } = jsdom;
+let blogEntries;
 
 async function listFile(rootDir, dir, files, dirs) {
   if (!dirs) {
@@ -58,6 +59,31 @@ async function listFile(rootDir, dir, files, dirs) {
       let keywords = document.querySelector('meta[name = "keywords"]');
       keywords = keywords ? keywords.content : undefined;
 
+      // ブログからリンクしているか調べる
+      let relatedLinks = [];
+      let baseMatch = new RegExp(relativePath.replace(/\//g,'\\/'),"ig");
+      console.log(relativePath);
+
+      for(const blogEntry of blogEntries){
+        const blogPosting = blogEntry.blogPosting;
+        if(blogPosting.url && blogPosting.datePublished != 'draft'){
+          if(!blogEntry.md) {
+            blogEntry.md = await fs.promises.readFile(blogEntry.mdPath,'utf8');
+          }  
+          const text = blogEntry.md;
+          if(text.match(baseMatch)){
+            console.log(basename);
+            relatedLinks.push(blogPosting.url);
+          } else if(basename.match(/index\.html?/)){
+            console.log(path.dirname(relativePath));
+            let m = new RegExp(path.dirname(relativePath).replace(/\//g,'\\/'),'ig');
+            if(text.match(m)){
+              relatedLinks.push(blogPosting.url);
+            }
+          }
+        }
+      }
+
       // let about = document.querySelector('body');
       // let vocabs;
       // if(about){
@@ -72,6 +98,7 @@ async function listFile(rootDir, dir, files, dirs) {
         description: description,
         title: title,
         keywords: keywords,
+        relatedLink:relatedLinks.length ? relatedLinks : undefined
         //vocabs:vocabs
         //about:about
       });
@@ -83,6 +110,7 @@ async function listFile(rootDir, dir, files, dirs) {
 try {
   (async () => {
     const files = [];
+    blogEntries = JSON.parse(await fs.promises.readFile('./data/blog/entries.json'));
     await listFile(wwwconfig.root, wwwconfig.root, files);
     await fs.promises.writeFile('./data/data.json', JSON.stringify(files, null, 1), 'utf8');
   })();

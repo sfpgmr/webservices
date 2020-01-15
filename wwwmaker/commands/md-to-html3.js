@@ -714,6 +714,12 @@ function parseContent(content) {
         tokens[0].text = tokens[0].text.replace(attr[0], '');
       }
       blogPosting.headline = headline;
+      // // 最終的なHTMLにインクルードするスクリプトの検出
+      // tokens.forEach(t=>{
+      //   if(t.type == 'twitter'){
+      //     blogPosting["sf:custom"] = {twitter:true};
+      //   }
+      // });
     }
   } else {
     throw new Error('.mdファイル解析エラー:属性情報が含まれていません。');

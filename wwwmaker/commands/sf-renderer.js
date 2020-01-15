@@ -289,6 +289,7 @@ class AmpRenderer extends Renderer {
       attribs.width = (!attribs.width || /%/.test(attribs.width)) ? 1024 : attribs.width;
       attribs.height = (!attribs.height || /%/.test(attribs.height)) ? 768 : attribs.height;
       //return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder?'frameboarder="' + attribs.frameboarder + '"':''} ${attribs.allowfullscreen?'allowfullscreen':''} sandbox="allow-scripts allow-same-origin allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
+      
       return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder ? 'frameboarder="' + attribs.frameboarder + '"' : ''} ${attribs.allowfullscreen ? 'allowfullscreen' : ''} sandbox="allow-scripts allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
     });
 
@@ -367,12 +368,20 @@ class AmpRenderer extends Renderer {
         } catch (e) {
           return iframe_({ srcPath: param, amp: true });
         }
+      case "twitter":
+        return twitter({status:param,amp:true});
     }
     return text;
   }
 }
 
-
+async function twitter({status,amp}){
+  if(!amp){
+    return `<blockquote class="twitter-tweet" data-lang="ja"><a href="https://twitter.com/SFPGMR/status/${status}">tweet</a></blockquote>`;
+  } else {
+    return `<amp-twitter data-tweetid="${status}" width="800" height="600" layout="responsive"></amp-twitter>`;
+  }
+}
 
 async function codeWithIframe({ srcPath, amp = false, iframe = true, thumbnail, width = 1024, height = 768, srcCode = true, res = true, except = null, sandbox = '' }) {
   // ファイル一覧を作成
@@ -481,7 +490,7 @@ function iframe_({ srcPath, amp = false, width = 1024, height = 768, sandbox = '
   }
 
   if (amp) {
-    src = `<amp-iframe src="${srcPath}" width="${width}" height="${height}" frameboarder="0" sandbox="allow-scripts allow-presentation allow-same-origin ${sandbox}" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
+    src = `<amp-iframe src="${srcPath}" width="${width}" height="${height}" frameboarder="0" sandbox="allow-scripts allow-presentation ${sandbox}" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
   } else {
     src = `
     <div class="embed-responsive" style="padding-top:${Math.round(height / width * 10000) / 100}%">

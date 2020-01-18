@@ -1,60 +1,104 @@
-import Twitter from 'twitter';
-import fs from 'fs';
+
+import tw from 'twitter';
 import util from 'util';
+import sqlite from 'sqlite';
 
-import sqlite3 from 'sqlite3';
-let Sqlite3 = sqlite3.verbose();
+export default class Twitter {
+  constructor(){
+    this.initPromiss = this.init();
+  }
 
-try {
-  const client = new Twitter({
-    consumer_key: process.env.TWCKEY,
-    consumer_secret: process.env.TWCSECRET,
-    access_token_key: process.env.TWAKEY,
-    access_token_secret: process.env.TWASECRET
-  });
-
-
-
-  
-  const getTweets = util.promisify(client.get.bind(client));
-  const tweetData = [];
-  const params = {
-    id:'1186045839552049153'
-  };
-
-  (async ()=>{
-    
-    const db = new Sqlite3.Database("./data/data.db");
-
-    db.serialize(()=>{
-      db.run("create table if not exists tweets(id text primary key ,value json)");
+  async init(){
+    this.client = new tw({
+      consumer_key: process.env.TWCKEY,
+      consumer_secret: process.env.TWCSECRET,
+      access_token_key: process.env.TWAKEY,
+      access_token_secret: process.env.TWASECRET
     });
+    this.pastMs = 1000 * 3600 * 24 * 7; // 1 week
+    this.getTweet_ = (util.promisify(this.client.get)).bind(this.client);
+    this.db = await sqlite.open("./data/tweets.db");
+  }
 
-    const dbGet = util.promisify(db.get).bind(db);
-    const dbRun = util.promisify(db.run).bind(db);
-    const dbExec = util.promisify(db.exec).bind(db);
+  async dispose(){
+    await this.db.close();
+  }
+  
+  async getTweetThread (statusId) {
+    const currentTime = (new Date()).getTime();
+    const db = this.db;
+    const pastMs = this.pastMs;
+    const getTweet_ = this.getTweet_;
 
-    function getData(status){
-      db.serialize(()=>{
-        db.get(`select * from tweets wher id = `)
+    await this.db.run("create table if not exists tweets (id text primary key ,value json,created int,updated int);");
+    //await db.run("create table if not exists tweets (id int primary key ,value json,create_date int,update_date int);");
 
-      });
+    let tweetData = [];
+    const tweetStmt = await db.prepare('select * from tweets where id = ?');
+    const tweetReplaceStmt =  await db.prepare('replace into tweets(id,value,created,updated) values(?,?,?,?);');
+
+
+    // ツィートを取得する
+    // dbにあれば取得し、なければAPIでデータを取得しDBに格納する
+    // dbのデータは7日間以上経過していれば再取得する
+    async function getTweet(id){
+      
+      let tweet = await tweetStmt.get(id);
+      let dbExists = !!tweet;
+
+      if(!dbExists){
+        tweet = await getTweet_('statuses/show', {id:id});
+      } else {
+        const dbCreatedTime = tweet.created;
+        console.log(currentTime - dbCreatedTime,pastMs);
+        if((currentTime - dbCreatedTime) > pastMs){
+          // DBのキャッシュが古ければ再取得する
+          tweet = await getTweet_('statuses/show', {id:id});
+          dbExists = false;
+        } else {
+          tweet = JSON.parse(tweet.value);
+        }
+      }
+      return {tweet:tweet,dbExists:dbExists};
     }
 
+    let {tweet,dbExists} = await getTweet(statusId);
+
     while(true){
-      
-      const tweet = await getTweets('statuses/show', params);
+     
       tweetData.push(tweet);
+      const date = (new Date()).getTime();
+
+      if(!dbExists){
+        await tweetReplaceStmt.run([tweet.id_str,JSON.stringify(tweet),date,date]);
+      }
+
       if(tweet.in_reply_to_status_id_str){
-        params.id = tweet.in_reply_to_status_id_str
+        const id = tweet.in_reply_to_status_id_str;
+        ({tweet,dbExists} = await getTweet(id));
+        if(!tweet) {
+          break;
+        }
       } else {
         break;
       }
     }
 
-    db.close();
-    await fs.promises.writeFile('./data/tweets.json', JSON.stringify(tweetData, null, 2), 'utf8');
-  })();
-} catch (error){
-  console.error(error);
-}
+    tweetData.sort((a,b)=>{
+      const ad = Date.parse(a.created_at);
+      const bd = Date.parse(b.created_at);
+      if (ad < bd) {
+        return -1;
+      }
+      if (ad > bd) {
+          return 1;
+      }
+      return 0;
+    });
+
+    tweetStmt.finalize();
+    tweetReplaceStmt.finalize();
+
+    return tweetData;
+  }
+}  

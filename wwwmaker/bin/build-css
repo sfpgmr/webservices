@@ -1,2 +1,2 @@
 #!/bin/bash
-node ~/www/node/wwwmaker/build/buildcss
+node --experimental-modules ~/www/node/wwwmaker/build/buildcss.mjs

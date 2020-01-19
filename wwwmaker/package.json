@@ -52,6 +52,7 @@
     "socket.io": "^2.2.0",
     "sqlite": "^3.0.3",
     "twitter": "^1.7.1",
-    "xmlrpc": "^1.3.2"
+    "xmlrpc": "^1.3.2",
+    "youtube-node": "^1.3.3"
   }
 }

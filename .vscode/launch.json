@@ -1,45 +1,60 @@
 {
-    // IntelliSense を使用して利用可能な属性を学べます。
-    // 既存の属性の説明をホバーして表示します。
-    // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
-    "version": "0.2.0",
-    "configurations": [
-        {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach",
-            "port": 9229,
-            "skipFiles": [
-                "<node_internals>/**"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "プログラムの起動",
-            "program": "${file}",
-            "runtimeArgs": [
-                "--experimental-modules","--expose-gc"
-            ]
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "プログラムの起動(WSL)",
-            "program": "${file}",
-            "runtimeArgs": [
-                "--experimental-modules","--expose-gc"
-            ],
-            "useWSL": true
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "プログラムの起動(WSL2)",
-            "program": "${file}",
-            "args": ["reset"],
-            "useWSL": true
-        }
-
-    ]
+  // IntelliSense を使用して利用可能な属性を学べます。
+  // 既存の属性の説明をホバーして表示します。
+  // 詳細情報は次を確認してください: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+    
+    {
+      "type": "node",
+      "request": "attach",
+      "name": "Attach",
+      "port": 9229
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "プログラムの起動",
+      "program": "${file}",
+      "runtimeArgs": [
+        "--experimental-modules",
+        "--expose-gc"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "プログラムの起動(WSL)",
+      "program": "${file}",
+      "runtimeArgs": [
+        "--experimental-modules",
+        "--expose-gc"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "プログラムの起動:reset",
+      "program": "${file}",
+      "args": [
+        "reset"
+      ],
+      "runtimeArgs": [
+        "--experimental-modules"
+      ]
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "プログラムの起動:update",
+      "program": "${workspaceFolder}/wwwmaker/commands/build-blog.mjs",
+      "args": [
+        "update"
+      ],
+      "cwd":"${workspaceFolder}/wwwmaker/",
+      "runtimeArgs": [
+        "--experimental-modules"
+      ]
+    }
+  ]
 }

@@ -3,6 +3,7 @@
 @import "./button.css";
 /*@import "./include/layout.css";*/
 @import "./navigation.css";
+@import "./twitter.css";
 
 /* デバイス共通属性 */
 @media screen {

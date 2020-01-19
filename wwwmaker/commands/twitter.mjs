@@ -2,6 +2,7 @@
 import tw from 'twitter';
 import util from 'util';
 import sqlite from 'sqlite';
+import makeEmbededInfo from './make-embeded-info.mjs';
 
 export default class Twitter {
   constructor(){
@@ -73,6 +74,8 @@ export default class Twitter {
         await tweetReplaceStmt.run([tweet.id_str,JSON.stringify(tweet),date,date]);
       }
 
+      //console.log(tweet.id_str,tweet.in_reply_to_status_id_str);
+
       if(tweet.in_reply_to_status_id_str){
         const id = tweet.in_reply_to_status_id_str;
         ({tweet,dbExists} = await getTweet(id));
@@ -98,7 +101,8 @@ export default class Twitter {
 
     tweetStmt.finalize();
     tweetReplaceStmt.finalize();
-
+    //tweetData = await makeEmbededInfo(tweetData);
+    //console.log(tweetData);
     return tweetData;
   }
 }  

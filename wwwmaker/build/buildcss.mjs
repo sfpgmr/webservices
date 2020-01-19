@@ -1,7 +1,6 @@
 'use strict';
 
-
-const path = require('path');
+import path from 'path';
 
 process.chdir(path.resolve(
   __dirname,'../'
@@ -15,12 +14,13 @@ const nested = require('postcss-nested');
 const simpleVars = require('postcss-simple-vars');
 const apply = require('postcss-apply');
 const cssnext = require('postcss-preset-env');
-const config = require('../commands/config-blog');
+const config = require('../commands/config-blog.js');
 const fs = require('fs-extra');
 
 async function buildcss(){
   const src = `${config.srcCssDir}sfblogstyle.css`;
   const dest = `${config.destCssDir}sfblogstyle.css`;
+  const dest2 = `${config.destBasePath}/css/sfblogstyle.css`;
   const css = await fs.readFile(src,'utf8');
   const processedCss = 
     await postcss([
@@ -29,6 +29,7 @@ async function buildcss(){
       from:src,to:dest
     });
   await fs.writeFile(dest,processedCss,'utf8');
+  await fs.writeFile(dest2,processedCss,'utf8');
 }
 
 if(require.main === module){

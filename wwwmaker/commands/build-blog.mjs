@@ -1,4 +1,3 @@
-"use strict";
 import * as md from './md-to-html3.mjs';
 import path from 'path';
 

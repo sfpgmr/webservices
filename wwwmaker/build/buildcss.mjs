@@ -1,21 +1,16 @@
-'use strict';
-
 import path from 'path';
+import postcss from 'postcss';
+import autoprefixer from 'autoprefixer';
+imoort atImport from 'postcss-import';
+imoort mixin from 'postcss-mixins';
+imoort nested from 'postcss-nested';
+imoort simpleVars from 'postcss-simple-vars';
+imoort apply from 'postcss-apply';
+imoort cssnext from 'postcss-preset-env';
+imoort config from '../commands/config-blog.js';
+imoort fs from 'fs-extra';
 
-process.chdir(path.resolve(
-  __dirname,'../'
-));
-
-const postcss = require('postcss');
-const autoprefixer = require('autoprefixer');
-const atImport = require('postcss-import');
-const mixin = require('postcss-mixins');
-const nested = require('postcss-nested');
-const simpleVars = require('postcss-simple-vars');
-const apply = require('postcss-apply');
-const cssnext = require('postcss-preset-env');
-const config = require('../commands/config-blog.js');
-const fs = require('fs-extra');
+process.chdir(path.resolve(path.dirname(new URL(import.meta.url).pathname),'../'));
 
 async function buildcss(){
   const src = `${config.srcCssDir}sfblogstyle.css`;
@@ -32,12 +27,9 @@ async function buildcss(){
   await fs.writeFile(dest2,processedCss,'utf8');
 }
 
-if(require.main === module){
-  buildcss();
-} else {
-  module.exports = buildcss;
+try {
+  (async()=>{buildcss();})();
+} catch (e) {
+  console.error(e.stack);
+  process.abort();
 }
-
-
-
-

@@ -1,14 +1,16 @@
 import path from 'path';
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
-imoort atImport from 'postcss-import';
-imoort mixin from 'postcss-mixins';
-imoort nested from 'postcss-nested';
-imoort simpleVars from 'postcss-simple-vars';
-imoort apply from 'postcss-apply';
-imoort cssnext from 'postcss-preset-env';
-imoort config from '../commands/config-blog.js';
-imoort fs from 'fs-extra';
+import atImport from 'postcss-import';
+import mixin from 'postcss-mixins';
+import nested from 'postcss-nested';
+import simpleVars from 'postcss-simple-vars';
+import apply from 'postcss-apply';
+import postcssPresetEnv from 'postcss-preset-env';
+import config from '../commands/config-blog.mjs';
+import failOnWarn from 'postcss-fail-on-warn';
+//import precss  from 'precss';
+import fs from 'fs-extra';
 
 process.chdir(path.resolve(path.dirname(new URL(import.meta.url).pathname),'../'));
 
@@ -17,18 +19,28 @@ async function buildcss(){
   const dest = `${config.destCssDir}sfblogstyle.css`;
   const dest2 = `${config.destBasePath}/css/sfblogstyle.css`;
   const css = await fs.readFile(src,'utf8');
-  const processedCss = 
-    await postcss([
-      atImport(),autoprefixer(),mixin(),nested(),simpleVars(),apply(),cssnext()
-    ]).process(css,{
-      from:src,to:dest
-    });
-  await fs.writeFile(dest,processedCss,'utf8');
-  await fs.writeFile(dest2,processedCss,'utf8');
+
+  
+  const processedCss = await
+  postcss([
+    autoprefixer,atImport,mixin,nested,simpleVars,apply,postcssPresetEnv
+  ]).process(css,{
+    from:src,to:dest
+  });
+  // await postcss([
+  //   atImport(),autoprefixer(),mixin(),nested(),simpleVars(),apply(),postcssPresetEnv()
+  // ]).process(css,{
+  //   from:src,to:dest2
+  // });
+  //for(const i in processedCss){
+  //  console.log(processedCss.messages);
+  //}
+  await fs.writeFile(dest,processedCss.css,'utf8');
+  await fs.writeFile(dest2,processedCss.css,'utf8');
 }
 
 try {
-  (async()=>{buildcss();})();
+  buildcss();
 } catch (e) {
   console.error(e.stack);
   process.abort();

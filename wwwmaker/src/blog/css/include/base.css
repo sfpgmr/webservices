@@ -6,6 +6,7 @@
 @import "./amazon.css";
 @import "./legacy-support.css";
 @import "./hljs.css";
+@import "./twitter.css";
 /*@import "./katex.css";*/
 
 /* デバイス共通属性 */
@@ -20,6 +21,8 @@
     word-break: loose;
     /*border: 1px dashed gray;*/
   }
+
+  
 
   code {
     color:#303030;
@@ -364,8 +367,10 @@
     max-width:var(--max-width);
     width:var(--max-width);
     height:100vh;
-    margin-left:var(--adjust-margin);
-    margin-right:var(--adjust-margin);
+    margin-left:calc((100vw - 1024px)/2);
+    margin-right:calc((100vw - 1024px)/2);
+ /*   margin-left:var(--adjust-margin);
+    margin-right:var(--adjust-margin);*/
   }
   
   body {

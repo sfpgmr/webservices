@@ -80,7 +80,7 @@
   grid-column: 3/4;
 }
 
-.sf-tweet-thread > twitter-widget {
+.sf-tweet-thread > .twitter-widget {
   overflow: auto;
   max-height: 960px;
   position: absolute;

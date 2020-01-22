@@ -454,7 +454,7 @@ function twitter(opts){
 
 //カスタムフォーマットでTwitterを表示
 function twitterCustom(opts){
-
+    const lazyLoading = '';
     const tweet =  opts.retweeted ? opts.retweeted_status : opts;
     let tweetText = tweet.full_text?tweet.full_text:tweet.text;
     let embededs = [];
@@ -551,7 +551,7 @@ async function twitterThread(opts){
     }
   }
   output = output.join('\n');
-  return `<blockquote class="sf-tweet-thread">${output}</blockquote>`;
+  return `<div class="sf-tweet-thread">${output}</div>`;
 }
 
 

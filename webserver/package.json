@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node --experimental-modules ./bin/www.mjs"
+    "start": "sudo node --experimental-modules ./bin/www.mjs"
   },
   "dependencies": {
     "@types/send": "^0.14.5",

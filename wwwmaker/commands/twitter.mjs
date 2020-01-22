@@ -101,8 +101,8 @@ export default class Twitter {
 
     tweetStmt.finalize();
     tweetReplaceStmt.finalize();
-    //tweetData = await makeEmbededInfo(tweetData);
-    //console.log(tweetData);
+    tweetData = await makeEmbededInfo(tweetData);
+    console.log(tweetData);
     return tweetData;
   }
 }  

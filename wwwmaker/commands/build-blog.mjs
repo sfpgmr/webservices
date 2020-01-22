@@ -20,6 +20,9 @@ process.chdir(path.resolve(path.dirname(new URL(import.meta.url).pathname),'../'
       case 'archiveTest':
         await md.archiveTest();
         break;
+      default:
+        await md.update();
+        break;
     }
   } catch (e) {
     console.error(e, e.stack);

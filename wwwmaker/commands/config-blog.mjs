@@ -90,16 +90,16 @@ export const blogConfig = {
         },
         'image': {
           '@type': 'ImageObject',
-          'url': 'https://sfpgmr.net/img/sf.png',
-          'width':'128',
-          'height':'128'
+          'url': 'https://sfpgmr.net/img/sfblog.png',
+          'width':'1024',
+          'height':'1024'
         },
         'publisher': {
           '@type': 'Organization',
           'name': 'SFPGMR',
           'logo':{
             '@type': 'ImageObject',
-            'url': 'https://sfpgmr.net/img/sfblog.png',
+            'url': 'https://sfpgmr.net/img/sfpgmr.png',
             'width':'640',
             'height':'640'
           }

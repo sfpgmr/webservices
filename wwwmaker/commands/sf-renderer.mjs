@@ -1,20 +1,20 @@
 
-import {Renderer} from './marked.mjs';
+import { Renderer } from './marked.mjs';
 import htmlEncode from 'js-htmlencode';
 import apac from 'apac';
-const {OperationHelper} = apac;
+const { OperationHelper } = apac;
 import mjApi from 'mathjax-node';
 mjApi.start();
-import {URL} from 'url';
+import { URL } from 'url';
 import util from 'util';
-import {parseAttributes} from './sf-util.mjs';
-import {blogConfig as config} from './config-blog.mjs';
+import { parseAttributes } from './sf-util.mjs';
+import { blogConfig as config } from './config-blog.mjs';
 import request from 'request-promise-native';
 import sizeOf from 'image-size';
 import fs from 'fs-extra';
 import hljs from 'highlight.js';
 import path from 'path';
-import {escape,unescape} from './marked.mjs';
+import { escape, unescape } from './marked.mjs';
 import resolveHome from './resolveHome.mjs';
 import Twitter from './twitter.mjs';
 
@@ -23,7 +23,7 @@ let twitter_;
 // tex描画エンジン
 
 function texRenderer(tex) {
-  tex = tex.replace(/\\([\[\]])/ig,'$1');
+  tex = tex.replace(/\\([\[\]])/ig, '$1');
 
   return new Promise((resolve, reject) => {
     mjApi.typeset({
@@ -56,7 +56,7 @@ function texRenderer(tex) {
 let amazonCache;
 try {
   let s = fs.statSync('./amazon-cache.json');
-  
+
   if (s.isFile) {
     amazonCache = new Map(JSON.parse(fs.readFileSync('./amazon-cache.json', 'utf-8')));
   }
@@ -68,7 +68,7 @@ let imgCache;
 // イメージのキャッシュ
 try {
   let s = fs.statSync('./img-cache.json');
-  
+
   if (s.isFile) {
     imgCache = new Map(JSON.parse(fs.readFileSync('./img-cache.json', 'utf-8')));
   }
@@ -76,12 +76,12 @@ try {
   imgCache = new Map();
 }
 
-export async function saveCache(){
-  await fs.writeFile('./img-cache.json',JSON.stringify([...imgCache]),'utf-8');
-  await fs.writeFile('./amazon-cache.json',JSON.stringify([...amazonCache]),'utf-8');
+export async function saveCache() {
+  await fs.writeFile('./img-cache.json', JSON.stringify([...imgCache]), 'utf-8');
+  await fs.writeFile('./amazon-cache.json', JSON.stringify([...amazonCache]), 'utf-8');
 }
 
-export function closeResources(){
+export function closeResources() {
   twitter.dispose();
 }
 
@@ -155,12 +155,12 @@ async function doAmazonContents(asin, p1, p2, amp = false) {
       }
     }
     item = resp.result.ItemLookupResponse.Items.Item;
-    amazonCache.set(asin,item);
+    amazonCache.set(asin, item);
   } else {
     item = amazonCache.get(asin);
   }
-  
-  console.log('****amazon***',item.DetailPageURL);
+
+  console.log('****amazon***', item.DetailPageURL);
 
   let content = '';
   switch (p1) {
@@ -228,44 +228,42 @@ export class NormalRenderer extends Renderer {
       case 'adsense':
         return infeedAd;
       case 'codeWithIframe':
-        try {
+        {
           // まずJSON形式なのか確認
           let paramjson = JSON.parse(param);
+          if ((typeof paramjson) != 'object') {
+            return codeWithIframe({ srcPath: param });
+          }
           return codeWithIframe(paramjson);
-        } catch (e) {
-          return codeWithIframe({ srcPath: param });
         }
       case "iframe":
-        try {
+        {
           // まずJSON形式なのか確認
           let paramjson = Object.assign({ amp: false }, JSON.parse(param));
-          return iframe_(paramjson);
-        } catch (e) {
-          return iframe_({ srcPath: param, amp: false });
-        }
-        case "twitter":
-          try {
-            let paramjson = JSON.parse(param);
-            if((typeof paramjson) != 'object'){
-              paramjson = {status:param,amp:false};
-            } else {
-              paramjson.amp = false;
-            }
-            return twitter(paramjson);
-          } catch (e) {
-            return twitter({status:param,amp:false});
+          if ((typeof paramjson) != 'object') {
+            return iframe_({ srcPath: param, amp: false });
           }
-        case "twitter-thread":
-          try {
-            let paramjson = JSON.parse(param);
-            if((typeof paramjson) != 'object'){
-              paramjson = {status:param,amp:false};
-            } else {
-              paramjson.amp = false;
-            }
-            return await twitterThread(paramjson);
-          } catch (e) {
-            return await twitterThread({status:param,amp:false});;
+          return iframe_(paramjson);
+        }
+      case "twitter":
+        {
+          let paramjson = JSON.parse(param);
+          if ((typeof paramjson) != 'object') {
+            paramjson = { status: param, amp: false };
+          } else {
+            paramjson.amp = false;
+          }
+          return twitter(paramjson);
+        }
+      case "twitter-thread":
+        {
+          let paramjson = JSON.parse(param);
+          if ((typeof paramjson) != 'object') {
+            paramjson = { status: param, amp: false };
+          } else {
+            paramjson.amp = false;
+          }
+          return await twitterThread(paramjson);
         }
     }
     return text;
@@ -287,8 +285,8 @@ export class AmpRenderer extends Renderer {
 
   }
 
-  saveCache(){
-    return 
+  saveCache() {
+    return
   }
 
   async html(html) {
@@ -300,8 +298,8 @@ export class AmpRenderer extends Renderer {
 
     while ((m = img.exec(html))) {
       let attribs = parseAttributes(m[1]);
-      if(attribs['src'].match(/i\.[^\.]*\.microsoft\.com/)){
-        attribs['src'] = attribs['src'].replace(/i\.([^\.]*)\.microsoft\.com/,'$1.microsoft.com');
+      if (attribs['src'].match(/i\.[^\.]*\.microsoft\.com/)) {
+        attribs['src'] = attribs['src'].replace(/i\.([^\.]*)\.microsoft\.com/, '$1.microsoft.com');
       }
       let ampImgStr = await this.image(attribs['src'], attribs['title'], attribs['alt']);
       html = html.replace(m[0], ampImgStr);
@@ -320,7 +318,7 @@ export class AmpRenderer extends Renderer {
       attribs.width = (!attribs.width || /%/.test(attribs.width)) ? 1024 : attribs.width;
       attribs.height = (!attribs.height || /%/.test(attribs.height)) ? 768 : attribs.height;
       //return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder?'frameboarder="' + attribs.frameboarder + '"':''} ${attribs.allowfullscreen?'allowfullscreen':''} sandbox="allow-scripts allow-same-origin allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
-      
+
       return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder ? 'frameboarder="' + attribs.frameboarder + '"' : ''} ${attribs.allowfullscreen ? 'allowfullscreen' : ''} sandbox="allow-scripts allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
     });
 
@@ -329,7 +327,7 @@ export class AmpRenderer extends Renderer {
   }
 
   async image(href, title, text) {
-    console.log('****image****',href);
+    console.log('****image****', href);
     // amp-image対応
     let out = `<amp-img src="${href}" alt="${text}"`;
     if (title) {
@@ -343,18 +341,18 @@ export class AmpRenderer extends Renderer {
     try {
       let imgObj;
       let size;
-      if(imgCache.has(href)){
+      if (imgCache.has(href)) {
         size = imgCache.get(href);
       } else {
         imgObj = await request({ uri: href, encoding: null });
         size = await sizeOf(imgObj);
-        imgCache.set(href,{width:size.width,height:size.height});
+        imgCache.set(href, { width: size.width, height: size.height });
       }
       out += ` width="${size.width}" height="${size.height}" layout="responsive">`;
     } catch (e) {
       console.log('**** failed ****')
       out += ' width="100" height="100" layout="responsive">';
-      imgCache.set(href,{width:100,height:100,error:e.code || true});
+      imgCache.set(href, { width: 100, height: 100, error: e.code || true });
     }
     //const cacheDir = config.cacheDir + config.imageCacheDir;
     out += '</amp-img>';
@@ -384,68 +382,65 @@ export class AmpRenderer extends Renderer {
       case 'adsense':
         return ampAd;
       case 'codeWithIframe':
-        try {
+        {
           // まずJSON形式なのか確認
-          let paramjson = Object.assign(JSON.parse(param),{ amp: true });
+          let paramjson = Object.assign(JSON.parse(param), { amp: true });
+          if ((typeof paramjson) != 'object') {
+            return codeWithIframe({ srcPath: param, amp: true });
+          }
           return codeWithIframe(paramjson);
-        } catch (e) {
-          return codeWithIframe({ srcPath: param, amp: true });
         }
       case "iframe":
-        try {
+        {
           // まずJSON形式なのか確認
-          let paramjson = Object.assign(JSON.parse(param),{ amp: true });
+          let paramjson = Object.assign(JSON.parse(param), { amp: true });
+          if ((typeof paramjson) != 'object') {
+            return iframe_({ srcPath: param, amp: true });
+          }
           return iframe_(paramjson);
-        } catch (e) {
-          return iframe_({ srcPath: param, amp: true });
         }
       case "twitter":
-        try {
-          // まずJSON形式なのか確認
+        {// まずJSON形式なのか確認
           let paramjson = JSON.parse(param);
-          if((typeof paramjson) != 'object'){
-            paramjson = {status:param,amp:true};
+          if ((typeof paramjson) != 'object') {
+            paramjson = { status: param, amp: true };
           } else {
             paramjson.amp = true;
           }
           return twitter(paramjson);
-        } catch (e) {
-          return twitter({status:param,amp:true});
         }
       case "twitter-thread":
-        try {
-          // まずJSON形式なのか確認
+        // まずJSON形式なのか確認
+        {
           let paramjson = JSON.parse(param);
-          if((typeof paramjson) != 'object'){
-            paramjson = {status:param,amp:true};
+          if ((typeof paramjson) != 'object') {
+            paramjson = { status: param, amp: true };
           } else {
             paramjson.amp = true;
-          } 
+          }
           return await twitterThread(paramjson);
-        } catch (e) {
-          return await twitterThread({status:param,amp:true});;
         }
-      }
+    }
     return text;
   }
 }
 
 // Twitter Cardを挿入する
-function twitter(opts){
-  
+function twitter(opts) {
+
   opts["data-lang"] = opts["data-lang"] || 'ja';
   opts["data-conversation"] = opts["data-conversation"] || 'none';
-  
+
   let attributeOpt = [];
-  for(const opt in opts){
-    if(opt.match(/^data-/)){
+  for (const opt in opts) {
+    if (opt.match(/^data-/)) {
       attributeOpt.push(`${opt}="${opts[opt]}"`);
     }
   }
 
   attributeOpt = attributeOpt.join(' ');
 
-  if(!opts.amp){
+  if (!opts.amp) {
     return `<blockquote class="twitter-tweet" ${attributeOpt} ><a href="https://twitter.com/SFPGMR/status/${opts.status}">tweet</a></blockquote>`;
   } else {
     return `<amp-twitter data-tweetid="${opts.status}" width="800" height="600" layout="responsive" ${attributeOpt}></amp-twitter>`;
@@ -453,101 +448,123 @@ function twitter(opts){
 }
 
 //カスタムフォーマットでTwitterを表示
-function twitterCustom(opts){
-    const lazyLoading = '';
-    const tweet =  opts.retweeted ? opts.retweeted_status : opts;
-    let tweetText = tweet.full_text?tweet.full_text:tweet.text;
-    let embededs = [];
-    if(tweet.entities.urls){
-      const urls = tweet.entities.urls;
-      for(const url of urls){
-        if(url.youtube){
-          const yt_item = url.youtube.items[0] || url.youtube.items;
-          const yt_thumb = yt_item.snippet && yt_item.snippet.thumbnails && (yt_item.snippet.thumbnails.high || yt_item.snippet.thumbnails.medium || yt_item.snippet.thumbnails.standard || yt_item.snippet.thumbnails.default);
-          if(yt_thumb){
+function twitterCustom(opts) {
+  const amp = opts.amp;
+  const lazyLoading = '';
+  const tweet = opts.retweeted ? opts.retweeted_status : opts;
+  let tweetText = tweet.full_text ? tweet.full_text : tweet.text;
+  let embededs = [];
+  if (tweet.entities.urls) {
+    const urls = tweet.entities.urls;
+    for (const url of urls) {
+      if (url.youtube) {
+        const yt_item = url.youtube.items[0] || url.youtube.items;
+        const yt_thumb = yt_item.snippet && yt_item.snippet.thumbnails && (yt_item.snippet.thumbnails.high || yt_item.snippet.thumbnails.medium || yt_item.snippet.thumbnails.standard || yt_item.snippet.thumbnails.default);
+        if (yt_thumb) {
+          if(!amp){
             tweetText = tweetText.replace(url.url,
-            // `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${yt_item.id}?autoplay=0&origin=https://www.sfpgmr.net" frameborder="0"></iframe>`
-              `<div class="youtube" data-type="yt" id="${yt_item.id}"><div class="yt-title">Youtube - ${yt_item.snippet.title}</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img ${lazyLoading} data-href="${url.expanded_url}" class="youtube" src="${yt_thumb.url}" /></div>`
-            );
+              `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${yt_item.id}?autoplay=0&origin=https://sfpgmr.net" frameborder="0"></iframe>`
+              //`<div class="youtube" data-type="yt" id="${yt_item.id}"><div class="yt-title">Youtube - ${yt_item.snippet.title}</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img ${lazyLoading} data-href="${url.expanded_url}" class="youtube" src="${yt_thumb.url}" /></div>`
+              );
           } else {
-            tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
+            tweetText = tweetText.replace(url.url,`<amp-youtube data-videoid="${yt_item.id}"  layout="responsive" width="${yt_thumb.width}" height="${yt_thumb.heigh}"></amp-youtube>`);
           }
-        } else if (url.meta){
-          const meta = url.meta;
-          const type = meta.twitter ? 
-            ( meta.twitter.card == "summary_large_image" ? "card card-large" : "card card-default" ) 
-            : "page"; 
-          const title = meta.title || (meta.json_lds && meta.json_lds && meta.json_lds[0] && meta.json_lds[0].headline) || (meta.twitter && meta.twitter.title) || '';
-          // const image = (meta.twitter && meta.twitter.image)  
-          //   || (meta.json_lds && ((meta.json_lds[0].image instanceof Array) ? meta.json_lds[0].image[0] : meta.json_lds[0].image));
-          // const desc = meta.description || (meta.twitter && meta.twitter.description) || (meta.json_lds && meta.json_lds[0].description);
-          const desc = meta.description || (meta.og && meta.og.description) || '';
-          console.log(desc);
-          let img = (meta.twitter && meta.twitter.image && (meta.twitter.image.src || meta.twitter.image)) || (meta.og && meta.og.image);
-          img = img ? `<img ${lazyLoading} src="${img}" />`:'<div class="no-image" >No Image</div>';  
-          
-          tweetText = tweetText.replace(url.url,`<blockquote class="${type}"><header>${img}<a href="${url.expanded_url}" target="_blank">${title.replace(/</ig,'&lt;').replace(/>/ig,'&gt;')}</a></header><div>${desc.replace(/</ig,'&lt;').replace(/>/ig,'&gt;')}</div></blockquote>`);
         } else {
-          tweetText = tweetText.replace(url.url,`<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
-         }
+          tweetText = tweetText.replace(url.url, `<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
+        }
+      } else if (url.meta) {
+        const meta = url.meta;
+        const type = meta.twitter ?
+          (meta.twitter.card == "summary_large_image" ? "card card-large" : "card card-default")
+          : "page";
+        const title = meta.title || (meta.json_lds && meta.json_lds && meta.json_lds[0] && meta.json_lds[0].headline) || (meta.twitter && meta.twitter.title) || '';
+        // const image = (meta.twitter && meta.twitter.image)  
+        //   || (meta.json_lds && ((meta.json_lds[0].image instanceof Array) ? meta.json_lds[0].image[0] : meta.json_lds[0].image));
+        // const desc = meta.description || (meta.twitter && meta.twitter.description) || (meta.json_lds && meta.json_lds[0].description);
+        const desc = meta.description || (meta.og && meta.og.description) || '';
+        console.log(desc);
+        let img = (meta.twitter && meta.twitter.image && (meta.twitter.image.src || meta.twitter.image)) || (meta.og && meta.og.image);
+        img = img ? `<img ${lazyLoading} src="${img}" />` : '<div class="no-image" >No Image</div>';
+
+        tweetText = tweetText.replace(url.url, `<blockquote class="${type}"><header>${img}<a href="${url.expanded_url}" target="_blank">${title.replace(/</ig, '&lt;').replace(/>/ig, '&gt;')}</a></header><div>${desc.replace(/</ig, '&lt;').replace(/>/ig, '&gt;')}</div></blockquote>`);
+      } else {
+        tweetText = tweetText.replace(url.url, `<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
       }
     }
+  }
 
-    tweetText = tweetText.replace(/\n/ig,'<br/>');
-    let rendered = '<section><header class="tweet-header">';
-    if(opts.header){
-      rendered += `<img class="tweet-profile-img" src="${tweet.user.profile_image_url_https}" />
+  tweetText = tweetText.replace(/\n/ig, '<br/>');
+  let rendered = '<section><header class="tweet-header">';
+  if (opts.header) {
+    rendered += `<img class="tweet-profile-img" src="${tweet.user.profile_image_url_https}" />
       <p class="tweet-user-name">${tweet.user.name}@${tweet.user.screen_name}</p>`;
-    }
-    rendered += `<p class="tweet-date"><a href="https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}"
+  }
+  rendered += `<p class="tweet-date"><a href="https://twitter.com/${tweet.user.screen_name}/status/${tweet.id_str}"
     target="_blank">${(new Date(tweet.created_at)).toLocaleString('ja-JP')}</a></p></header>`;
 
-    rendered += `<p class="tweet-text">${tweetText}</p>`;
+  rendered += `<p class="tweet-text">${tweetText}</p>`;
 
-    const medias = (tweet.extended_entities && tweet.extended_entities.media) || (tweet.entities && tweet.entities.media);
-    if(medias){ 
-      if(medias instanceof Array) {
-        medias.forEach(m=>{
-          let v;
-          if(m.video_info && m.video_info.variants){
-            v =  m.video_info.variants.find(v_=>v_.content_type == "video/mp4");
-          }
-          if(v && v.url){
+  const medias = (tweet.extended_entities && tweet.extended_entities.media) || (tweet.entities && tweet.entities.media);
+  
+  if (medias) {
+    if (medias instanceof Array) {
+      medias.forEach(m => {
+        let v;
+        if (m.video_info && m.video_info.variants) {
+          v = m.video_info.variants.find(v_ => v_.content_type == "video/mp4");
+        }
+        if (v && v.url) {
+          if(!amp){
             rendered += `<video class="tweet-img" controls src="${v.url}" />`;
-           } else {
-            rendered += `<img class="tweet-img" src="${m.media_url_https}" />`
+          } else {
+            const size = m.sizes.large || m.sizes.medium || m.sizes.small || m.sizes.thumb;
+            rendered += `
+            <amp-video controls width="${size.w}" height="${size.h}" layout="responsive" poster="${media_url_https}" src="${v.url}">
+            <div fallback>
+              <p>This browser does not support the video element.</p>
+            </div>
+          </amp-video>`
           }
-        });
-      } else {
+        } else {
+          if(!amp){
+            rendered += `<img class="tweet-img" src="${m.media_url_https}" />`
+          } else {
+            const size = m.sizes.large || m.sizes.medium || m.sizes.small || m.sizes.thumb;
+            rendered += `<amp-img alt="image" src="${m.media_url_https}" width="${size.w}" height="${size.h}" layout="responsive">
+          </amp-img>`;
+          }
+        }
+      });
+    } else {
 
-      }
-  } 
+    }
+  }
   rendered += '</section>';
   return rendered;
 }
 
 // Twitter Threadを表示する
-async function twitterThread(opts){
-  if(!twitter_){
+async function twitterThread(opts) {
+  if (!twitter_) {
     twitter_ = new Twitter();
     await twitter_.initPromiss;
   }
- 
+
   const threads = await twitter_.getTweetThread(opts.status);
 
   let output = [];
-  if(!opts.custom){
+  if (!opts.custom) {
     // Twitter Cardをスレッド分表示
-    for(const tweet of threads){
-      output.push(twitter(Object.assign(tweet,opts,{status:tweet.id_str}))); 
+    for (const tweet of threads) {
+      output.push(twitter(Object.assign(tweet, opts, { status: tweet.id_str })));
     }
   } else {
     // カスタム フォーマット
-    threads.forEach((tweet,index)=>{
-      if(index == 0) tweet.header = true;      
-      output.push(twitterCustom(Object.assign(tweet,opts,{status:tweet.id_str})));
+    threads.forEach((tweet, index) => {
+      if (index == 0) tweet.header = true;
+      output.push(twitterCustom(Object.assign(tweet, opts, { status: tweet.id_str })));
     });
-    for(const tweet of threads){
+    for (const tweet of threads) {
     }
   }
   output = output.join('\n');
@@ -678,5 +695,5 @@ function iframe_({ srcPath, amp = false, width = 1024, height = 768, sandbox = '
 export default {
   NormalRenderer: NormalRenderer,
   AmpRenderer: AmpRenderer,
-  saveCache:saveCache
+  saveCache: saveCache
 };

@@ -58,14 +58,21 @@ export const blogConfig = {
           'image': {
             '@type': 'ImageObject',
             'url': 'https://sfpgmr.net/img/sfpgmr.png',
-            'width':'256',
-            'height':'256'
+            'width':'1200',
+            'height':'1200'
           },
           'alternateName': 'SFPGMR'
         },
         'publisher': {
           '@type': 'Organization',
-          'name': 'SFPGMR'
+          '@id':'/#organization',
+          'name': 'SFPGMR',
+          'logo':{
+            '@type': 'ImageObject',
+            'url': 'https://sfpgmr.net/img/sfpgmr.png',
+            'width':'1200',
+            'height':'1200'
+          }
         },
         "isPartOf":{"@id":"/#website"}
       },
@@ -78,30 +85,26 @@ export const blogConfig = {
       'sf:blogPostingDefaults': {
         '@type': 'BlogPosting',
         '@id': '',
-        'mainEntityOfPage':{
-          '@type':'WebPage',
-          '@id':''
-        },
         'url': '',
         'keywords': '',
         'about': '',
         'author': {
           '@id': '/profile.html#sfpgmr'
         },
-        'image': {
-          '@type': 'ImageObject',
-          'url': 'https://sfpgmr.net/img/sfblog.png',
-          'width':'1024',
-          'height':'1024'
-        },
+        'image': [
+          'https://sfpgmr.net/img/sfblog.1x1.png',
+          'https://sfpgmr.net/img/sfblog.4x3.png',
+          'https://sfpgmr.net/img/sfblog.16x9.png'
+        ],
         'publisher': {
           '@type': 'Organization',
+          '@id':'/#organization',
           'name': 'SFPGMR',
           'logo':{
             '@type': 'ImageObject',
             'url': 'https://sfpgmr.net/img/sfpgmr.png',
-            'width':'640',
-            'height':'640'
+            'width':'1200',
+            'height':'1200'
           }
         },
         "isPartOf":{"@id":"/#blog"}

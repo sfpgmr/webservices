@@ -220,6 +220,7 @@ export class NormalRenderer extends Renderer {
   }
 
   async custom(text, command, param) {
+    const amp = false;
     console.log(text, command, param);
     switch (command) {
       case 'asin':
@@ -232,16 +233,18 @@ export class NormalRenderer extends Renderer {
           // まずJSON形式なのか確認
           let paramjson = JSON.parse(param);
           if ((typeof paramjson) != 'object') {
-            return codeWithIframe({ srcPath: param });
+            return codeWithIframe({ srcPath: paramjson });
           }
           return codeWithIframe(paramjson);
         }
       case "iframe":
         {
           // まずJSON形式なのか確認
-          let paramjson = Object.assign({ amp: false }, JSON.parse(param));
+          let paramjson = JSON.parse(param);
           if ((typeof paramjson) != 'object') {
-            return iframe_({ srcPath: param, amp: false });
+            return iframe_({ srcPath: paramjson, amp: amp });
+          } else {
+            paramjson.amp = amp;
           }
           return iframe_(paramjson);
         }
@@ -249,9 +252,9 @@ export class NormalRenderer extends Renderer {
         {
           let paramjson = JSON.parse(param);
           if ((typeof paramjson) != 'object') {
-            paramjson = { status: param, amp: false };
+            paramjson = { status: paramjson, amp: amp };
           } else {
-            paramjson.amp = false;
+            paramjson.amp = amp;
           }
           return twitter(paramjson);
         }
@@ -259,12 +262,23 @@ export class NormalRenderer extends Renderer {
         {
           let paramjson = JSON.parse(param);
           if ((typeof paramjson) != 'object') {
-            paramjson = { status: param, amp: false };
+            paramjson = { status: paramjson, amp: amp };
           } else {
-            paramjson.amp = false;
+            paramjson.amp = amp;
           }
           return await twitterThread(paramjson);
         }
+      case "gist":
+        {
+          let paramjson = JSON.parse(param);
+          if ((typeof paramjson) != 'object') {
+            paramjson = { id: paramjson, amp: amp };
+          } else {
+            paramjson.amp = amp;
+          }
+          return gist(paramjson);
+        }
+
     }
     return text;
   }
@@ -301,7 +315,7 @@ export class AmpRenderer extends Renderer {
       if (attribs['src'].match(/i\.[^\.]*\.microsoft\.com/)) {
         attribs['src'] = attribs['src'].replace(/i\.([^\.]*)\.microsoft\.com/, '$1.microsoft.com');
       }
-      let ampImgStr = await this.image(attribs['src'], attribs['title'], attribs['alt']);
+      let ampImgStr = await this.image(attribs['src'], attribs['title'], attribs['alt'],attribs);
       html = html.replace(m[0], ampImgStr);
     }
 
@@ -319,38 +333,49 @@ export class AmpRenderer extends Renderer {
       attribs.height = (!attribs.height || /%/.test(attribs.height)) ? 768 : attribs.height;
       //return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder?'frameboarder="' + attribs.frameboarder + '"':''} ${attribs.allowfullscreen?'allowfullscreen':''} sandbox="allow-scripts allow-same-origin allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
 
-      return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder ? 'frameboarder="' + attribs.frameboarder + '"' : ''} ${attribs.allowfullscreen ? 'allowfullscreen' : ''} sandbox="allow-scripts allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
-    });
+      //return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.frameboarder ? 'frameboarder="' + attribs.frameboarder + '"' : ''} ${attribs.allowfullscreen ? 'allowfullscreen' : ''} sandbox="allow-scripts allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
+      return `<amp-iframe src="${attribs.src}" width="${attribs.width}" height="${attribs.height}" ${attribs.allowfullscreen ? 'allowfullscreen' : ''} sandbox="allow-scripts allow-presentation" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;    });
 
     html = html.replace(/embed-responsive-?(?:4by3|16by9)?/ig, '');
     return html;
   }
 
-  async image(href, title, text) {
+  async image(href, title, text,attribs) {
     console.log('****image****', href);
     // amp-image対応
     let out = `<amp-img src="${href}" alt="${text}"`;
     if (title) {
       out += ` title="${title}"`;
     }
+
     // width,heightの算出
+    
     if (/^\//.test(href)) {
       href = new URL(href, config.siteUrl);
     }
 
     try {
+     
       let imgObj;
       let size;
-      if (imgCache.has(href)) {
+      if(attribs && attribs.width && attribs.height){
+        size = {width:attribs.width,height:attribs.height};
+      } else if (imgCache.has(href)) {
         size = imgCache.get(href);
+        if(size.error){
+          imgObj = await request({ uri: href, encoding: null,'rejectUnauthorized': false });
+          size = await sizeOf(imgObj);
+          console.log(size);
+          imgCache.set(href, { width: size.width, height: size.height });
+        }
       } else {
-        imgObj = await request({ uri: href, encoding: null });
+        imgObj = await request({ uri: href, encoding: null,'rejectUnauthorized': false });
         size = await sizeOf(imgObj);
         imgCache.set(href, { width: size.width, height: size.height });
       }
       out += ` width="${size.width}" height="${size.height}" layout="responsive">`;
     } catch (e) {
-      console.log('**** failed ****')
+      console.log('**** failed ****',e)
       out += ' width="100" height="100" layout="responsive">';
       imgCache.set(href, { width: 100, height: 100, error: e.code || true });
     }
@@ -374,6 +399,7 @@ export class AmpRenderer extends Renderer {
   }
 
   async custom(text, command, param) {
+    const amp = true;
     console.log(text, command, param);
     switch (command) {
       case 'asin':
@@ -384,18 +410,18 @@ export class AmpRenderer extends Renderer {
       case 'codeWithIframe':
         {
           // まずJSON形式なのか確認
-          let paramjson = Object.assign(JSON.parse(param), { amp: true });
+          let paramjson = Object.assign(JSON.parse(param), { amp: amp });
           if ((typeof paramjson) != 'object') {
-            return codeWithIframe({ srcPath: param, amp: true });
+            return codeWithIframe({ srcPath: paramjson, amp: amp });
           }
           return codeWithIframe(paramjson);
         }
       case "iframe":
         {
           // まずJSON形式なのか確認
-          let paramjson = Object.assign(JSON.parse(param), { amp: true });
+          let paramjson = Object.assign(JSON.parse(param), { amp: amp });
           if ((typeof paramjson) != 'object') {
-            return iframe_({ srcPath: param, amp: true });
+            return iframe_({ srcPath: paramjson, amp: amp });
           }
           return iframe_(paramjson);
         }
@@ -403,9 +429,9 @@ export class AmpRenderer extends Renderer {
         {// まずJSON形式なのか確認
           let paramjson = JSON.parse(param);
           if ((typeof paramjson) != 'object') {
-            paramjson = { status: param, amp: true };
+            paramjson = { status: paramjson, amp: amp };
           } else {
-            paramjson.amp = true;
+            paramjson.amp = amp;
           }
           return twitter(paramjson);
         }
@@ -414,14 +440,35 @@ export class AmpRenderer extends Renderer {
         {
           let paramjson = JSON.parse(param);
           if ((typeof paramjson) != 'object') {
-            paramjson = { status: param, amp: true };
+            paramjson = { status: paramjson, amp: amp };
           } else {
-            paramjson.amp = true;
+            paramjson.amp = amp;
           }
           return await twitterThread(paramjson);
         }
-    }
-    return text;
+        case "gist":
+          {
+            let paramjson = JSON.parse(param);
+            if ((typeof paramjson) != 'object') {
+              paramjson = { id: paramjson, amp: amp };
+            } else {
+              paramjson.amp = amp;
+            }
+            return gist(paramjson);
+          }
+        default:
+          throw new Error(`Error:${command} does not defined or ${param} is illegal.`);
+      }
+  }
+}
+
+// gist embed
+function gist (opts){
+  const {id,amp,height} = opts;
+  if(!amp){
+    return `<script src="https://gist.github.com/sfpgmr/${id}.js"></script>`;
+  } else {
+    return `<amp-gist data-gistid="${id}" layout="fixed-height" height="${height?height:480}"></amp-gist>`;
   }
 }
 
@@ -463,11 +510,11 @@ function twitterCustom(opts) {
         if (yt_thumb) {
           if(!amp){
             tweetText = tweetText.replace(url.url,
-              `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${yt_item.id}?autoplay=0&origin=https://sfpgmr.net" frameborder="0"></iframe>`
+              `<iframe class="youtube" type="text/html" src="https://www.youtube.com/embed/${yt_item.id}?autoplay=0&origin=https://sfpgmr.net" width="${yt_thumb.width}" height="${yt_thumb.height}" frameborder="0"></iframe>`
               //`<div class="youtube" data-type="yt" id="${yt_item.id}"><div class="yt-title">Youtube - ${yt_item.snippet.title}</div><svg class="player-play" width="64" height="64" xmlns="http://www.w3.org/2000/svg"><g><path class="player-play-1" fill="#ffffff" stroke-width="1" d="m0,0l64,32l-64,32l0,-64z" /></g></svg><img ${lazyLoading} data-href="${url.expanded_url}" class="youtube" src="${yt_thumb.url}" /></div>`
               );
           } else {
-            tweetText = tweetText.replace(url.url,`<amp-youtube data-videoid="${yt_item.id}"  layout="responsive" width="${yt_thumb.width}" height="${yt_thumb.heigh}"></amp-youtube>`);
+            tweetText = tweetText.replace(url.url,`<amp-youtube data-videoid="${yt_item.id}"  layout="responsive" width="${yt_thumb.width}" height="${yt_thumb.height}"></amp-youtube>`);
           }
         } else {
           tweetText = tweetText.replace(url.url, `<a href="${url.expanded_url}" target="_blank">${url.display_url}</a>`);
@@ -650,10 +697,11 @@ async function img({ srcPath, amp = false }) {
     if (matches[1] == '/') {
       p = 'https:' + p;
       const url = new URL(p);
-      imgObj = await request({ uri: url, encoding: null });
+      imgObj = await request({ uri: url, encoding: null,'rejectUnauthorized': false});
+
     } else {
       p = config.wwwRootDir + p.substr(1);
-      imgObj = await fs.readFile(p);
+      imgObj = await fs.readFile(p,null);
     }
   }
   const size = await sizeOf(imgObj);
@@ -665,8 +713,8 @@ async function img({ srcPath, amp = false }) {
   }
 }
 
-function iframe_({ srcPath, amp = false, width = 1024, height = 768, sandbox = '' }) {
-
+function iframe_(opts) {
+  let { srcPath, amp = false, width = 1024, height = 768, sandbox = '',layout = 'fixed' } = opts;
   let src = '';
   let matches = /^\/(.)/.exec(srcPath);
   if (matches) {
@@ -680,13 +728,19 @@ function iframe_({ srcPath, amp = false, width = 1024, height = 768, sandbox = '
   }
 
   if (amp) {
-    src = `<amp-iframe src="${srcPath}" width="${width}" height="${height}" frameboarder="0" sandbox="allow-scripts allow-presentation ${sandbox}" layout="responsive"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
+    src = `<amp-iframe src="${srcPath}" width="${width}" height="${height}" sandbox="allow-scripts allow-presentation ${sandbox}" layout="${layout}"><amp-img layout="fill" src="/img/iframe-ph.svg" placeholder></amp-img></amp-iframe>`;
   } else {
-    src = `
-    <div class="embed-responsive" style="padding-top:${Math.round(height / width * 10000) / 100}%">
-    <iframe src="${srcPath}" frameborder="0" scrolling="no" width="${width}" height="${height}" sandbox="allow-scripts allow-presentation allow-same-origin ${sandbox}"></iframe>
-    </div>
-    `;
+    if(layout == 'responsive'){
+      src =  `
+      <div class="embed-responsive" style="padding-top:${Math.round(height / width * 10000) / 100}%">
+      <iframe src="${srcPath}" frameborder="0" scrolling="no" sandbox="allow-scripts allow-presentation allow-same-origin ${sandbox}"></iframe>
+      </div>
+      `;
+    } else {
+      src = `
+      <iframe src="${srcPath}" frameborder="0" scrolling="no" width="${width}" height="${height}" sandbox="allow-scripts allow-presentation allow-same-origin ${sandbox}"></iframe>
+      `;
+    }
   }
   return src;
 }

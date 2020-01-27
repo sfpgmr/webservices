@@ -208,20 +208,25 @@
       display:block;
     }
   }
-  & small {
+  small {
     display: block;
     text-align: center;
     margin:auto;
   }
-  & .embed-responsive {
+
+  .embed-responsive {
     position: relative;
     height: 0;
+    width:100%;
     overflow: hidden;
-    &.embed-responsive-16by9 {
+    & .embed-responsive-16by9 {
       padding-top:56.25%;
     }
-    &.embed-responsive-4by3 {
+    & .embed-responsive-4by3 {
       padding-top:75%;
+    }
+    & .embed-responsive-8by5 {
+      padding-top:62.5%;
     }
     & iframe {
       position: absolute;
@@ -411,7 +416,7 @@
       }
     }
 
-  & .ad {
+    & .ad {
     margin:auto;
     width:80%;
     min-height:150px;

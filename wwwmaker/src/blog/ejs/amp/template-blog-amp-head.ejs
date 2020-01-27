@@ -2,6 +2,7 @@
 const {config,blogPosting,blogConfig,URL,nextURL,prevURL,blogPosts} = params;
 const blog = config['sf:blogConfig'].Blog;
 const extention = '.amp.html';
+
 %>
 <meta charset="UTF-8" />
 <title><%=blog.headline + ':' + blogPosting.headline %></title>
@@ -11,9 +12,6 @@ const extention = '.amp.html';
 
 <meta name="description" content="<%-blogPosting.description %>" />
 <meta name="keywords" content="<%-blogPosting.keywords %>" /> 	
-<meta itemprop="image" content="https://www.sfpgmr.net/img/sfblog.png" />
-<meta itemprop="name" content="<%-blogPosting.headline%>" />
-
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:site" content="@sfpgmr" />
 <meta name="twitter:url" content="<%-blogPosting.url + extention%>" />
@@ -45,11 +43,12 @@ const extention = '.amp.html';
 <style amp-custom>
 <%- include('./sfblogstyle.css') %>
 <%- params.customCss || '' %>
+<%- include('../../css/include/amp/amp-social.css') %>
 </style>
 <!-- this style tag is required -->
 <style amp-boilerplate>
 body{-webkit-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-moz-animation:-amp-start 8s steps(1,end) 0s 1 normal both;-ms-animation:-amp-start 8s steps(1,end) 0s 1 normal both;animation:-amp-start 8s steps(1,end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-moz-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-ms-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@-o-keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}@keyframes -amp-start{from{visibility:hidden}to{visibility:visible}}
 </style>
 <noscript><style amp-boilerplate>body{-webkit-animation:none;-moz-animation:none;-ms-animation:none;animation:none}</style></noscript>
-<%- include('./template-blog-amp-scripts.ejs') %>
+<%- include('./template-blog-amp-scripts.ejs',{params:params}) %>
 

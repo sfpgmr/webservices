@@ -6,6 +6,5 @@
   "name": "S.F. Web",
   "about": "IT技術・音楽・ゲームに関する制作物の公開、情報発信を行っています。",
   "keywords": "Programming,Music,Game,C++,DirectX,HTML5,WebGL,javascript,WebAudio",
-  "author": {"@id": "/profile.html#sfpgmr"},
-  "isPartOf":{"@id": "https://sfpgmr.net/#organization"}
+  "author": {"@id": "/profile.html#sfpgmr"}
 }

@@ -5,14 +5,20 @@ const extention = '.amp.html';
 //let blogPosting = config.blogPosting;
 -%>
 <!DOCTYPE html>
-<html AMP lang="ja" itemscope itemtype="http://schema.org/Article" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
+<html AMP lang="ja" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#">
 <head>
-<%- include('./template-blog-amp-head.ejs',{params:params}); %>
+<%- include('./template-blog-amp-head.ejs',{params:Object.assign({social:true},params)}); %>
 </head>
 <body>
 <%- include('./template-blog-amp-nav-header.ejs',{params:params}); %>
 <header class="header">
 <h1><%-blogPosting.headline%></h1>
+<div>
+  <amp-social-share class="rounded" type="system" width="32" height="32"></amp-social-share>
+  <amp-social-share class="rounded" type="twitter" width="32" height="32"></amp-social-share>
+  <amp-social-share	class="rounded hatena" type="hatena_bookmark" width="32" height="32" data-share-endpoint="https://b.hatena.ne.jp/entry/<%- blogPosting.url + extention%>"></amp-social-share> 
+  <amp-social-share class="rounded" type="line" width="32" height="32"></amp-social-share>
+</div>
 <div class="post-header" >
 <div>
   <span class="sf-date"><%

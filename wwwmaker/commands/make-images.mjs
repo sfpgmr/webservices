@@ -4,8 +4,8 @@ import wwwconfig from './wwwconfig.mjs';
 import resolveHome from './resolveHome.mjs';
 import path from 'path';
 
-const outputIconFormat = 'jpg';
-const outputFormat = 'jpg';
+const outputIconFormat = 'png';
+const outputFormat = 'png';
 
 
 (async()=>{
@@ -19,7 +19,7 @@ const outputFormat = 'jpg';
   // アイコン用
   {
   const icon = await sharp(input)
-    .resize(512,512,{
+    .resize(1200,1200,{
       fit: 'cover'
     })
     .toFormat(outputIconFormat)
@@ -30,8 +30,8 @@ const outputFormat = 'jpg';
   // リッチスニペット用
   {
     const img1x1 = await sharp(input)
-      .resize(768,768,{
-        fit: 'contain'
+      .resize(1200,1200,{
+        fit: 'cover'
       })
       .toFormat(outputFormat)
       .toBuffer();
@@ -40,8 +40,8 @@ const outputFormat = 'jpg';
 
   {
     const img4x3 = await sharp(input)
-      .resize(1024,768,{
-        fit: 'contain'
+      .resize(1200,900,{
+        fit: 'cover'
       })
       .toFormat('webp')
       .toBuffer();

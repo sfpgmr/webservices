@@ -73,7 +73,7 @@ async function makeEmbededInfo(tweet) {
                 let tm_ns = tm.name.split(':').slice(1);
                 if (tm_ns.length > 1) {
                   tm_ns.reduce((p, v, i, a) => {
-                    console.log(`@twitter-prop@:${tm.name} ${p} ${v}`);
+                    //console.log(`@twitter-prop@:${tm.name} ${p} ${v}`);
                     if (isObject(p)) {
                       if (!(v in p)) {
                         if (i == (a.length - 1)) {
@@ -108,7 +108,7 @@ async function makeEmbededInfo(tweet) {
                   let og_ns = o.getAttribute('property').split(':').slice(1);
                   if (og_ns.length > 1) {
                     og_ns.reduce((p, v, i, a) => {
-                      console.log(`@og-prop@:${o.getAttribute('property')} ${p} ${v}`);
+                      //console.log(`@og-prop@:${o.getAttribute('property')} ${p} ${v}`);
                       if (isObject(p)) {
                         if (!(v in p)) {
                           if (i == (a.length - 1)) {
@@ -126,7 +126,7 @@ async function makeEmbededInfo(tweet) {
                       return p[v];
                     }, og);
                   } else {
-                    console.log(`@og-prop@:${og_ns[0]} ${o.content}`);
+                    //console.log(`@og-prop@:${og_ns[0]} ${o.content}`);
                     og[og_ns[0]] = o.content;
                   }
                 }
@@ -144,7 +144,7 @@ async function makeEmbededInfo(tweet) {
               json_lds = [];
               for (const j of json_ld_tags) {
                 try {
-                  console.log(j.textContent);
+                  //console.log(j.textContent);
                   const json = JSON.parse(j.textContent);
                   json_lds.push(json);
                 } catch (e) {
@@ -304,7 +304,7 @@ export default class Twitter {
         tweet = await makeEmbededInfo(tweet);
       } else {
         const dbCreatedTime = tweet.created;
-        console.log(currentTime - dbCreatedTime, pastMs);
+        //console.log(currentTime - dbCreatedTime, pastMs);
         if ((currentTime - dbCreatedTime) > pastMs) {
           // DBのキャッシュが古ければ再取得する
           tweet = await getTweet_('statuses/show', { id: id });
@@ -355,7 +355,7 @@ export default class Twitter {
 
     tweetStmt.finalize();
     tweetReplaceStmt.finalize();
-    console.log(tweetData);
+    //console.log(tweetData);
     return tweetData;
   }
 }

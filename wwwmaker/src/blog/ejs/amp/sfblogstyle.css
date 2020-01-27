@@ -1260,15 +1260,20 @@ template {
     .embed-responsive {
         position: relative;
         height: 0;
+        width: 100%;
         overflow: hidden;
     }
 
-    .embed-responsive.embed-responsive-16by9 {
+    .embed-responsive .embed-responsive-16by9 {
         padding-top: 56.25%;
     }
 
-    .embed-responsive.embed-responsive-4by3 {
+    .embed-responsive .embed-responsive-4by3 {
         padding-top: 75%;
+    }
+
+    .embed-responsive .embed-responsive-8by5 {
+        padding-top: 62.5%;
     }
 
     .embed-responsive iframe {

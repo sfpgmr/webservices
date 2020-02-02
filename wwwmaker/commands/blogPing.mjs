@@ -1,6 +1,7 @@
 'use strict';
 
 import request from 'request-promise-native';
+import urls from '../data/blog/hidden/pinglist.js';
 
 async function blogPing(){
   const headers = {
@@ -26,7 +27,6 @@ async function blogPing(){
     timeout: 2000
   };
 
-  import urls from '../data/blog/hidden/pinglist.js';
 
   for(const url of urls){
     try {
@@ -39,7 +39,4 @@ async function blogPing(){
   }
 }
 
-if (require.main === module) {
-  blogPing();
-}
-module.exports = blogPing;
+blogPing();

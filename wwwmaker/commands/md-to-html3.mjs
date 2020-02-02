@@ -121,6 +121,7 @@ const mdDir = path.normalize(blogConfig.gitRepoDir + blogConfig.mdDir).replace(/
 function makeDescription(content)
 {
   return (content
+    .replace(/["#]/g,(m)=>`&#${m.codePointAt(0)}`)
     .replace(/<('[^']*'|'[^']*'|[^''>])*>/ig, '')
     .replace(/\[[^\]]*\]/ig, '')
     .replace(/[\u0000-\u001f]/ig, '')

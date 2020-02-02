@@ -11,18 +11,22 @@
 
 /* デバイス共通属性 */
 @media screen {
+
   * {
+    box-sizing: border-box;
+  }
+
+  html {
     font-family: var(--default-font);
     font-size: var(--font-size-base);
-    box-sizing: border-box;
     line-height: 1.85rem;
-    letter-spacing:0.1rem;
+    /*letter-spacing:0.1rem;*/
     word-wrap: break-word;
     word-break: loose;
     /*border: 1px dashed gray;*/
   }
 
-  
+
 
   code {
     color:#303030;

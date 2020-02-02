@@ -17,8 +17,10 @@ import path from 'path';
 import { escape, unescape } from './marked.mjs';
 import resolveHome from './resolveHome.mjs';
 import Twitter from './twitter.mjs';
+//import {JSDOM} from 'jsdom';
 
 let twitter_;
+
 
 // tex描画エンジン
 
@@ -231,26 +233,38 @@ export class NormalRenderer extends Renderer {
       case 'codeWithIframe':
         {
           // まずJSON形式なのか確認
-          let paramjson = JSON.parse(param);
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch (e) {
+            paramjson = { srcPath:param,amp:amp };
+          }
           if ((typeof paramjson) != 'object') {
-            return codeWithIframe({ srcPath: paramjson });
+            return codeWithIframe({ srcPath: paramjson, amp: amp });
           }
           return codeWithIframe(paramjson);
         }
       case "iframe":
         {
-          // まずJSON形式なのか確認
-          let paramjson = JSON.parse(param);
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch (e) {
+            paramjson = { srcPath:param,amp:amp };
+          }
           if ((typeof paramjson) != 'object') {
             return iframe_({ srcPath: paramjson, amp: amp });
-          } else {
-            paramjson.amp = amp;
           }
           return iframe_(paramjson);
         }
       case "twitter":
         {
-          let paramjson = JSON.parse(param);
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch (e) {
+            paramjson = { status:param,amp:amp };
+          }
           if ((typeof paramjson) != 'object') {
             paramjson = { status: paramjson, amp: amp };
           } else {
@@ -260,7 +274,12 @@ export class NormalRenderer extends Renderer {
         }
       case "twitter-thread":
         {
-          let paramjson = JSON.parse(param);
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch (e) {
+            paramjson = { status:param,amp:amp };
+          }
           if ((typeof paramjson) != 'object') {
             paramjson = { status: paramjson, amp: amp };
           } else {
@@ -270,14 +289,19 @@ export class NormalRenderer extends Renderer {
         }
       case "gist":
         {
-          let paramjson = JSON.parse(param);
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch(e) {
+            paramjson = { id: param, amp: amp };
+          }
           if ((typeof paramjson) != 'object') {
             paramjson = { id: paramjson, amp: amp };
           } else {
             paramjson.amp = amp;
           }
           return gist(paramjson);
-        }
+      }
 
     }
     return text;
@@ -307,8 +331,19 @@ export class AmpRenderer extends Renderer {
     // iframeの検出
     //let iframe = /<iframe( +\w*(?:=["']?.*?["']?)?)*\/?>(?:<\/iframe>)?/ig;
     let iframe = /<iframe\s?([^>]*?)\/?>(?:<\/iframe>)?/ig;
+    let object = /<object\s?([^>]*?)\/?>.*(?:<\/object>)/igm;
     let img = /<img\s?([^>]*?)\/?>(?:<\/img>)?/ig;
     let m = null;
+
+    // let fragment = JSDOM.fragment(html);
+    // let doc = new JSDOM('');
+    // let imgs = fragment.querySelectorAll('img');
+    
+  
+    // for(const img of imgs){
+    //   img.parentElement.appendChild()
+    //   img.parentElement.removeChild(img);
+    // }
 
     while ((m = img.exec(html))) {
       let attribs = parseAttributes(m[1]);
@@ -410,7 +445,12 @@ export class AmpRenderer extends Renderer {
       case 'codeWithIframe':
         {
           // まずJSON形式なのか確認
-          let paramjson = Object.assign(JSON.parse(param), { amp: amp });
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch (e) {
+            paramjson = { srcPath:param,amp:amp };
+          }
           if ((typeof paramjson) != 'object') {
             return codeWithIframe({ srcPath: paramjson, amp: amp });
           }
@@ -418,8 +458,12 @@ export class AmpRenderer extends Renderer {
         }
       case "iframe":
         {
-          // まずJSON形式なのか確認
-          let paramjson = Object.assign(JSON.parse(param), { amp: amp });
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch (e) {
+            paramjson = { srcPath:param,amp:amp };
+          }
           if ((typeof paramjson) != 'object') {
             return iframe_({ srcPath: paramjson, amp: amp });
           }
@@ -427,7 +471,12 @@ export class AmpRenderer extends Renderer {
         }
       case "twitter":
         {// まずJSON形式なのか確認
-          let paramjson = JSON.parse(param);
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch (e) {
+            paramjson = { status:param,amp:amp };
+          }
           if ((typeof paramjson) != 'object') {
             paramjson = { status: paramjson, amp: amp };
           } else {
@@ -438,7 +487,12 @@ export class AmpRenderer extends Renderer {
       case "twitter-thread":
         // まずJSON形式なのか確認
         {
-          let paramjson = JSON.parse(param);
+          let paramjson;
+          try {
+            paramjson = JSON.parse(param);
+          } catch (e) {
+            paramjson = { status:param,amp:amp };
+          }
           if ((typeof paramjson) != 'object') {
             paramjson = { status: paramjson, amp: amp };
           } else {
@@ -448,7 +502,12 @@ export class AmpRenderer extends Renderer {
         }
         case "gist":
           {
-            let paramjson = JSON.parse(param);
+            let paramjson;
+            try {
+              paramjson = JSON.parse(param);
+            } catch(e) {
+              paramjson = { id: param, amp: amp };
+            }
             if ((typeof paramjson) != 'object') {
               paramjson = { id: paramjson, amp: amp };
             } else {

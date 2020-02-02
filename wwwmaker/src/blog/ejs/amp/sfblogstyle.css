@@ -967,7 +967,6 @@ template {
     padding: 8px;
     display: grid;
     grid-gap: 8px;
-    gap: 8px;
 }
 
 .card header img {
@@ -1011,6 +1010,10 @@ template {
 
 @media screen {
     * {
+        box-sizing: border-box;
+    }
+
+    html {
         font-family: -apple-system,
                      BlinkMacSystemFont,
                      "Helvetica Neue",
@@ -1023,9 +1026,8 @@ template {
                      Meiryo,
                      sans-serif;
         font-size: 18px;
-        box-sizing: border-box;
         line-height: 1.85rem;
-        letter-spacing: .1rem;
+        /*letter-spacing:0.1rem;*/
         word-wrap: break-word;
         word-break: loose;
         /*border: 1px dashed gray;*/

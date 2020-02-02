@@ -1,0 +1,16 @@
+/* a custom sharing icon */
+amp-social-share.rounded {
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 8px;
+  background-size: 80%;
+  color: #fff;
+/*  border:1px solid white; */
+/*  background-color: inherit;*/
+}
+
+amp-social-share.hatena {
+  padding:0;
+  margin:0;
+  background-image:url(https://b.st-hatena.com/images/v4/public/entry-button/button-only@2x.png);
+}

@@ -25,7 +25,7 @@ async function buildcss(){
   
   const processedCss = await
   postcss([
-    autoprefixer,atImport,mixin,nested,simpleVars,apply,cssVariables,postcssPresetEnv({stage:0}),perfectionist
+    autoprefixer,atImport,mixin,nested,cssVariables,simpleVars,apply,postcssPresetEnv({stage:0, preserve: false}),perfectionist
   ]).process(css,{
     from:src,to:dest
   });

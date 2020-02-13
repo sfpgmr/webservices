@@ -70,7 +70,7 @@
   padding-left:var(--adjust-margin);
   padding-right:var(--adjust-margin);
   margin:auto 0 auto 0;
-    .nav-item {
+    & .nav-item {
       display: block;
       margin-top:auto;
       margin-bottom:auto;
@@ -88,7 +88,7 @@
     align-items: center;
     justify-content: space-between;
     height:48px;
-    .nav-header {
+    & .nav-header {
       display:flex;
       align-content:center;
 /*      .nav-button {
@@ -98,7 +98,7 @@
         border:none;
         background:none;
       }*/
-      .nav-title {
+      & .nav-title {
         font-size:1.25rem;
         vertical-align: middle;
       }
@@ -127,7 +127,7 @@
     height:32px;
     display:block;
    
-    svg {
+    & svg {
       margin:auto;
       color:white;
       width:32px;
@@ -137,7 +137,7 @@
         fill:red;
       }*/
     }
-    .nav-hidden-desktop {
+    &.nav-hidden-desktop {
       display: inline-block;
       vertical-align: middle;
       padding-left:10px;
@@ -161,11 +161,11 @@
     align-items: center;
     justify-content: space-between;
     height:48px;
-    .nav-header {
+    & .nav-header {
       display:flex;
       height: 48px;
       align-content:center;
-      .nav-button {
+      & .nav-button {
         width: 48px;
         svg {
           vertical-align: middle;
@@ -175,7 +175,7 @@
         display: block;
         font-size:1.25rem;
       }
-      .nav-title {
+      & .nav-title {
         vertical-align: middle;
       }
 
@@ -201,14 +201,14 @@
     height:32px;
     display:block;
    
-    svg {
+    & svg {
       display:inline-block;
       color:white;
       width:32px;
       height:32px;
       fill:white;
     }
-    .nav-hidden-desktop {
+    &.nav-hidden-desktop {
       display:inline;
     }
   } 
@@ -237,7 +237,7 @@
   .nav-items {
     align-items: center;
     height:100%;
-    li {
+    & li {
       color:white;
     }
   }
@@ -251,13 +251,13 @@
     width:52px;
     height:32px;
   
-    svg {
+    & svg {
       display:inline-block;
       width:32px;
       height:32px;
       fill:white;
     }
-    .nav-hidden-desktop {
+    &.nav-hidden-desktop {
       display:none;
     }
     

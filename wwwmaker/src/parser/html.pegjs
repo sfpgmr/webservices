@@ -50,7 +50,7 @@ AditionalStyle = "<style>" __ style:(ch:(!('</style'i  __ '>') c:. { return c })
 
 BODY 'body' = ( __ / CustomTag / MarkDown / HTML )*
 
-CustomTag = '['  ']'
+CustomTag = '[' Symbol ':' ']'
 
 /****************************************************
 * HTML parser

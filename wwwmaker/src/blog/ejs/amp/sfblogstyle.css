@@ -527,7 +527,7 @@ template {
       }*/
     }
 
-    .nav-icon .nav-hidden-desktop {
+    .nav-icon.nav-hidden-desktop {
         display: inline-block;
         vertical-align: middle;
         padding-left: 10px;
@@ -615,7 +615,7 @@ template {
         fill: white;
     }
 
-    .nav-icon .nav-hidden-desktop {
+    .nav-icon.nav-hidden-desktop {
         display: inline;
     }
 
@@ -677,7 +677,7 @@ template {
         fill: white;
     }
 
-    .nav-icon .nav-hidden-desktop {
+    .nav-icon.nav-hidden-desktop {
         display: none;
     }
 
@@ -716,11 +716,11 @@ template {
         line-height: inherit;
     }
 
-    .amazon .amazon-detail-image {
+    .amazon.amazon-detail-image {
         padding: 5px;
     }
 
-    .amazon .amazon-detail-svglogo {
+    .amazon.amazon-detail-svglogo {
         display: block;
         width: 64px;
         padding: 5px;
@@ -1266,15 +1266,15 @@ template {
         overflow: hidden;
     }
 
-    .embed-responsive .embed-responsive-16by9 {
+    .embed-responsive.embed-responsive-16by9 {
         padding-top: 56.25%;
     }
 
-    .embed-responsive .embed-responsive-4by3 {
+    .embed-responsive.embed-responsive-4by3 {
         padding-top: 75%;
     }
 
-    .embed-responsive .embed-responsive-8by5 {
+    .embed-responsive.embed-responsive-8by5 {
         padding-top: 62.5%;
     }
 
@@ -1468,8 +1468,8 @@ template {
         margin-right: 1vw;
     }
 
-    header .header {
-        margin-left: 3vw;
+    header.header {
+        /* margin-left:3vw;*/
     }
 
     header div, header span {

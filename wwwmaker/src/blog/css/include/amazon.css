@@ -13,10 +13,10 @@
       font-size:inherit;
       line-height:inherit;
     }
-    & .amazon-detail-image {
+    &.amazon-detail-image {
       padding:5px;
     }
-    & .amazon-detail-svglogo{
+    &.amazon-detail-svglogo{
       display: block;
       width:64px;
       padding:5px;

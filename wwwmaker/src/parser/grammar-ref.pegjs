@@ -19,7 +19,7 @@
 
 // Document
 
-document = title:title? contents:documentContent* EOF {
+document = title:title? contents:documentContent+ EOF {
   return {
     type: 'Document',
     title: title,

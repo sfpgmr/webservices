@@ -223,16 +223,16 @@
     height: 0;
     width:100%;
     overflow: hidden;
-    & .embed-responsive-16by9 {
+    &.embed-responsive-16by9 {
       padding-top:56.25%;
     }
-    & .embed-responsive-4by3 {
+    &.embed-responsive-4by3 {
       padding-top:75%;
     }
-    & .embed-responsive-8by5 {
+    &.embed-responsive-8by5 {
       padding-top:62.5%;
     }
-    & iframe {
+    iframe {
       position: absolute;
       top: 0;
       left: 0;
@@ -392,8 +392,8 @@
   header {
     margin-left:1vw;
     margin-right:1vw;
-    & .header {
-      margin-left:3vw;
+    &.header {
+      /* margin-left:3vw;*/
     }
     & div,span {
       font-size:0.8rem;

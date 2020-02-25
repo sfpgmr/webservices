@@ -1,11 +1,12 @@
 
-VPATH = ./lib/:./:./bin
-DOC_PARSER_SRC = ./src/parser/doc-syntax.pegjs
+VPATH = ./lib/:./:./bin:./src:./build:./commands
+DOC_PARSER_SRC = parser/doc-syntax.pegjs 
 DOC_PARSER = ./commands/doc-syntax.mjs
-PEG = /usr/local/bin/pegjs --trace --cache --format es --optimize speed --output $@ $<
+TRACE = 
+PEG = /usr/local/bin/pegjs $(TRACE) --cache --format es --optimize speed --output $@ $<
 
 .PHONY:all
-all: test-parser
+all: doc-parser
 
 # Parserのビルド
 
@@ -16,10 +17,14 @@ $(DOC_PARSER): $(DOC_PARSER_SRC)
 	$(PEG)
 
 .PHONY: test-parser
-test-parser: $(DOC_PARSER)
-	node --experimental-modules ./tests/test-markdown.mjs
+test-parser: doc-parser
+	node --experimental-modules ./tests/parser/markdown-test.mjs
+	ava ./tests/**/*.test.mjs
 
 .PHONY:clean
 clean:; rm $(DOC_PARSER)
 
+.PHONY:trace
+trace: TRACE = --trace
+trace: doc-parser
 

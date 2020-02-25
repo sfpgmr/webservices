@@ -4,7 +4,7 @@
   "description": "wwwをjsonからejsを使ってレンダリングするツール",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "twitter": "rollup --config ./build/rollup.twitter.js",
     "parser": "bin/build-parser"
   },
@@ -17,6 +17,7 @@
     "apac": "^3.0.2",
     "article-json-to-amp": "^3.0.2",
     "autoprefixer": "^6.7.7",
+    "commonmark": "^0.29.1",
     "cssnano": "^4.1.10",
     "d3": "^4.13.0",
     "d3-cloud": "^1.2.4",
@@ -62,6 +63,7 @@
     "youtube-node": "^1.3.3"
   },
   "devDependencies": {
+    "ava": "^3.3.0",
     "postcss-css-variables": "^0.14.0"
   }
 }

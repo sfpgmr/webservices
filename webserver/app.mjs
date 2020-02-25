@@ -16,6 +16,7 @@ import fs from 'fs';
 import resolveHome from './resolveHome.mjs';
 import bodyParser from 'koa-bodyparser';
 import webhook from 'koa-webhook';
+import helmet from 'koa-helmet';
 
 const serveOpts = {extensions:['html','htm']};
 
@@ -23,6 +24,7 @@ const serveOpts = {extensions:['html','htm']};
 
 const app = new Koa();
 const router = new Router();
+app.use(helmet());
 app.use(json());
 app.use(bodyParser({jsonLimit:'10mb'}));
 //app.use(xhub({algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()}));

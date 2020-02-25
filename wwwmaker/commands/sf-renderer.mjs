@@ -516,7 +516,9 @@ export class AmpRenderer extends Renderer {
             return gist(paramjson);
           }
         default:
-          throw new Error(`Error:${command} does not defined or ${param} is illegal.`);
+          console.warn(`Warning:${command} does not defined or ${param} is illegal.`);
+          return '';
+          //throw new Error(`Error:${command} does not defined or ${param} is illegal.`);
       }
   }
 }

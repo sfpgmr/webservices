@@ -2,6 +2,13 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
+var os = _interopDefault(require('os'));
+var path = _interopDefault(require('path'));
+var fs = _interopDefault(require('fs'));
+var zlib = _interopDefault(require('zlib'));
+var child_process = require('child_process');
+var util = _interopDefault(require('util'));
+var async = _interopDefault(require('async'));
 require('http-errors');
 var Koa = _interopDefault(require('koa'));
 var serve = _interopDefault(require('koa-static'));
@@ -9,15 +16,9 @@ var Router = _interopDefault(require('koa-router'));
 var mount = _interopDefault(require('koa-mount'));
 var json = _interopDefault(require('koa-json'));
 var logger = _interopDefault(require('koa-morgan'));
-var fs = _interopDefault(require('fs'));
-var zlib = _interopDefault(require('zlib'));
-var child_process = require('child_process');
-var util = _interopDefault(require('util'));
-var os = _interopDefault(require('os'));
-var path = _interopDefault(require('path'));
-var async = _interopDefault(require('async'));
 var bodyParser = _interopDefault(require('koa-bodyparser'));
 var webhook = _interopDefault(require('koa-webhook'));
+var helmet = _interopDefault(require('koa-helmet'));
 var socket_io = _interopDefault(require('socket.io'));
 var http2 = _interopDefault(require('http2'));
 var http = _interopDefault(require('http'));
@@ -132,14 +133,14 @@ function handler(ctx){
 }
 
 // 
-function compressGzip(path) {
+function compressGzip(path$$1) {
   // gzipファイルを作成する
   return new Promise((resolve, reject) => {
-    let out = fs.createWriteStream(path + '.gz');
+    let out = fs.createWriteStream(path$$1 + '.gz');
     out.on('finish', resolve.bind(null));
   
 
-    fs.createReadStream(path)
+    fs.createReadStream(path$$1)
       .pipe(zlib.createGzip({ level: zlib.Z_BEST_COMPRESSION }))
       .pipe(out);
     out = void (0);
@@ -173,6 +174,7 @@ const serveOpts = {extensions:['html','htm']};
 
 const app = new Koa();
 const router = new Router();
+app.use(helmet());
 app.use(json());
 app.use(bodyParser({jsonLimit:'10mb'}));
 //app.use(xhub({algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()}));

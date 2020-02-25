@@ -43,12 +43,15 @@ MetaData "metadata" = metastart:('<script'i _ 'type="application/json"'i _ 'id="
   if(!!metastart != !!metaend) {
     error('<script> tag unmatch');
   }
-  return JSON.parse(json);
+  return new Node('meta-data',JSON.parse(json));
 }
 
-AditionalStyle = "<style>" __ style:(ch:(!('</style'i  __ '>') c:. { return c })* { return ch.join('') }) __ '</style>' {return style;}
+AditionalStyle = start:"<style>" __ style:(ch:(!('</style'i  __ '>') c:. { return c })* { return ch.join('') }) __ end:'</style>' 
+{
+  return new Node('AddtionalStyle',style);
+}
 
-BODY 'body' = ( __ / CustomTag / MarkDown / HTML )*
+BODY 'body' = ( __ / CustomTag / MarkDown / HTMLDocument )*
 
 CustomTag = '[' Symbol ':' ']'
 

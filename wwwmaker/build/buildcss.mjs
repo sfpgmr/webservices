@@ -11,6 +11,7 @@ import config from '../commands/config-blog.mjs';
 import failOnWarn from 'postcss-fail-on-warn';
 import cssVariables from 'postcss-css-variables';
 import perfectionist from 'perfectionist';
+import cssnano from 'cssnano';
 //import precss  from 'precss';
 import fs from 'fs-extra';
 
@@ -25,7 +26,7 @@ async function buildcss(){
   
   const processedCss = await
   postcss([
-    autoprefixer,atImport,mixin,nested,cssVariables,simpleVars,apply,postcssPresetEnv({stage:0, preserve: false}),perfectionist
+    autoprefixer,atImport,mixin,nested,cssVariables,simpleVars,apply,postcssPresetEnv({stage:0, preserve: false}),perfectionist,cssnano
   ]).process(css,{
     from:src,to:dest
   });

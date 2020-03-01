@@ -58,8 +58,8 @@ app.use(mount('/javascripts/',serve(resolveHome('~/www/node/webserver/public/jav
 app.use(mount('/stylesheets/',serve(resolveHome('~/www/node/webserver/public/stylesheets/'),serveOpts)));
 app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
 app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
-//.use(router.routes());
-//  .use(router.allowedMethods());
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 
 // catch 404 and forward to error handler

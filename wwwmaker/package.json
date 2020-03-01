@@ -52,6 +52,7 @@
     "rollup-plugin-commonjs": "^5.0.5",
     "rollup-plugin-license": "^0.13.0",
     "rollup-plugin-node-resolve": "^2.1.1",
+    "roolup": "^1.0.4",
     "sharp": "^0.23.4",
     "simple-icons": "^2.2.0",
     "sitemap": "^1.13.0",

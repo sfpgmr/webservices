@@ -1,0 +1,3 @@
+[submodule "scms"]
+	path = scms
+	url = git@github.com:sfpgmr/scms.git

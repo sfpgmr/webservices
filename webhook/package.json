@@ -4,7 +4,7 @@
   "description": "",
   "main": "webhook.js",
   "dependencies": {
-    "github-webhook-handler": "^0.5.1"
+    "github-webhook-handler": "^1.0.0"
   },
   "devDependencies": {},
   "scripts": {

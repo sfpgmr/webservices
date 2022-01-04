@@ -7,12 +7,13 @@ import Router from 'koa-router';
 import mount from 'koa-mount';
 import json from 'koa-json';
 
-import logger from 'koa-morgan'
+import logger from 'koa-morgan';
 
 //import tumblerRouter from './routes/tumblr.mjs';
 import webhookHandler from './routes/webhook.mjs';
 
 import fs from 'fs';
+import path from 'path';
 import resolveHome from './resolveHome.mjs';
 import bodyParser from 'koa-bodyparser';
 import webhook from 'koa-webhook';
@@ -57,10 +58,21 @@ app.use(mount('/images/',serve(resolveHome('~/www/images/'),serveOpts)));
 app.use(mount('/blog/',serve(resolveHome('~/www/blog/contents/'),serveOpts)));
 app.use(mount('/content/',serve(resolveHome('~/www/images/content'),serveOpts)));
 
+// 
+// const staticContentsBase = resolveHome('~/www/html/contents/');
+// fs.readdirSync(staticContentsBase,{withFileTypes: true}).forEach(d=>{
+//   if(d.isDirectory()){
+//     console.log(d.name);
+//     app.use(mount(`/${d.name}/`,serve(path.join(staticContentsBase,d.name),serveOpts)));
+//   }
+// });
+
 app.use(mount('/javascripts/',serve(resolveHome('~/www/node/webserver/public/javascripts/'),serveOpts)));
 app.use(mount('/stylesheets/',serve(resolveHome('~/www/node/webserver/public/stylesheets/'),serveOpts)));
 app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
-app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
+//app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
+//console.log(resolveHome('~/pj/sandbox/new-site/data/'));
+app.use(mount('/',serve(resolveHome('/home/sfpg/pj/sandbox/new-site/data/'),serveOpts)));
 app.use(router.routes());
 app.use(router.allowedMethods());
 

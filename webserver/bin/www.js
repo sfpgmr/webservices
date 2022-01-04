@@ -2,13 +2,6 @@
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var os = _interopDefault(require('os'));
-var path = _interopDefault(require('path'));
-var fs = _interopDefault(require('fs'));
-var zlib = _interopDefault(require('zlib'));
-var child_process = require('child_process');
-var util = _interopDefault(require('util'));
-var async = _interopDefault(require('async'));
 require('http-errors');
 var Koa = _interopDefault(require('koa'));
 var serve = _interopDefault(require('koa-static'));
@@ -16,6 +9,13 @@ var Router = _interopDefault(require('koa-router'));
 var mount = _interopDefault(require('koa-mount'));
 var json = _interopDefault(require('koa-json'));
 var logger = _interopDefault(require('koa-morgan'));
+var fs = _interopDefault(require('fs'));
+var zlib = _interopDefault(require('zlib'));
+var child_process = require('child_process');
+var util = _interopDefault(require('util'));
+var os = _interopDefault(require('os'));
+var path = _interopDefault(require('path'));
+var async = _interopDefault(require('async'));
 var bodyParser = _interopDefault(require('koa-bodyparser'));
 var webhook = _interopDefault(require('koa-webhook'));
 var helmet = _interopDefault(require('koa-helmet'));
@@ -133,14 +133,14 @@ function handler(ctx){
 }
 
 // 
-function compressGzip(path$$1) {
+function compressGzip(path) {
   // gzipファイルを作成する
   return new Promise((resolve, reject) => {
-    let out = fs.createWriteStream(path$$1 + '.gz');
+    let out = fs.createWriteStream(path + '.gz');
     out.on('finish', resolve.bind(null));
   
 
-    fs.createReadStream(path$$1)
+    fs.createReadStream(path)
       .pipe(zlib.createGzip({ level: zlib.Z_BEST_COMPRESSION }))
       .pipe(out);
     out = void (0);
@@ -188,6 +188,9 @@ app.use(async (ctx,next)=> {
   if (ctx.hostname == 'blog.sfpgmr.net') {
     ctx.status = 301;
     ctx.redirect('https://www.sfpgmr.net/blog' + ctx.url);
+    //ctx.set('SameSite','None');
+    //ctx.set('Secure','');
+    //ctx.set('Access-Control-Allow-Origin', '*');
   } else {
   //ctx.set('Access-Control-Allow-Origin', '*');
   //ctx.set('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
@@ -207,7 +210,9 @@ app.use(mount('/content/',serve(resolveHome('~/www/images/content'),serveOpts)))
 app.use(mount('/javascripts/',serve(resolveHome('~/www/node/webserver/public/javascripts/'),serveOpts)));
 app.use(mount('/stylesheets/',serve(resolveHome('~/www/node/webserver/public/stylesheets/'),serveOpts)));
 app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
-app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
+app.use(mount('/',serve(resolveHome('~/www/html/dist/'),serveOpts)));
+app.use(router.routes());
+app.use(router.allowedMethods());
 
 class ScoreEntry {
   constructor(name, score){

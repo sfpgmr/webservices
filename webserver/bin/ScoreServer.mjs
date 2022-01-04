@@ -1,7 +1,3 @@
-/~/ //app = require('express')()
-  //, server = require('http').createServer(app)
-   /*,*/
-  
 import socket_io from 'socket.io';
 import resolveHome from '../resolveHome.mjs';
 //.listen(8081, {

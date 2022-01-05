@@ -1,6 +1,6 @@
 #!/bin/bash
-#pegjs --cache --optimize speed --output ~/www/node/wwwmaker/commands/html-paeser.mjs ~/www/node/wwwmaker/src/parser/html.pegjs
-#pegjs --optimize speed --output ~/www/node/wwwmaker/commands/peg-parser.js ~/www/node/wwwmaker/src/parser/peg-parser.pegjs
-/usr/local/bin/pegjs --cache --format es --optimize speed --output ~/www/node/wwwmaker/commands/doc-syntax.mjs ~/www/node/wwwmaker/src/parser/doc-syntax.pegjs
+#pegjs --cache --optimize speed --output ~/www/webservices/wwwmaker/commands/html-paeser.mjs ~/www/webservices/wwwmaker/src/parser/html.pegjs
+#pegjs --optimize speed --output ~/www/webservices/wwwmaker/commands/peg-parser.js ~/www/webservices/wwwmaker/src/parser/peg-parser.pegjs
+/usr/local/bin/pegjs --cache --format es --optimize speed --output ~/www/webservices/wwwmaker/commands/doc-syntax.mjs ~/www/webservices/wwwmaker/src/parser/doc-syntax.pegjs
 node --experimental-modules ./tests/test-markdown.mjs
   

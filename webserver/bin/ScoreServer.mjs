@@ -1,4 +1,4 @@
-import socket_io from 'socket.io';
+import {Server } from 'socket.io';
 import resolveHome from '../resolveHome.mjs';
 //.listen(8081, {
   //   origins:['www.enoie.net:*','github.sfpgmr.net:*','www.sfpgmr.net:*'/*,'localhost:*'*/]
@@ -14,7 +14,7 @@ class ScoreEntry {
 
 export default class ScoreServer {
   constructor(server,process){
-    this.io = socket_io(server);
+    this.io = new Server(server);
 //    this.io.set('log level',1);
     this.io.path('/socket.io');
 
@@ -103,7 +103,7 @@ export default class ScoreServer {
 
   async readFile() {
     try{
-      this.highScores = JSON.parse(await fs.promises.readFile(resolveHome('~/www/node/webserver/score.json'), 'utf-8'));
+      this.highScores = JSON.parse(await fs.promises.readFile(resolveHome('~/www/webservices/webserver/score.json'), 'utf-8'));
     } catch (e) {
       console.log(e);
       this.highScores = [];
@@ -115,7 +115,7 @@ export default class ScoreServer {
   
   writeFile() {
     console.log('writeFile');
-    fs.writeFileSync(resolveHome('~/www/node/webserver/score.json'), JSON.stringify(this.highScores), 'utf-8');
+    fs.writeFileSync(resolveHome('~/www/webservices/webserver/score.json'), JSON.stringify(this.highScores), 'utf-8');
   }  
 }
 

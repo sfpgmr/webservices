@@ -1,7 +1,7 @@
 import  http from 'http';
 import resolveHome from '../resolveHome.mjs';
 import fs from 'fs';
-const  api_key = fs.readFileSync(resolveHome('~/www/node/keys/nodeweb1/api_key.json')).api_key;
+const  api_key = fs.readFileSync(resolveHome('~/www/webservices/keys/nodeweb1/api_key.json')).api_key;
 
 export function getPosts(params, func, errFunc)
 {

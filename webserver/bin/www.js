@@ -177,7 +177,7 @@ const router = new Router();
 app.use(helmet());
 app.use(json());
 app.use(bodyParser({jsonLimit:'10mb'}));
-//app.use(xhub({algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()}));
+//app.use(xhub({algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/webservices/keys/webhook/secret'),'utf-8').trim()}));
 
 app.use(logger('combined'));
 
@@ -207,9 +207,9 @@ app.use(mount('/images/',serve(resolveHome('~/www/images/'),serveOpts)));
 app.use(mount('/blog/',serve(resolveHome('~/www/blog/contents/'),serveOpts)));
 app.use(mount('/content/',serve(resolveHome('~/www/images/content'),serveOpts)));
 
-app.use(mount('/javascripts/',serve(resolveHome('~/www/node/webserver/public/javascripts/'),serveOpts)));
-app.use(mount('/stylesheets/',serve(resolveHome('~/www/node/webserver/public/stylesheets/'),serveOpts)));
-app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
+app.use(mount('/javascripts/',serve(resolveHome('~/www/webservices/webserver/public/javascripts/'),serveOpts)));
+app.use(mount('/stylesheets/',serve(resolveHome('~/www/webservices/webserver/public/stylesheets/'),serveOpts)));
+app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/webservices/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
 app.use(mount('/',serve(resolveHome('~/www/html/dist/'),serveOpts)));
 app.use(router.routes());
 app.use(router.allowedMethods());
@@ -312,7 +312,7 @@ class ScoreServer {
 
   async readFile() {
     try{
-      this.highScores = JSON.parse(await fs.promises.readFile(resolveHome('~/www/node/webserver/score.json'), 'utf-8'));
+      this.highScores = JSON.parse(await fs.promises.readFile(resolveHome('~/www/webservices/webserver/score.json'), 'utf-8'));
     } catch (e) {
       console.log(e);
       this.highScores = [];
@@ -324,7 +324,7 @@ class ScoreServer {
   
   writeFile() {
     console.log('writeFile');
-    fs.writeFileSync(resolveHome('~/www/node/webserver/score.json'), JSON.stringify(this.highScores), 'utf-8');
+    fs.writeFileSync(resolveHome('~/www/webservices/webserver/score.json'), JSON.stringify(this.highScores), 'utf-8');
   }  
 }
 
@@ -413,7 +413,7 @@ process.on('SIGHUP', function () {
 // app.use(ctx => {
 //   ctx.body = 'Hello Koa';
 // });
-const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/webserver/keys.json')));
+const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/webservices/keys/webserver/keys.json')));
 
 
 /**

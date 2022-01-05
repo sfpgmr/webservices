@@ -64,9 +64,9 @@ const q = queue(
   }
 );
 
-q.drain = () => {
+q.drain(() => {
   console.log('update content done');
-};
+});
 
 // function handler(ctx) {
 //   const req = ctx.request;

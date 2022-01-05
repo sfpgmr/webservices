@@ -14,7 +14,7 @@ import resolveHome from './resolveHome.mjs';
 //import expressHTTP2Workaround from 'express-http2-workaround';
 express.static.mime.types['wasm'] = 'application/wasm';
 const app = express();
-app.use(xhub({ limit:'10mb',algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/node/keys/webhook/secret'),'utf-8').trim() }));
+app.use(xhub({ limit:'10mb',algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/webservices/keys/webhook/secret'),'utf-8').trim() }));
 app.use(express.json({limit:'10mb'}));
 //app.use(bodyParser.json({limit:'50mb'}));
 //app.use(expressHTTP2Workaround({express:express,http2:http2 }));
@@ -50,8 +50,8 @@ app.use('/images/',expressStaticGzip(resolveHome('~/www/images/'),staticOpts));
 app.use('/blog/',expressStaticGzip(resolveHome('~/www/blog/contents/'),staticOpts));
 app.use('/content/',expressStaticGzip(resolveHome('~/www/images/content'),staticOpts));
 
-app.use('/javascripts/',expressStaticGzip(resolveHome('~/www/node/webserver/public/javascripts/'),staticOpts));
-app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/node/webserver/public/stylesheets/'),staticOpts));
+app.use('/javascripts/',expressStaticGzip(resolveHome('~/www/webservices/webserver/public/javascripts/'),staticOpts));
+app.use('/stylesheets/',expressStaticGzip(resolveHome('~/www/webservices/webserver/public/stylesheets/'),staticOpts));
 
 
 //app.use('/', indexRouter);

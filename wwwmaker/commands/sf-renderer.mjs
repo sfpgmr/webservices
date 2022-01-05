@@ -87,7 +87,7 @@ export function closeResources() {
   twitter.dispose();
 }
 
-const amazonIds = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/wwwmaker/amazon.json')));
+const amazonIds = JSON.parse(fs.readFileSync(resolveHome('~/www/webservices/keys/wwwmaker/amazon.json')));
 const opHelper = new OperationHelper({
   awsId: amazonIds.AWSID,
   awsSecret: amazonIds.AWSSECRET,

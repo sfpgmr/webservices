@@ -16,7 +16,7 @@ import resolveHome from '../resolveHome.mjs';
 // app.use(ctx => {
 //   ctx.body = 'Hello Koa';
 // });
-const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/node/keys/webserver/keys.json')));
+const keys = JSON.parse(fs.readFileSync(resolveHome('~/www/webservices/keys/webserver/keys.json')));
 
 
 /**

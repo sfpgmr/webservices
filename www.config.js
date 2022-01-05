@@ -6,16 +6,16 @@ module.exports = {
   apps : [
     {
       name      : 'www',
-      script    : '/home/sfpg/www/node/webserver/bin/www.js',
+      script    : '/home/sfpg/www/webservices/webserver/bin/www.js',
       node_args:['--expose-gc'],
       exec_mode: "fork",
-      cwd:'/home/sfpg/www/node/webserver'
+      cwd:'/home/sfpg/www/webservices/webserver'
     },
     {
       name      : 'metrop',
-      script    : '/home/sfpg/www/node/metrop/node/getTrainInfo.js',
+      script    : '/home/sfpg/www/webservices/metrop/node/getTrainInfo.js',
       node_args:['--expose-gc'],
-      cwd:'/home/sfpg/www/node/metrop/node'
+      cwd:'/home/sfpg/www/webservices/metrop/node'
     }
   ]
 

@@ -70,9 +70,9 @@ app.use(mount('/content/',serve(resolveHome('~/www/images/content'),serveOpts)))
 app.use(mount('/javascripts/',serve(resolveHome('~/www/webservices/webserver/public/javascripts/'),serveOpts)));
 app.use(mount('/stylesheets/',serve(resolveHome('~/www/webservices/webserver/public/stylesheets/'),serveOpts)));
 app.use(mount('/webhook/',webhook(fs.readFileSync(resolveHome('~/www/webservices/keys/webhook/secret'),'utf-8').trim()),webhookHandler()));
-//app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
+app.use(mount('/',serve(resolveHome('~/www/html/contents/'),serveOpts)));
 //console.log(resolveHome('~/pj/sandbox/new-site/data/'));
-app.use(mount('/',serve(resolveHome('/home/sfpg/pj/sandbox/new-site/data/'),serveOpts)));
+//app.use(mount('/',serve(resolveHome('/home/sfpg/pj/sandbox/new-site/data/'),serveOpts)));
 app.use(router.routes());
 app.use(router.allowedMethods());
 

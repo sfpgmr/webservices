@@ -18,14 +18,23 @@ import resolveHome from './resolveHome.mjs';
 import bodyParser from 'koa-bodyparser';
 import webhook from 'koa-webhook';
 import helmet from 'koa-helmet';
-
+//import csp from 'koa-csp';
 const serveOpts = {extensions:['html','htm']};
 
 //express.static.mime.types['wasm'] = 'application/wasm';
 
 const app = new Koa();
 const router = new Router();
-app.use(helmet());
+/*app.use(csp({
+	enableWarn:true,
+	policy:{
+		'default-src':['self','*.sfpgmr.net','youtube.com','twitter.com'],
+		'img-src':['*']
+	}
+}));*/
+app.use(helmet({
+	contentSecurityPolicy:false
+}));
 app.use(json());
 app.use(bodyParser({jsonLimit:'10mb'}));
 //app.use(xhub({algorithm: 'sha1', secret: fs.readFileSync(resolveHome('~/www/webservices/keys/webhook/secret'),'utf-8').trim()}));

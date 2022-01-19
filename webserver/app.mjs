@@ -19,7 +19,7 @@ import bodyParser from 'koa-bodyparser';
 import webhook from 'koa-webhook';
 import helmet from 'koa-helmet';
 //import csp from 'koa-csp';
-const serveOpts = {extensions:['html','htm']};
+const serveOpts = {extensions:['html','htm'],format:false};
 
 //express.static.mime.types['wasm'] = 'application/wasm';
 
